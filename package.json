@@ -1,0 +1,12 @@
+{
+  "name": "Bruno",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:Paul-Marie/Bruno.git",
+  "author": "Paul\\0 <paul-marie.bettinelli@epitech.eu>",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "moment": "^2.24.0"
+  }
+}
