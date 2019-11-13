@@ -46,7 +46,7 @@ if __name__ == "__main__":
         "Etoile": ["Apparition des étoiles", "Étoiles défilantes"],
         "Butin": ["Butin", "Butin et XP dans la Maison Fantôme", "Butin frigostien", "Butin et XP sur tous les Bouftous", "Butin et XP sur les pirates", "Butin et XP sur les créatures marines", "Butin et XP en slip"],
         "Xp": ["Points d'expérience", "Expérience du Kolizéum", "Expérience des quêtes", "Butin et XP dans la Maison Fantôme", "Butin et XP sur tous les Bouftous", "Butin et XP sur les pirates", "Butin et XP sur les créatures marines", "Butin et XP en slip"],
-        "Paysan": ["Cueillette abondante", "Récolte abondante"],
+        "Paysan": ["Récolte abondante"],
         "Craft": ["Objets de qualité", "Économie d'ingrédients", "Fabrication intensive", "Fabrique Féérique", "Bonta et Brâkmar"],
         "Challenge": ["Challenge supplémentaire", "Challenges augmentés"],
         "Benediction": ["Bénédiction de Miss Triste", "Bénédiction du Fin Patraque", "Vitalité débordante"],
@@ -55,6 +55,8 @@ if __name__ == "__main__":
         "Quete": ["Expérience des quêtes", "Quête répétable", "Quêtes et kamas"],
         "Elevage": ["Élevage de Dragodindes"],
     }
+    for i in result:
+        print("\"{}\": {},".format(i, result[i]))
     for date in content:
         if content[date]["Bonus_Type"] == "Percepteurs zélés" or content[date]["Bonus_Type"] == "Percepteurs avides":
             print(content[date]["Bonus_Description"])
@@ -66,6 +68,11 @@ if __name__ == "__main__":
     for date in content:
         if content[date]["Bonus_Type"] == "Étoiles défilantes" or content[date]["Bonus_Type"] == "":
             print(content[date]["Bonus_Description"])
-
-    for i in result:
-        print("\"{}\": {},".format(i, result[i]))
+    print('')
+    for date in content:
+        if content[date]["Bonus_Type"] == "Récolte abondante" or content[date]["Bonus_Type"] == "":
+            print(content[date]["Bonus_Description"])
+    print('')
+    for date in content:
+        if content[date]["Bonus_Type"] == "Cueillette abondante" or content[date]["Bonus_Type"] == "":
+            print(content[date]["Bonus_Description"])

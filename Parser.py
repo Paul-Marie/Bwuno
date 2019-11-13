@@ -15,11 +15,11 @@ sufix = "?game=dofustouch"
 almanax = {}
 
 if __name__ == "__main__":
-    for month in range(1, 13):
+    for month in range(1, 12):
         print("month: {}".format(month), file=stderr)
         for day in range(1, 32):
             print("\tday: {}".format(day), file=stderr)
-            date = "2019-{}-{}".format(month if month > 9 else "0" + str(month),
+            date = "2020-{}-{}".format(month if month > 9 else "0" + str(month),
                                           day if day > 9 else "0" + str(day))
             url = "{}{}{}".format(base_url, date, sufix)
             r = requests.get(url)

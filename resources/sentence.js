@@ -14,7 +14,7 @@ const failure_message = [
 ];
 
 const help_message = {
-    color: 0x4e4ec8,
+    color: 0x4E4EC8,
     thumbnail: { url: "https://cdn.discordapp.com/attachments/643158383104491545/643462146696413184/aide.png" },
     author: {
         name: "Bruno de DT-Price",
@@ -38,57 +38,10 @@ const help_message = {
     }]
 };
 
-/*
-const type_message = [
-    "Apparition des ressources",
-    "Apparition des ressources et des Archimonstres",
-    "Apparition des étoiles",
-    "Bois abondant",
-    "Bonta et Brâkmar",
-    "Butin",
-    "Butin et XP dans la Maison Fantôme",
-    "Butin et XP en slip",
-    "Butin et XP sur les créatures marines",
-    "Butin et XP sur les pirates",
-    "Butin et XP sur tous les Bouftous",
-    "Butin frigostien",
-    "Bénédiction de Miss Triste",
-    "Bénédiction du Fin Patraque",
-    "Cadeaux Surprises",
-    "Cadeaux surprises",
-    "Challenge supplémentaire",
-    "Challenges augmentés",
-    "Cueillette abondante",
-    "Expérience Robillesque",
-    "Expérience amoureuse",
-    "Expérience des métiers",
-    "Expérience des quêtes",
-    "Expérience du Kolizéum",
-    "Fabrication intensive",
-    "Fabrique Féérique",
-    "Familiers Frénétiques",
-    "Gibier abondant",
-    "Kolizétons",
-    "Minerai abondant",
-    "Objets de qualité",
-    "Percepteurs avides",
-    "Percepteurs zélés",
-    "Points d'expérience",
-    "Pêche abondante",
-    "Quête répétable",
-    "Quêtes et kamas",
-    "Récolte abondante",
-    "Tarif réduit",
-    "Vitalité débordante",
-    "Économie d'ingrédients",
-    "Élevage de Dragodindes",
-    "Étoiles défilantes",
-];
-*/
-
 const type_message = {
+    "Alchimiste": ["Ceuillette abondante"],
     "Benediction": ['Bénédiction de Miss Triste', 'Bénédiction du Fin Patraque', 'Vitalité débordante'],
-    "Bucheron": ['Bois abondant', 'Récolte abondante'],
+    "Bucheron": ['Bois abondant'],
     "Butin": ['Butin', 'Butin et XP dans la Maison Fantôme', 'Butin frigostien', 'Butin et XP sur tous les Bouftous', 'Butin et XP sur les pirates', 'Butin et XP sur les créatures marines', 'Butin et XP en slip'],
     "Challenge": ['Challenge supplémentaire', 'Challenges augmentés'],
     "Chasseur": ['Gibier abondant'],
@@ -98,41 +51,14 @@ const type_message = {
     "Etoile": ['Apparition des étoiles', 'Étoiles défilantes'],
     "Familier": ['Familiers Frénétiques'],
     "Kolizeum": ['Expérience du Kolizéum', 'Kolizétons'],
-    "Metier": ['Apparition des ressources', 'Apparition des ressources et des Archimonstres', 'Fabrication intensive', 'Fabrique Féérique', 'Objets de qualité', 'Récolte abondante', "Économie d'ingrédients", 'Cueillette abondante', 'Bonta et Brâkmar', 'Récolte abondante'],
-    "Mineur": ['Minerai abondant', 'Récolte abondante'],
-    "Paysan": ['Cueillette abondante', 'Récolte abondante'],
-    "Pecheur": ['Pêche abondante', 'Récolte abondante'],
+    "Metier": ['Apparition des ressources', 'Apparition des ressources et des Archimonstres', 'Fabrication intensive', 'Fabrique Féérique', 'Objets de qualité', "Économie d'ingrédients", 'Bonta et Brâkmar'],
+    "Mineur": ['Minerai abondant'],
+    "Paysan": ['Récolte abondante'],
+    "Pecheur": ['Pêche abondante'],
     "Percepteur": ['Percepteurs avides', 'Percepteurs zélés'],
     "Point d'Experience": ["Points d'expérience", 'Expérience du Kolizéum', 'Expérience des quêtes', 'Butin et XP dans la Maison Fantôme', 'Butin et XP sur tous les Bouftous', 'Butin et XP sur les pirates', 'Butin et XP sur les créatures marines', 'Butin et XP en slip'],
     "Quete": ['Expérience des quêtes', 'Quête répétable', 'Quêtes et kamas'],
 }
-
-/*
-const type_message = [
-    "Apparition des ressources                                                 Expérience des métiers",
-    "Apparition des ressources et des Archimonstres            Expérience des quêtes",
-    "Apparition des étoiles                                                        Expérience du Kolizéum",
-    "Bois abondant                                                                     Fabrication intensive",
-    "Bonta et Brâkmar                                                                Fabrique Féérique",
-    "Butin                                                                                    Familiers Frénétiques",
-    "Butin et XP dans la Maison Fantôme                                Gibier abondant",
-    "Butin et XP en slip                                                              Kolizétons",
-    "Butin et XP sur les créatures marines                              Minerai abondant",
-    "Butin et XP sur les pirates                                                Objets de qualité",
-    "Butin et XP sur tous les Bouftous                                      Percepteurs avides",
-    "Butin frigostien                                                          Percepteurs zélés",
-    "Bénédiction de Miss Triste                                        Points d'expérience",
-    "Bénédiction du Fin Patraque                                       Pêche abondante",
-    "Cadeaux Surprises                                                 Quête répétable",
-    "Cadeaux surprises                                                  Quêtes et kamas",
-    "Challenge supplémentaire                                         Récolte abondante",
-    "Challenges augmentés                                            Tarif réduit",
-    "Cueillette abondante                                            Vitalité débordante",
-    "Expérience Robillesque                                            Économie d'ingrédients",
-    "Expérience amoureuse                                             Élevage de Dragodindes",
-    "Étoiles défilantes",
-];
-*/
 
 module.exports = {
     empty_message,
