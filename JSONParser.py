@@ -76,3 +76,7 @@ if __name__ == "__main__":
     for date in content:
         if content[date]["Bonus_Type"] == "Cueillette abondante" or content[date]["Bonus_Type"] == "":
             print(content[date]["Bonus_Description"])
+
+    fd = open("./resources/zodiac.json")
+    content = loads(fd.read())
+    print(dumps(content, ensure_ascii=False), file=stderr)

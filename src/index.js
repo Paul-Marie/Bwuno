@@ -23,19 +23,20 @@ const date = (message, sentence) => {
     const argument = sentence.slice(2, sentence.length).join(" ");
     const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     console.log("epured_argument: {" + epured_argument + "}")
-    const almanax = Utils.getDates(epured_argument)[0];
+    const almanax = Utils.getDate(epured_argument)[0];
     console.log(almanax);
     if (!almanax) {
         message.channel.send("Je n'ai pas compris cette date.")
         return
     }
+    console.log(almanax)
     embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + epured_argument + "**")
-        .setURL("https://www.krosmoz.com/fr/almanax/" + almanax[1] + "?game=dofustouch")
-        .setThumbnail(almanax[0].Offrande_Image)
-        .addField("🙏 Offrande:", "[**" + almanax[0].Offrande_Name + "**](http://google.com) **x" + almanax[0].Offrande_Quantity + "**")
-        .addField("📜 Bonus:", "```" + almanax[0].Bonus_Description + "```\n*Type de Bonus*: " + almanax[0].Bonus_Type)
+        .setURL("https://www.krosmoz.com/fr/almanax/" + almanax.Date + "?game=dofustouch")
+        .setThumbnail(almanax.Offrande_Image)
+        .addField("🙏 Offrande:", "[**" + almanax.Offrande_Name + "**](http://google.com) **x" + almanax.Offrande_Quantity + "**")
+        .addField("📜 Bonus:", "```" + almanax.Bonus_Description + "```\n*Type de Bonus*: " + almanax.Bonus_Type)
         .addField("⏳ Temps:", "Cette almanax aura lieu dans **" + 0 + "** jour")
         .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + 0 + "%** comparé à la semaine derniere.")
     message.channel.send(embed);

@@ -17,15 +17,16 @@ const getAlmanax = (bonus_types) => {
     return result;
 }
 
-const getDates = (requested_date) => {
+const getDate = (requested_date) => {
     const file = fs.readFileSync('./resources/year.json', "utf8")
     const object = JSON.parse(file);
-    const accepted_format = ["DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY", "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
+    const accepted_format = ["DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM",
+                             "DD/MM/YYYY", "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
     return accepted_format.map(format => {
         const date = moments(requested_date, format, 'fr', true);
         console.log("format: " + format);
         if (date.isValid()) {
-            return [object[date.format("2019-MM-DD")], date.format("2019-MM-DD")];
+            return object[date.format("2020-MM-DD")];
         }
     }).filter(item => {
         return item !== undefined;
@@ -34,5 +35,5 @@ const getDates = (requested_date) => {
 
 module.exports = {
     getAlmanax,
-    getDates
+    getDate
 }
