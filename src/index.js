@@ -14,32 +14,43 @@ const help = (message, sentence) => {
 }
 
 const item = (message, sentence) => {
-    console.log("tutu")
+    if (sentence.length === 2) {
+        message.channel.send("Il faut que tu me précise quel item tu souhaites rechercher parmis la liste des offrandes.");
+        return
+    } else {
+        const argument = sentence.slice(2, sentence.length).join(" ");
+        const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        const result = Utils.getList(epured_argument);
+        console.log(result);
+        if (!result) {
+            message.channel.send("Malgré mes recherches, je n'ai pas trouvé cette item dans la liste des offrandes... Peut etre la tu mal orthographier? il est si facile d'oublier un `s`.")
+            return
+        }
+        for (const almanax of result) {
+            const embed = Utils.createEmbed(almanax, epured_argument)
+            message.channel.send(embed);
+        }
+    }
 }
 
-const date = (message, sentence) => {
-    if (sentence.length === 2)
+const almanax = (message, sentence) => {
+    if (sentence.length === 2) {
         message.channel.send("Il faut que tu me précise quel type de bonus Almanax tu recherches, utilise `!bruno list_type` pour la connaitre.");
-    const argument = sentence.slice(2, sentence.length).join(" ");
-    const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    console.log("epured_argument: {" + epured_argument + "}")
-    const almanax = Utils.getDate(epured_argument)[0];
-    console.log(almanax);
-    if (!almanax) {
-        message.channel.send("Je n'ai pas compris cette date.")
         return
+    } else {
+        const argument = sentence.slice(2, sentence.length).join(" ");
+        const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        console.log("epured_argument: {" + epured_argument + "}")
+        const almanax = Utils.getDate(epured_argument)[0];
+        console.log(almanax);
+        if (!almanax) {
+            message.channel.send("Je n'ai pas compris cette date.")
+            return
+        }
+        console.log(almanax)
+        const embed = Utils.createEmbed(almanax, epured_argument)
+        message.channel.send(embed);
     }
-    console.log(almanax)
-    embed = new Discord.RichEmbed()
-        .setColor('0x4E4EC8')
-        .setTitle("**Almanax du " + epured_argument + "**")
-        .setURL("https://www.krosmoz.com/fr/almanax/" + almanax.Date + "?game=dofustouch")
-        .setThumbnail(almanax.Offrande_Image)
-        .addField("🙏 Offrande:", "[**" + almanax.Offrande_Name + "**](http://google.com) **x" + almanax.Offrande_Quantity + "**")
-        .addField("📜 Bonus:", "```" + almanax.Bonus_Description + "```\n*Type de Bonus*: " + almanax.Bonus_Type)
-        .addField("⏳ Temps:", "Cette almanax aura lieu dans **" + 0 + "** jour")
-        .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + 0 + "%** comparé à la semaine derniere.")
-    message.channel.send(embed);
 }
 
 // 
@@ -96,7 +107,7 @@ bot.on('message', message => {
             return;
         }
         empty_iterator = 0;
-        const functions = { "help": help, "item": item, "date": date, "type": type, "list_type": list_type };
+        const functions = { "help": help, "item": item, "almanax": almanax, "type": type, "list": list_type };
         //try {
             functions[sentence[1]](message, sentence)
             failure_iterator = 0;

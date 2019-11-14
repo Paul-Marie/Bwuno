@@ -21,20 +21,23 @@ const help_message = {
         icon_url: "https://cdn.discordapp.com/avatars/642935463048642570/39d03bf8899872de9ead0e871f6cfda6.png"
     },
     fields: [{
-        name: "Affiche ce menu",
+        name: "🔍 Affiche ce menu",
         value: "!bruno help",
     }, {
-        name: "Liste la ou les dates ou l'item spécifié est l'offrande du jour",
+        name: "🔍 Liste la ou les dates ou l'item spécifié est l'offrande du jour",
         value: "!bruno item <Nom de l'Item>",
     }, {
-        name: "Affiche les informations de l'almanax de la date spécifié",
-        value: "!bruno date <Date>",
+        name: "🔍 Affiche les informations de l'almanax de la date spécifié",
+        value: "!bruno almanax <Date>",
     }, {
-        name: "Liste tout les almanax du Type spécifié",
+        name: "🔍 Liste tout les almanax du Type spécifié",
         value: "!bruno type <Type>",
     }, {
-        name: "Renvoi la liste des types d'almanax disponible",
-        value: "!bruno list_type",
+        name: "🔍 Renvoi la liste des types d'almanax disponible pour le !bruno type <Type>",
+        value: "!bruno list",
+    }, {
+        name: "🔍 Donne moi ta date d'anniversaire et je te donnerais ton signe astrologique du monde des 12!",
+        value: "!bruno zoadiac <Date>",
     }]
 };
 
