@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 
+
 from sys import stderr
 from json import dumps, loads
+from unidecode import unidecode
 
+encyclopedie = "https://www.dofus-touch.com/fr/mmorpg/encyclopedie/ressources/"
 result = []
 
 if __name__ == "__main__":
     fd = open("./resources/year.json")
     content = loads(fd.read())
+    """
     for date in content:
         result.append(content[date]["Bonus_Type"])
     result = sorted(set(result))
@@ -79,4 +83,15 @@ if __name__ == "__main__":
 
     fd = open("./resources/zodiac.json")
     content = loads(fd.read())
+    print(dumps(content, ensure_ascii=False), file=stderr)
+    """
+    item_list = open("/home/paul-marie/cookie-touch/data/interesting_items.txt").read().split("\n")
+    item_list.pop()
+    for day in content:
+        for string in item_list:
+            item = string.split(" - ")
+            if content[day]["Offrande_Name"] == item[1]:
+                item[1] = unidecode(item[1]).lower()
+                content[day]["URL"] = encyclopedie + item[0] + "-" + "-".join(item[1].split())
+                print(content[day]["URL"])
     print(dumps(content, ensure_ascii=False), file=stderr)

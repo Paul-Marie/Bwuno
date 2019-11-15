@@ -53,21 +53,19 @@ const getDate = (requested_date) => {
 
 // URGENT
 const createEmbed = (almanax, epured_argument) => {
-    //const link = ;
     const current_date = new Date()
-    const date1 = moments([Number(current_date.getFullYear()) + 1, current_date.getMonth(), current_date.getDate()]);
-    const date2 = moments(almanax.Date);
-    const diff = date1.diff(date2, 'days') * -1;
+    const date = moments([Number(current_date.getFullYear()) + 1, current_date.getMonth(), current_date.getDate()]);
+    const diff = date.diff(moments(almanax.Date), 'days') * -1;
     let remaining_days = (diff < 0) ? diff + 366 : diff;
     let embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
         .setURL("https://www.krosmoz.com/fr/almanax/" + almanax.Date + "?game=dofustouch")
         .setThumbnail(almanax.Offrande_Image)
-        .addField("🙏 Offrande:", "[**" + almanax.Offrande_Name + "**](http://google.com) **x" + almanax.Offrande_Quantity + "**")
+        .addField("🙏 Offrande:", "[**" + almanax.Offrande_Name + "**](" + almanax.URL + ") **x" + almanax.Offrande_Quantity + "**")
         .addField("📜 Bonus:", "```" + almanax.Bonus_Description + "```\n*Type de Bonus*: " + almanax.Bonus_Type)
-        .addField("⏳ Temps:", "Cette almanax aura lieu dans **" + remaining_days + "** jour" + (remaining_days > 1 ? "s" : ""))
-        .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + 0 + "%** comparé à la semaine derniere.")
+        .addField("⏳ Temps:", "Cette almanax aura lieu dans **" + remaining_days + "** jour" + (remaining_days > 1 ? "s" : ""), true)
+        .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + 0 + "%** comparé à la semaine derniere.", true)
     if (almanax.Event_Name) {
         embed.addField("🎉 Event: **" + almanax.Event_Name + "**", almanax.Event_Description)
         embed.setImage(almanax.Event_Image)
