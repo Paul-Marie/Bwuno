@@ -105,10 +105,14 @@ const list_type = (message, sentence) => {
 bot.on('ready', function () {
     console.log("[BOOT] Bip Boop, Bip Boop, Me voila pret !")
     console.log("Actuellement connécté sur les serveurs:")
+    try {
     bot.guilds.forEach((guild) => {
         console.log(" - " + guild.name)
     })
-    bot.user.setActivity("le Krosmoz", {type: "WATCHING"})
+        bot.user.setActivity("le Krosmoz", {type: "WATCHING"})
+    } catch {
+        return;
+    }
 });
 
 bot.on("guildCreate", guild => {
@@ -124,7 +128,11 @@ bot.on("guildCreate", guild => {
         }
     }
     let channel = bot.channels.get(guild.systemChannelID || channelID);
-    channel.send(`Salut ! Moi c'est Bruno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple. J'ai été conçu par les créateurs de DT-Price.\nQue dirais tu d'un \`!bruno help\` pour commencer?`);
+    try {
+        channel.send(`Salut ! Moi c'est Bruno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple. J'ai été conçu par les créateurs de DT-Price.\nQue dirais tu d'un \`!bruno help\` pour commencer?`);
+    } catch {
+        return;
+    }
 });
 
 // 
