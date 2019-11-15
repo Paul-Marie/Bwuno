@@ -27,9 +27,28 @@ const item = (message, sentence) => {
             return
         }
         for (const almanax of result) {
-            const embed = Utils.createEmbed(almanax, epured_argument)
+            const embed = Utils.createEmbed(almanax)
             message.channel.send(embed);
         }
+    }
+}
+
+const zodiac = (message, sentence) => {
+    if (sentence.length === 2) {
+        message.channel.send("Donne moi ta date d'anniversaire pour que je te revele ton signe du zodiac!");
+        return
+    } else {
+        const argument = sentence.slice(2, sentence.length).join(" ");
+        const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        console.log("epured_argument: {" + epured_argument + "}")
+        const almanax = Utils.getDate(epured_argument)[0];
+        console.log(almanax);
+        if (!almanax) {
+            message.channel.send("Je n'ai pas compris cette date.")
+            return
+        }
+        const embed = Utils.createZodiacEmbed(almanax, Sentence.zodiac_list)
+        message.channel.send(embed);
     }
 }
 
@@ -107,11 +126,11 @@ bot.on('message', message => {
             return;
         }
         empty_iterator = 0;
-        const functions = { "help": help, "item": item, "almanax": almanax, "type": type, "list": list_type };
-        //try {
+        const functions = { "help": help, "item": item, "almanax": almanax, "zodiac": zodiac, "type": type, "list": list_type };
+        try {
             functions[sentence[1]](message, sentence)
             failure_iterator = 0;
-        /*}
+        }
           catch {
             console.error("[ERROR (INVALID_COMMAND)] Command: \"" + sentence[1] + "\".");
             if (failure_iterator <= 4) {
@@ -120,9 +139,7 @@ bot.on('message', message => {
             } else
                 empty_iterator = 4;
         }
-        */
     }
-    //}
 });
 
 bot.login("NjQyOTM1NDYzMDQ4NjQyNTcw.Xchc6g.Rp4_cHb9aXFBf4C_MIrPyZJBuqA");

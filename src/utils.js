@@ -52,7 +52,7 @@ const getDate = (requested_date) => {
 }
 
 // URGENT
-const createEmbed = (almanax, epured_argument) => {
+const createEmbed = (almanax) => {
     const current_date = new Date()
     const date = moments([Number(current_date.getFullYear()) + 1, current_date.getMonth(), current_date.getDate()]);
     const diff = date.diff(moments(almanax.Date), 'days') * -1;
@@ -73,9 +73,25 @@ const createEmbed = (almanax, epured_argument) => {
     return embed;
 }
 
+//
+const createZodiacEmbed = (almanax, zodiac_list) => {
+    let embed = new Discord.RichEmbed()
+        .setColor('0x4E4EC8')
+        .setTitle("**Zodiac du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
+        .setDescription("Hmmm... Apres de nombreuse recherche a travers le Krosmoz, je suis en mesure de t'affirmer que ton signe du zodiac est:")
+        .setThumbnail(zodiac_list[almanax.Zodiac_Name].Image)
+        .addField("**" + zodiac_list[almanax.Zodiac_Name].Name + "**", zodiac_list[almanax.Zodiac_Name].Description)
+    if (almanax.Event_Name) {
+        embed.addField("📅 Tu es par ailleur né lors de: **" + almanax.Event_Name + "**", almanax.Event_Description)
+        embed.setImage(almanax.Event_Image)
+    }
+    return embed;
+}
+
 module.exports = {
     getAlmanax,
     getList,
     getDate,
-    createEmbed
+    createEmbed,
+    createZodiacEmbed
 }
