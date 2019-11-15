@@ -1,6 +1,5 @@
 const Sentence = require('../resources/sentence.js');
 const Utils = require('../src/utils.js');
-//const promisify = require('util').promisify;
 const Discord = require('discord.js')
 const bot = new Discord.Client()
 
@@ -15,15 +14,14 @@ const help = (message, sentence) => {
 
 const item = (message, sentence) => {
     if (sentence.length === 2) {
-        message.channel.send("Il faut que tu me précise quel item tu souhaites rechercher parmis la liste des offrandes.");
+        message.channel.send("Il faut que tu me précises quel item tu souhaites rechercher parmis la liste des offrandes.");
         return
     } else {
         const argument = sentence.slice(2, sentence.length).join(" ");
         const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         const result = Utils.getList(epured_argument);
-        console.log(result);
-        if (!result) {
-            message.channel.send("Malgré mes recherches, je n'ai pas trouvé cette item dans la liste des offrandes... Peut etre la tu mal orthographier? il est si facile d'oublier un `s`.")
+        if (!result[0]) {
+            message.channel.send("Malgré mes recherches, je n'ai pas trouvé cet item dans la liste des offrandes... Peut etre l'as tu mal orthographié? (Vérifie l'orthographe sur l'encyclopédie du site officiel)")
             return
         }
         for (const almanax of result) {
@@ -36,16 +34,14 @@ const item = (message, sentence) => {
 const zodiac = (message, sentence) => {
     if (sentence.length === 2) {
         message.channel.send("Donne moi ta date d'anniversaire pour que je te revele ton signe du zodiac!");
-        return
+        return;
     } else {
         const argument = sentence.slice(2, sentence.length).join(" ");
         const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        console.log("epured_argument: {" + epured_argument + "}")
         const almanax = Utils.getDate(epured_argument)[0];
-        console.log(almanax);
         if (!almanax) {
             message.channel.send("Je n'ai pas compris cette date.")
-            return
+            return;
         }
         const embed = Utils.createZodiacEmbed(almanax, Sentence.zodiac_list)
         message.channel.send(embed);
@@ -54,19 +50,16 @@ const zodiac = (message, sentence) => {
 
 const almanax = (message, sentence) => {
     if (sentence.length === 2) {
-        message.channel.send("Il faut que tu me précise quel type de bonus Almanax tu recherches, utilise `!bruno list_type` pour la connaitre.");
-        return
+        message.channel.send("Tu as oublié de me donner la date de l'almanax.");
+        return;
     } else {
         const argument = sentence.slice(2, sentence.length).join(" ");
         const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        console.log("epured_argument: {" + epured_argument + "}")
         const almanax = Utils.getDate(epured_argument)[0];
-        console.log(almanax);
         if (!almanax) {
             message.channel.send("Je n'ai pas compris cette date.")
             return
         }
-        console.log(almanax)
         const embed = Utils.createEmbed(almanax, epured_argument)
         message.channel.send(embed);
     }
@@ -74,8 +67,10 @@ const almanax = (message, sentence) => {
 
 // 
 const type = (message, sentence) => {
-    if (sentence.length === 2)
-        message.channel.send("Il faut que tu me précise quel type de bonus Almanax tu recherches, utilise `!bruno list_type` pour la connaitre.");
+    if (sentence.length === 2) {
+        message.channel.send("Il faut que tu me précises quel type de bonus Almanax tu recherches, utilise `!bruno list` pour le connaitre.");
+        return;
+    }
     const argument = sentence.slice(2, sentence.length).join(" ");
     const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const almanax_list = Object.keys(Sentence.type_message).map(key => {
@@ -97,18 +92,39 @@ const type = (message, sentence) => {
         }
         message.channel.send(result);
     } else
-        message.channel.send("Hmmm, Il semble que ce type n'existe pas. Est il bien présent dans la liste des types d'Almanax valide? (`!bruno list_type`).");
+        message.channel.send("Hmmm, Il semble que ce type n'existe pas. Est il bien présent dans la liste des types d'Almanax valides? (`!bruno list_type`).");
 }
 
 // 
 const list_type = (message, sentence) => {
     const list = Object.keys(Sentence.type_message).join("\n");
-    message.channel.send("__Voici les différents type d'almanax existant:__\n" + list);
+    message.channel.send("__Voici les différents types d'almanax existants:__\n" + list);
 }
 
 //
 bot.on('ready', function () {
     console.log("[BOOT] Bip Boop, Bip Boop, Me voila pret !")
+    console.log("Actuellement connécté sur les serveurs:")
+    bot.guilds.forEach((guild) => {
+        console.log(" - " + guild.name)
+    })
+    bot.user.setActivity("le Krosmoz", {type: "WATCHING"})
+});
+
+bot.on("guildCreate", guild => {
+    console.log(`J'ai rejoins le serveur ${guild.name} (${guild.id}). Il a ${guild.memberCount} membres!`);
+    let channelID;
+    let channels = guild.channels;
+    channelLoop:
+    for (let c of channels) {
+        let channelType = c[1].type;
+        if (channelType === "text") {
+            channelID = c[0];
+            break channelLoop;
+        }
+    }
+    let channel = bot.channels.get(guild.systemChannelID || channelID);
+    channel.send(`Salut ! Moi c'est Bruno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple. J'ai été conçu par les créateurs de DT-Price.\nQue dirais tu d'un \`!bruno help\` pour commencer?`);
 });
 
 // 
@@ -130,8 +146,7 @@ bot.on('message', message => {
         try {
             functions[sentence[1]](message, sentence)
             failure_iterator = 0;
-        }
-          catch {
+        } catch {
             console.error("[ERROR (INVALID_COMMAND)] Command: \"" + sentence[1] + "\".");
             if (failure_iterator <= 4) {
                 message.channel.send(Sentence.failure_message[failure_iterator]);

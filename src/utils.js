@@ -25,7 +25,6 @@ const getList = (item_name) => {
     const object = JSON.parse(file);
     const result = Object.keys(object).map(key => {
         const epured = object[key].Offrande_Name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        console.log(item_name)
         if (epured === item_name)
             return object[key];
     }).filter(item => {
@@ -42,7 +41,6 @@ const getDate = (requested_date) => {
                              "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
     return accepted_format.map(format => {
         const date = moments(requested_date, format, 'fr', true);
-        console.log("format: " + format);
         if (date.isValid()) {
             return object[date.format("2020-MM-DD")];
         }

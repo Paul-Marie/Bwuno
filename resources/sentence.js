@@ -1,16 +1,18 @@
+const discord_url = "https://discord.gg/NvruPar";
+
 const empty_message = [
-    "Oh, il semble que tu ai oublié de mettre une action apres le `!bruno`. Tappe `!bruno help` pour voir la liste des commandes disponible.",
-    "Tu as encore oublié de préciser l'action apres `!bruno`. Comment suis je censé deviné ce que tu attends de moi?",
-    "Bon, vu que tu essaye de m'énervé, je vais en profité pour faire la PUB du serveur discord de mes créateurs sur ton serveur; Les autres hésitez pas à rejoindre ce serveur discord si jamais la spéculation vous interesse :)",
+    "Oh, il semble que tu ai oublié de mettre une action apres le `!bruno`. Tappe `!bruno help` pour voir la liste des commandes disponibles.",
+    "Tu as encore oublié de préciser l'action apres `!bruno`. Comment suis je censé deviner ce que tu attends de moi?",
+    "Bon, vu que tu essayes de m'énerver, je vais en Proftiter pour faire la PUB du serveur discord de mes créateurs sur ton serveur; Les autres n'hésitez pas à rejoindre ce serveur discord si jamais la spéculation vous intéresse :)\n" + discord_url,
     "Alright, puisque tu continues de me prendre pour un imbécile j'arrete de te repondre tant que tu ne diras que des bétises...",
 ];
 
 const failure_message = [
     "Je n'est pas reconnu la commande, n'hésite pas a consulté l'aide: `!bruno help`",
-    "Je n'ai toujours pas compris ta requete",
-    "Consulte l'aide (`!bruno help`), je ne lis pas encore dans les pensées pour savoir ce que tu attends de moi !",
-    "Bon, tu fais expres de me prendre pour un idiot, du coups je me permet de faire de la PUB sur ton serveur :)\nInteresser par la spéculation des offrandes d'almanax? Rejoins sans plus attendre le serveur discord de DT-Price! ", // + Base.discord_url,
-    "Okay, c'etait le fail de trop... Je te reparlerais quand tu me feras une vrai demande (Oui je te boude)."
+    "Je n'ai toujours pas compris ta requete.",
+    "Consulte l'aide avec `!bruno help`, je ne lis pas encore dans les pensées pour savoir ce que tu attends de moi !",
+    "Bon, tu fais expres de me prendre pour un idiot, du coups je me permet de faire de la PUB sur ton serveur :)\nintéressé par la spéculation des offrandes d'almanax? Rejoins sans plus attendre le serveur discord de DT-Price!\n" + discord_url,
+    "Okay, c'etait le fail de trop... Je te reparlerais quand tu me feras une vraie demande (Oui je te boude)."
 ];
 
 const help_message = {
@@ -27,16 +29,16 @@ const help_message = {
         name: "🔍 Liste la ou les dates ou l'item spécifié est l'offrande du jour",
         value: "!bruno item <Nom de l'Item>",
     }, {
-        name: "🔍 Affiche les informations de l'almanax de la date spécifié",
+        name: "🔍 Affiche les informations de l'almanax de la date spécifiée",
         value: "!bruno almanax <Date>",
     }, {
         name: "🔍 Liste tout les almanax du Type spécifié",
         value: "!bruno type <Type>",
     }, {
-        name: "🔍 Renvoi la liste des types d'almanax disponible pour le !bruno type <Type>",
+        name: "🔍 Renvoie la liste des types d'almanax disponibles pour le !bruno type <Type>",
         value: "!bruno list",
     }, {
-        name: "🔍 Donne moi ta date d'anniversaire et je te donnerais ton signe astrologique du monde des 12!",
+        name: "🔍 Donne moi ta date d'anniversaire et je te donnerai ton signe astrologique du monde des 12!",
         value: "!bruno zodiac <Date>",
     }]
 };
