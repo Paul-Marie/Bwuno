@@ -36,8 +36,8 @@ const zodiac = (message, sentence) => {
         message.channel.send("Donne moi ta date d'anniversaire pour que je te revele ton signe du zodiac!");
         return;
     } else {
-        const argument = sentence.slice(2, sentence.length).join(" ");
-        const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        const argument = Utils.formatDate(sentence.slice(2, sentence.length));
+        const epured_argument = argument.toLowerCase();
         const almanax = Utils.getDate(epured_argument)[0];
         if (!almanax) {
             message.channel.send("Je n'ai pas compris cette date.")
@@ -53,8 +53,8 @@ const almanax = (message, sentence) => {
         message.channel.send("Tu as oublié de me donner la date de l'almanax.");
         return;
     } else {
-        const argument = sentence.slice(2, sentence.length).join(" ");
-        const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        const argument = Utils.formatDate(sentence.slice(2, sentence.length));
+        const epured_argument = argument.toLowerCase();
         const almanax = Utils.getDate(epured_argument)[0];
         if (!almanax) {
             message.channel.send("Je n'ai pas compris cette date.")

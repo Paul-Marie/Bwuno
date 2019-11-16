@@ -5,6 +5,23 @@ const fs = require('fs');
 moments.locale('fr');
 
 //
+const formatDate = (sentence) => {
+    return ((sentence.map(elem => {
+        return elem.split("-").map(item => {
+            return (item.length === 1) ? "0" + item : item;
+        })
+    })).map(elem => {
+        return (elem.map(tmp => {
+            return tmp.split("/").map(item => {
+                return (item.length === 1) ? "0" + item : item;
+            }).join(" ");
+        })).join(" ");
+    })).map(toto => {
+        return (toto.length === 1) ? "0" + toto : toto;
+    }).join(" ");
+}
+
+//
 const getAlmanax = (bonus_types) => {
     const file = fs.readFileSync('./resources/year.json', "utf8")
     const object = JSON.parse(file);
@@ -90,6 +107,7 @@ module.exports = {
     getAlmanax,
     getList,
     getDate,
+    formatDate,
     createEmbed,
     createZodiacEmbed
 }
