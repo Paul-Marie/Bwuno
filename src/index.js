@@ -92,7 +92,7 @@ const type = (message, sentence) => {
         }
         message.channel.send(result);
     } else
-        message.channel.send("Hmmm, Il semble que ce type n'existe pas. Est il bien présent dans la liste des types d'Almanax valides? (`!bruno list_type`).");
+        message.channel.send("Hmmm, Il semble que ce type n'existe pas. Est il bien présent dans la liste des types d'Almanax valides? (`!bruno list`).");
 }
 
 // 
