@@ -66,12 +66,20 @@ const getDate = (requested_date) => {
     });
 }
 
+//
+const getRemainingDay = (almanax_date) => {
+    const current_date = new Date();
+    const date = moments([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
+    let searched_date = moments([current_date.getFullYear(), Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
+    if (date > searched_date)
+        searched_date = moments([current_date.getFullYear() + 1, Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
+    const diff = date.diff(searched_date, 'days');
+    return Math.abs(Math.trunc(diff));
+}
+
 // URGENT
 const createEmbed = (almanax) => {
-    const current_date = new Date()
-    const date = moments([Number(current_date.getFullYear()) + 1, current_date.getMonth(), current_date.getDate()]);
-    const diff = date.diff(moments(almanax.Date), 'days') * -1;
-    let remaining_days = (diff < 0) ? diff + 366 : diff;
+    const remaining_days = getRemainingDay(almanax.Date);
     let embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
@@ -79,7 +87,10 @@ const createEmbed = (almanax) => {
         .setThumbnail(almanax.Offrande_Image)
         .addField("🙏 Offrande:", "[**" + almanax.Offrande_Name + "**](" + almanax.URL + ") **x" + almanax.Offrande_Quantity + "**")
         .addField("📜 Bonus:", "```" + almanax.Bonus_Description + "```\n*Type de Bonus*: " + almanax.Bonus_Type)
-        .addField("⏳ Temps:", "Cette almanax aura lieu dans **" + remaining_days + "** jour" + (remaining_days > 1 ? "s" : ""), true)
+        .addField("⏳ Temps:", "Cette almanax aura lieu " + (
+            (remaining_days) <= 1 ? (
+                (remaining_days == 1) ? "**demain**" : "**aujourd'hui**"
+            ) : `dans **${remaining_days}** jours`), true)
         .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + 0 + "%** comparé à la semaine derniere.", true)
     if (almanax.Event_Name) {
         embed.addField("🎉 Event: **" + almanax.Event_Name + "**", almanax.Event_Description)

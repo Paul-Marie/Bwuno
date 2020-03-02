@@ -85,13 +85,20 @@ if __name__ == "__main__":
     content = loads(fd.read())
     print(dumps(content, ensure_ascii=False), file=stderr)
     """
-    item_list = open("/home/paul-marie/cookie-touch/data/interesting_items.txt").read().split("\n")
+    """
+    item_list = open("/home/paul-marie/cookie-touch/data/existing_items.txt").read().split("\n")
     item_list.pop()
     for day in content:
         for string in item_list:
             item = string.split(" - ")
-            if content[day]["Offrande_Name"] == item[1]:
+            if content[day]["Offrande_Name"].lower() == item[1].lower():
                 item[1] = unidecode(item[1]).lower()
                 content[day]["URL"] = encyclopedie + item[0] + "-" + "-".join(item[1].split())
                 print(content[day]["URL"])
+    print(dumps(content, ensure_ascii=False), file=stderr)
+    """
+    fd = open("./toto.json")
+    new = loads(fd.read())
+    for day in content:
+        content[day]["Bonus_Description"] = new[day]["Bonus_Description"]
     print(dumps(content, ensure_ascii=False), file=stderr)

@@ -30,12 +30,16 @@ if __name__ == "__main__":
                 event = soup.find(id="almanax_event")
                 meryde_image = str(soup.find(id="almanax_boss_image").img)
                 content = soup.find_all(class_="mid")[2]
-                bonus_description = str(soup.find(class_="more")).split("<div class=\"more\">")[1].split("<div class=\"more-infos\">")[0].strip()
+                bonus_description = str(content).split("<div class=\"more\">")[1].split("<div class=\"more-infos\">")[0].strip()
                 bonus_type = str(content).split("<span class=\"picto\"></span>")[1].split("<div class=\"more\">")[0].strip()[8:]
                 meryde_name = soup.find(class_="more-infos")
                 soup = BeautifulSoup(str(content), 'html.parser')
                 offrande = soup.find(class_="fleft").text.strip()
-                offrande_image = str(content.img).split(" ")[1].split("\"")[1]
+                offrande_image = ""
+                try:
+                    offrande_image = str(content.img).split(" ")[1].split("\"")[1]
+                except:
+                    pass
                 soup = BeautifulSoup(r.text, 'html.parser')
                 zodiac = soup.find(class_="zodiac_more").text.strip()
                 meryde_desc = soup.find(id="almanax_boss_desc").text.strip()
@@ -55,6 +59,9 @@ if __name__ == "__main__":
                     almanax[date]["Event_Name"] = event.text.strip().split("\n")[0].strip()
                     almanax[date]["Event_Description"] = event.text.strip().split("\n")[1].strip()
                     almanax[date]["Event_Image"] = str(event.img)[10:][::-1][3:][::-1]
+                #for day in almanax.items():
+                #    for key in day[1].keys():
+                #        print("\t{}: [{}]".format(key, day[1][key]));
                 """
                 zodiac = soup.find(id="almanax_zodiac")
                 almanax[zodiac.text.strip().split("\n")[0].split()[1]] = {
