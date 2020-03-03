@@ -80,7 +80,7 @@ const getRemainingDay = (almanax_date) => {
 // URGENT
 const createEmbed = (almanax) => {
     const remaining_days = getRemainingDay(almanax.Date);
-    let embed = new Discord.RichEmbed()
+    const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
         .setURL("https://www.krosmoz.com/fr/almanax/" + almanax.Date + "?game=dofustouch")
@@ -99,9 +99,29 @@ const createEmbed = (almanax) => {
     return embed;
 }
 
+// 
+const createFutureEmbed = (required_almanax) => {
+    const current_date = moments();
+    // TODO replace '25' by the maximum `field` value
+    
+    if (required_almanax > 25)
+        required_almanax = 25;
+     if (required_almanax <= 0)
+        required_almanax = 1;
+    const embed = new Discord.RichEmbed()
+        .setColor('0x4E4EC8')
+        .setTitle("Almanax du **" + current_date.format("DD/MM") + "** au **" + moments().add(required_almanax, 'days').format("DD/MM") + "**")
+    for (i = 0; i < required_almanax; i++) {
+        const date = current_date.add(1, 'days');
+        const almanax = getDate(date.format("DD/MM"))[0];
+        embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description}\n`, true);
+    }
+    return embed;
+}
+
 //
 const createZodiacEmbed = (almanax, zodiac_list) => {
-    let embed = new Discord.RichEmbed()
+    const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Zodiac du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
         .setDescription("Hmmm... Apres de nombreuse recherche a travers le Krosmoz, je suis en mesure de t'affirmer que ton signe du zodiac est:")
@@ -120,5 +140,6 @@ module.exports = {
     getDate,
     formatDate,
     createEmbed,
+    createFutureEmbed,
     createZodiacEmbed
 }

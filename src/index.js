@@ -53,15 +53,24 @@ const almanax = (message, sentence) => {
         message.channel.send("Tu as oublié de me donner la date de l'almanax.");
         return;
     } else {
+        const epur = ([x, y, ...arr]) => arr;
         const argument = Utils.formatDate(sentence.slice(2, sentence.length));
         const epured_argument = argument.toLowerCase();
         const almanax = Utils.getDate(epured_argument)[0];
         if (!almanax) {
-            message.channel.send("Je n'ai pas compris cette date.")
-            return
+            const param = epur(sentence).join('');
+            if (param.startsWith('+')) {
+                const required_almanax = Number(param.slice(1, param.length));
+                const embed = Utils.createFutureEmbed(required_almanax);
+                message.channel.send(embed);
+            } else {
+                message.channel.send("Je n'ai pas compris cette date.")
+                return
+            }
+        } else {
+            const embed = Utils.createEmbed(almanax, epured_argument)
+            message.channel.send(embed);
         }
-        const embed = Utils.createEmbed(almanax, epured_argument)
-        message.channel.send(embed);
     }
 }
 
@@ -106,9 +115,9 @@ bot.on('ready', function () {
     console.log("[BOOT] Bip Boop, Bip Boop, Me voila pret !")
     console.log("Actuellement connécté sur les serveurs:")
     try {
-    bot.guilds.forEach((guild) => {
-        console.log(" - " + guild.name)
-    })
+        bot.guilds.forEach((guild) => {
+            console.log(" - " + guild.name)
+        })
         bot.user.setActivity("le Krosmoz", {type: "WATCHING"})
     } catch {
         return;
