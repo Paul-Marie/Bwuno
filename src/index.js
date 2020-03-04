@@ -1,6 +1,8 @@
 const Sentence = require('../resources/sentence.js');
 const Utils = require('../src/utils.js');
-const Discord = require('discord.js')
+const Discord = require('discord.js');
+const fs = require('fs');
+
 const bot = new Discord.Client()
 
 let empty_iterator = 0;
@@ -104,6 +106,46 @@ const type = (message, sentence) => {
         message.channel.send("Hmmm, Il semble que ce type n'existe pas. Est il bien présent dans la liste des types d'Almanax valides? (`!bruno list`).");
 }
 
+//
+const auto = (message, sentence) => {
+    if (sentence.length <= 2)
+        return message.channel.send("Veut tu l'activé ou le desactivé ?");
+    const argument = sentence.slice(2, sentence.length).join(" ");
+    const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    const guild = message.guild.id;
+    const channel = message.channel.id;
+    if (!message.member.guild.me.hasPermission('ADMINISTRATOR'))
+        return message.channel.send("Tu n'as pas les permissions :sob:");
+    if (epured_argument === "true" || epured_argument === "on" || epured_argument === "1" || epured_argument === "start" || epured_argument == "activate") {
+        fs.readFile("./resources/auto_channel_id", "utf-8", (err, data) => {
+            if (data.includes(guild)) {
+                const name = message.guild.channels.map(chan => {
+                    if (chan.id == channel) return chan.name;
+                }).filter(item => item !== undefined)[0];
+                return message.channel.send(`Oups, il est déja activé dans le salon \`${name}\``);
+            }
+            fs.writeFile("./resources/auto_channel_id", `${data}${guild}: ${channel}\n`, (err) => {});
+            message.channel.send(`J'enverrais dorrenavant les almanax du jours dans ce salon a minuit !`);
+        });
+    } else if (epured_argument === "false" || epured_argument === "off" || epured_argument === "0" || epured_argument === "stop" || epured_argument === "desactivate") {
+        fs.readFile("./resources/auto_channel_id", "utf-8", (err, data) => {
+            if (!data.includes(guild))
+                return message.channel.send(`Oupsi, le mode automatique n'est pas activé sur ce serveur`);
+            else if (!data.includes(channel))
+                return message.channel.send(`Il faut etre dans le salon textuel ou vous avez activé le mode automatique pour le désactivé`);
+            const removeLine = (buff) => {
+                for (const line of buff)
+                    if (line === `${guild}: ${channel}`)
+                        return data.replace(`${line}\n`, '');
+            }
+            fs.writeFile("./resources/auto_channel_id", removeLine(data.split("\n")), (err) => {});
+            message.channel.send(`Vous ne recevrez plus les almanax du jour a minuit dans ce salon !`);
+        });
+    } else
+        // utilise start / stop / 1 / 0 / true / false / on / off / activate / desactivate
+        return message.channel.send("ptdr t nûl.");
+}
+
 // 
 const list_type = (message, sentence) => {
     const list = Object.keys(Sentence.type_message).join("\n");
@@ -126,6 +168,7 @@ bot.on('ready', function () {
 
 bot.on("guildCreate", guild => {
     console.log(`J'ai rejoins le serveur ${guild.name} (${guild.id}). Il a ${guild.memberCount} membres!`);
+    //!\\ guild.defaultChannel //!\\
     let channelID;
     let channels = guild.channels;
     channelLoop:
@@ -159,7 +202,7 @@ bot.on('message', message => {
             return;
         }
         empty_iterator = 0;
-        const functions = { "help": help, "item": item, "almanax": almanax, "zodiac": zodiac, "type": type, "list": list_type };
+        const functions = { "help": help, "item": item, "almanax": almanax, "zodiac": zodiac, "type": type, "list": list_type, "auto": auto };
         try {
             functions[sentence[1]](message, sentence)
             failure_iterator = 0;

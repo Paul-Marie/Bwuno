@@ -103,7 +103,6 @@ const createEmbed = (almanax) => {
 const createFutureEmbed = (required_almanax) => {
     const current_date = moments();
     // TODO replace '25' by the maximum `field` value
-    
     if (required_almanax > 25)
         required_almanax = 25;
      if (required_almanax <= 0)
