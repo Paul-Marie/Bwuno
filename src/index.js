@@ -14,7 +14,7 @@ const help = (message, sentence) => {
     message.channel.send({ embed });
 }
 
-const item = (message, sentence) => {
+const item = async (message, sentence) => {
     if (sentence.length === 2) {
         message.channel.send("Il faut que tu me précises quel item tu souhaites rechercher parmis la liste des offrandes.");
         return
@@ -27,7 +27,7 @@ const item = (message, sentence) => {
             return
         }
         for (const almanax of result) {
-            const embed = Utils.createEmbed(almanax)
+            const embed = await Utils.createEmbed(almanax)
             message.channel.send(embed);
         }
     }
@@ -50,7 +50,7 @@ const zodiac = (message, sentence) => {
     }
 }
 
-const almanax = (message, sentence) => {
+const almanax = async (message, sentence) => {
     if (sentence.length === 2) {
         message.channel.send("Tu as oublié de me donner la date de l'almanax.");
         return;
@@ -70,7 +70,7 @@ const almanax = (message, sentence) => {
                 return
             }
         } else {
-            const embed = Utils.createEmbed(almanax, epured_argument)
+            const embed = await Utils.createEmbed(almanax, epured_argument)
             message.channel.send(embed);
         }
     }

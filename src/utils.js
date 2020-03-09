@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const moments = require('moment');
+const request = require('async-request');
 const fs = require('fs');
 
 moments.locale('fr');
@@ -19,6 +20,32 @@ const formatDate = (sentence) => {
     })).map(toto => {
         return (toto.length === 1) ? "0" + toto : toto;
     }).join(" ");
+}
+
+//
+const getPrice = async (item_id, server_id = 2) => {
+    try {
+        const url = "https://api.dt-price.com/value";
+        const response = await request(`${url}/${server_id}/${item_id}`);//, (err, res, body) => {
+        if (response.statusCode === 200) {
+            const data = JSON.parse(response.body);
+            const current_date = moments().format("YYYY-MM-DD");
+            const date = moments().subtract(7, 'd').format("YYYY-MM-DD");
+            const getAverageOfDay = (array, date) => {
+                const days = array.filter(hour => { return hour.date.includes(date) });
+                const result = days.map(day => {
+                    return (day.unit + (day.decade / 10) + (day.hundred / 100)) / 3;
+                });
+                return (result.reduce((a,b) => a + b, 0) / result.length).toFixed(2);
+            };
+            const current_price = parseFloat(getAverageOfDay(data, current_date));
+            const week_price = parseFloat(getAverageOfDay(data, date));
+            return ((current_price - week_price) / week_price * 100).toFixed(2);
+        }
+    } catch (err) {
+        console.log(err);
+        return 0;
+    }
 }
 
 //
@@ -78,8 +105,9 @@ const getRemainingDay = (almanax_date) => {
 }
 
 // URGENT
-const createEmbed = (almanax) => {
+const createEmbed = async (almanax) => {
     const remaining_days = getRemainingDay(almanax.Date);
+    const average_price = await getPrice(almanax.URL.substring(62).split('-')[0]);
     const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
@@ -91,7 +119,7 @@ const createEmbed = (almanax) => {
             (remaining_days) <= 1 ? (
                 (remaining_days == 1) ? "**demain**" : "**aujourd'hui**"
             ) : `dans **${remaining_days}** jours`), true)
-        .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + 0 + "%** comparé à la semaine derniere.", true)
+        .addField("💵 Prix:", `Le prix moyen de l'offrande est actuellement de **${average_price}%** comparé à la semaine derniere.`, true)
     if (almanax.Event_Name) {
         embed.addField("🎉 Event: **" + almanax.Event_Name + "**", almanax.Event_Description)
         embed.setImage(almanax.Event_Image)
