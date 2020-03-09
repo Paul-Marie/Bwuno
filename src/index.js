@@ -114,8 +114,10 @@ const auto = (message, sentence) => {
     const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const guild = message.guild.id;
     const channel = message.channel.id;
-    if (!message.member.guild.me.hasPermission('ADMINISTRATOR'))
-        return message.channel.send("Tu n'as pas les permissions :sob:");
+    if (!message.member.guild.me.hasPermission('ADMINISTRATOR') &&
+	!message.member.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS') &&
+	!message.member.guild.me.hasPermission('MANAGE_MESSAGES'))
+        return message.channel.send("Tu n'as pas les permissions :sob:, Demande à un admin du serveur d'executer la commande pour toi :smile:");
     if (epured_argument === "true" || epured_argument === "on" || epured_argument === "1" || epured_argument === "start" || epured_argument == "activate") {
         fs.readFile("./resources/auto_channel_id", "utf-8", (err, data) => {
             if (data.includes(guild)) {
