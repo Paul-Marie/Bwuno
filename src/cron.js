@@ -9,7 +9,7 @@ client.login("NjQyOTM1NDYzMDQ4NjQyNTcw.Xchc6g.Rp4_cHb9aXFBf4C_MIrPyZJBuqA").then
     const channels = [];
     const date = moments().tz("Europe/Paris");
     const almanax = Utils.getDate(date.format("DD/MM"))[0];
-    const embed = Utils.createEmbed(almanax);
+    const embed = await Utils.createEmbed(almanax);
     await fs.readFile("./resources/auto_channel_id", "utf-8", async (err, data) => {
         const buff = data.split("\n");
         for (const line of buff) {
