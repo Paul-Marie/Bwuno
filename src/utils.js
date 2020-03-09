@@ -29,7 +29,7 @@ const getPrice = async (item_id, server_id = 2) => {
         const response = await request(`${url}/${server_id}/${item_id}`);//, (err, res, body) => {
         if (response.statusCode === 200) {
             const data = JSON.parse(response.body);
-            const current_date = moments().format("YYYY-MM-DD");
+            const current_date = moments().subtract(1, 'd').format("YYYY-MM-DD");
             const date = moments().subtract(7, 'd').format("YYYY-MM-DD");
             const getAverageOfDay = (array, date) => {
                 const days = array.filter(hour => { return hour.date.includes(date) });
@@ -119,7 +119,9 @@ const createEmbed = async (almanax) => {
             (remaining_days) <= 1 ? (
                 (remaining_days == 1) ? "**demain**" : "**aujourd'hui**"
             ) : `dans **${remaining_days}** jours`), true)
-        .addField("💵 Prix:", `Le prix moyen de l'offrande est actuellement de **${average_price}%** comparé à la semaine derniere.`, true)
+          .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + (
+	      (average_price >= 0)
+		    ? "+" : "") + `${average_price}%** comparé à la semaine derniere.`, true)
     if (almanax.Event_Name) {
         embed.addField("🎉 Event: **" + almanax.Event_Name + "**", almanax.Event_Description)
         embed.setImage(almanax.Event_Image)
