@@ -204,7 +204,7 @@ bot.on('message', message => {
         empty_iterator = 0;
         const functions = { "help": help, "item": item, "almanax": almanax, "zodiac": zodiac, "type": type, "list": list_type, "auto": auto };
         try {
-            functions[sentence[1]](message, sentence)
+            functions[sentence[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence)
             failure_iterator = 0;
         } catch {
             console.error("[ERROR (INVALID_COMMAND)] Command: \"" + sentence[1] + "\".");
