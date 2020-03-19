@@ -26,10 +26,13 @@ const item = async (message, sentence) => {
             message.channel.send("Malgré mes recherches, je n'ai pas trouvé cet item dans la liste des offrandes... Peut etre l'as tu mal orthographié? (Vérifie l'orthographe sur l'encyclopédie du site officiel)")
             return
         }
-        for (const almanax of result) {
-            const embed = await Utils.createEmbed(almanax)
-            message.channel.send(embed);
-        }
+        fs.readFile("./resources/auto_channel_id.json", "utf-8", async (err, buffer) => {
+            const data = JSON.parse(buffer)
+            for (const almanax of result) {
+                const embed = await Utils.createEmbed(almanax, data[message.guild.id].server);
+                message.channel.send(embed);
+            }
+        });
     }
 }
 
@@ -70,8 +73,11 @@ const almanax = async (message, sentence) => {
                 return
             }
         } else {
-            const embed = await Utils.createEmbed(almanax, epured_argument)
-            message.channel.send(embed);
+            fs.readFile("./resources/auto_channel_id.json", "utf-8", async (err, buffer) => {
+                const data = JSON.parse(buffer)
+                const embed = await Utils.createEmbed(almanax, data[message.guild.id].server);
+                message.channel.send(embed);
+            });
         }
     }
 }
@@ -141,12 +147,32 @@ const auto = (message, sentence) => {
             //    return message.channel.send(`Il faut etre dans le salon textuel ou vous avez activé le mode automatique pour le désactivé`);
             data[guild].auto_mode = false;
             delete data[guild].channel;
-            fs.writeFile("./resources/auto_channel_id", JSON.stringify(data), (err) => {});
+            fs.writeFile("./resources/auto_channel_id.json", JSON.stringify(data), (err) => {});
             message.channel.send(`Vous ne recevrez plus les almanax du jour a minuit dans ce salon !`);
         });
     } else
         // utilise start / stop / 1 / 0 / true / false / on / off / activate / desactivate
         return message.channel.send("ptdr t nûl.");
+}
+
+//
+const server = (message, sentence) => {
+    if (sentence.length <= 2)
+        return message.channel.send("Precise le serveur (Oshimo, Terra Cogita ou Herdegrize)");
+    const argument = sentence.slice(2, sentence.length).join(" ");
+    const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    const tmp = { "o": "Oshimo", "t": "Terra Cogita", "h": "Herdegrize" };
+    const tmp2 = { "Oshimo": 1, "Terra Cogita": 2, "Herdegrize": 3 };
+    const server = tmp[epured_argument[0]];
+    if (!server)
+        return message.channel.send("Je ne gere malheuresement que les serveurs Oshimo, Terra Cogita et Herdegrize pour le moment.");
+    fs.readFile("./resources/auto_channel_id.json", "utf-8", (err, buffer) => {
+        const guild = message.guild.id;
+        const data = JSON.parse(buffer)
+        data[guild].server = tmp2[server];
+        fs.writeFile("./resources/auto_channel_id.json", JSON.stringify(data), (err) => {});
+        return message.channel.send(`J'enverrais dorrenavant les almanax du jours dans ce salon a minuit !`);
+    });
 }
 
 // 
@@ -205,7 +231,7 @@ bot.on('message', message => {
             return;
         }
         empty_iterator = 0;
-        const functions = { "help": help, "item": item, "almanax": almanax, "zodiac": zodiac, "type": type, "list": list_type, "auto": auto, "server": server, "config": config };
+        const functions = { "help": help, "item": item, "almanax": almanax, "zodiac": zodiac, "type": type, "list": list_type, "auto": auto, "server": server };
         try {
             functions[sentence[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence)
             failure_iterator = 0;

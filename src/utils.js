@@ -108,9 +108,9 @@ const getRemainingDay = (almanax_date) => {
 }
 
 // URGENT
-const createEmbed = async (almanax) => {
+const createEmbed = async (almanax, id) => {
     const remaining_days = getRemainingDay(almanax.Date);
-    const average_price = await getPrice(almanax.URL.substring(62).split('-')[0]);
+    const average_price = await getPrice(almanax.URL.substring(62).split('-')[0], id);
     const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
