@@ -26,7 +26,7 @@ const item = async (message, sentence) => {
             message.channel.send("Malgré mes recherches, je n'ai pas trouvé cet item dans la liste des offrandes... Peut etre l'as tu mal orthographié? (Vérifie l'orthographe sur l'encyclopédie du site officiel)")
             return
         }
-        fs.readFile("./resources/auto_channel_id.json", "utf-8", async (err, buffer) => {
+        fs.readFile("./resources/config.json", "utf-8", async (err, buffer) => {
             const data = JSON.parse(buffer)
             for (const almanax of result) {
                 const embed = await Utils.createEmbed(almanax, data[message.guild.id].server);
@@ -73,7 +73,7 @@ const almanax = async (message, sentence) => {
                 return
             }
         } else {
-            fs.readFile("./resources/auto_channel_id.json", "utf-8", async (err, buffer) => {
+            fs.readFile("./resources/config.json", "utf-8", async (err, buffer) => {
                 const data = JSON.parse(buffer)
                 const embed = await Utils.createEmbed(almanax, data[message.guild.id].server);
                 message.channel.send(embed);
@@ -125,7 +125,7 @@ const auto = (message, sentence) => {
 	      message.member.guild.me.hasPermission('MANAGE_MESSAGES')))
         return message.channel.send("Tu n'as pas les permissions :sob:, Demande à un admin du serveur d'executer la commande pour toi :smile:");
     if (epured_argument === "true" || epured_argument === "on" || epured_argument === "1" || epured_argument === "start" || epured_argument == "activate") {
-        fs.readFile("./resources/auto_channel_id.json", "utf-8", (err, buffer) => {
+        fs.readFile("./resources/config.json", "utf-8", (err, buffer) => {
             const data = JSON.parse(buffer)
             if (data[guild].auto_mode) {
                 const name = message.guild.channels.map(chan => {
@@ -135,11 +135,11 @@ const auto = (message, sentence) => {
             }
             data[guild].auto_mode = true;
             data[guild].channel = channel;
-            fs.writeFile("./resources/auto_channel_id.json", JSON.stringify(data), (err) => {});
+            fs.writeFile("./resources/config.json", JSON.stringify(data), (err) => {});
             return message.channel.send(`J'enverrais dorrenavant les almanax du jours dans ce salon a minuit !`);
         });
     } else if (epured_argument === "false" || epured_argument === "off" || epured_argument === "0" || epured_argument === "stop" || epured_argument === "desactivate") {
-        fs.readFile("./resources/auto_channel_id.json", "utf-8", (err, buffer) => {
+        fs.readFile("./resources/config.json", "utf-8", (err, buffer) => {
             const data = JSON.parse(buffer);
             if (!data[guild].auto_mode)
                 return message.channel.send(`Oupsi, le mode automatique n'est pas activé sur ce serveur`);
@@ -147,7 +147,7 @@ const auto = (message, sentence) => {
             //    return message.channel.send(`Il faut etre dans le salon textuel ou vous avez activé le mode automatique pour le désactivé`);
             data[guild].auto_mode = false;
             delete data[guild].channel;
-            fs.writeFile("./resources/auto_channel_id.json", JSON.stringify(data), (err) => {});
+            fs.writeFile("./resources/config.json", JSON.stringify(data), (err) => {});
             message.channel.send(`Vous ne recevrez plus les almanax du jour a minuit dans ce salon !`);
         });
     } else
@@ -156,7 +156,7 @@ const auto = (message, sentence) => {
 }
 
 //
-const server = (message, sentence) => {
+const server = async (message, sentence) => {
     if (sentence.length <= 2)
         return message.channel.send("Precise le serveur (Oshimo, Terra Cogita ou Herdegrize)");
     const argument = sentence.slice(2, sentence.length).join(" ");
@@ -166,13 +166,16 @@ const server = (message, sentence) => {
     const server = tmp[epured_argument[0]];
     if (!server)
         return message.channel.send("Je ne gere malheuresement que les serveurs Oshimo, Terra Cogita et Herdegrize pour le moment.");
-    fs.readFile("./resources/auto_channel_id.json", "utf-8", (err, buffer) => {
+    await fs.readFile("./resources/config.json", "utf-8", async (err, buffer) => {
         const guild = message.guild.id;
         const data = JSON.parse(buffer)
         data[guild].server = tmp2[server];
-        fs.writeFile("./resources/auto_channel_id.json", JSON.stringify(data), (err) => {});
-        return message.channel.send(`J'enverrais dorrenavant les almanax du jours dans ce salon a minuit !`);
+        console.log("tata");
+        await fs.writeFile("./resources/config.json", JSON.stringify(data), (err) => {});
+        console.log("titi");
     });
+    console.log("toto");
+    return message.channel.send(`Je vous communiquerais maintenant l'évolution des prix des offrandes du serveur \`${server}\``);
 }
 
 // 
