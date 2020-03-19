@@ -29,7 +29,8 @@ const getPrice = async (item_id, server_id = 2) => {
         const response = await request(`${url}/${server_id}/${item_id}`);//, (err, res, body) => {
         if (response.statusCode === 200) {
             const data = JSON.parse(response.body);
-            const current_date = moments().subtract(1, 'd').format("YYYY-MM-DD");
+            const current_date = moments();
+                  //.subtract(1, 'd').format("YYYY-MM-DD");
             const date = moments().subtract(7, 'd').format("YYYY-MM-DD");
             const getAverageOfDay = (array, date) => {
                 const days = array.filter(hour => { return hour.date.includes(date) });
@@ -38,7 +39,9 @@ const getPrice = async (item_id, server_id = 2) => {
                 });
                 return (result.reduce((a,b) => a + b, 0) / result.length).toFixed(2);
             };
-            const current_price = parseFloat(getAverageOfDay(data, current_date));
+            const tmp = parseFloat(getAverageOfDay(data, current_date.format("YYYY-MM-DD")));
+            console.log(tmp);
+            const current_price = (tmp) ? tmp : parseFloat(getAverageOfDay(data, current_date.subtract(1, 'd').format("YYYY-MM-DD")));
             const week_price = parseFloat(getAverageOfDay(data, date));
             return ((current_price - week_price) / week_price * 100).toFixed(2);
         }
@@ -105,9 +108,9 @@ const getRemainingDay = (almanax_date) => {
 }
 
 // URGENT
-const createEmbed = async (almanax) => {
+const createEmbed = async (almanax, id) => {
     const remaining_days = getRemainingDay(almanax.Date);
-    const average_price = await getPrice(almanax.URL.substring(62).split('-')[0]);
+    const average_price = await getPrice(almanax.URL.substring(62).split('-')[0], id);
     const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
