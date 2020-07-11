@@ -46,7 +46,7 @@ if __name__ == "__main__":
                 almanax[date] = {
                     "Meryde_Name": meryde_name.p.text[19:],
                     "Meryde_Description": meryde_desc.split("\n")[1].strip(),
-                    "Meryde_Image": meryde_image[10:][::-1][3:][::-1],
+                    "Meryde_Image": meryde_image[10:][::-1][9:][::-1],
                     "Bonus_Description": remove_tags(bonus_description),
                     "Bonus_Type": bonus_type,
                     "Offrande_Name": offrande[12:][::-1][39:][::-1],
@@ -58,7 +58,7 @@ if __name__ == "__main__":
                 if event:
                     almanax[date]["Event_Name"] = event.text.strip().split("\n")[0].strip()
                     almanax[date]["Event_Description"] = event.text.strip().split("\n")[1].strip()
-                    almanax[date]["Event_Image"] = str(event.img)[10:][::-1][3:][::-1]
+                    almanax[date]["Event_Image"] = str(event.img)[10:][::-1][9:][::-1]
                 #for day in almanax.items():
                 #    for key in day[1].keys():
                 #        print("\t{}: [{}]".format(key, day[1][key]));
@@ -74,4 +74,4 @@ if __name__ == "__main__":
 sorted(almanax.items())
 print(dumps(dict(almanax.items()), ensure_ascii=False))
 """
-print(dumps(almanax, ensure_ascii=False))
+print(dumps(almanax, indent=2, sort_keys=False, ensure_ascii=False))
