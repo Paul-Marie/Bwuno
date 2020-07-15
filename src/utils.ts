@@ -6,7 +6,7 @@ const fs = require('fs');
 moments.locale('fr');
 
 //
-const formatDate = (sentence) => {
+export const formatDate = (sentence) => {
     return ((sentence.map(elem => {
         return elem.split("-").map(item => {
             return (item.length === 1) ? "0" + item : item;
@@ -23,7 +23,7 @@ const formatDate = (sentence) => {
 }
 
 //
-const getPrice = async (item_id, server_id = 2) => {
+export const getPrice = async (item_id, server_id = 2) => {
     try {
         const url = "https://api.dt-price.com/value";
         const response = await request(`${url}/${server_id}/${item_id}`);//, (err, res, body) => {
@@ -52,7 +52,7 @@ const getPrice = async (item_id, server_id = 2) => {
 }
 
 //
-const getAlmanax = (bonus_types) => {
+export const getAlmanax = (bonus_types) => {
     const file = fs.readFileSync('./resources/year.json', "utf8")
     const object = JSON.parse(file);
     const result = Object.keys(object).map(key => {
@@ -67,7 +67,7 @@ const getAlmanax = (bonus_types) => {
 }
 
 //
-const getList = (item_name) => {
+export const getList = (item_name) => {
     const file = fs.readFileSync('./resources/year.json', "utf8")
     const object = JSON.parse(file);
     const result = Object.keys(object).map(key => {
@@ -81,7 +81,7 @@ const getList = (item_name) => {
 }
 
 //
-const getDate = (requested_date) => {
+export const getDate = (requested_date) => {
     const file = fs.readFileSync('./resources/year.json', "utf8")
     const object = JSON.parse(file);
     const accepted_format = ["DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
@@ -97,7 +97,7 @@ const getDate = (requested_date) => {
 }
 
 //
-const getRemainingDay = (almanax_date) => {
+export const getRemainingDay = (almanax_date) => {
     const current_date = new Date();
     const date = moments([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
     let searched_date = moments([current_date.getFullYear(), Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
@@ -107,8 +107,8 @@ const getRemainingDay = (almanax_date) => {
     return Math.abs(Math.trunc(diff));
 }
 
-// URGENT
-const createEmbed = async (almanax, id) => {
+// TODO URGENT
+export const createEmbed = async (almanax, id) => {
     const remaining_days = getRemainingDay(almanax.Date);
     const average_price = 0;//await getPrice(almanax.URL.substring(62).split('-')[0], id);
     almanax.URL = 0;
@@ -134,7 +134,7 @@ const createEmbed = async (almanax, id) => {
 }
 
 // 
-const createFutureEmbed = (required_almanax) => {
+export const createFutureEmbed = (required_almanax) => {
     const current_date = moments();
     // TODO replace '25' by the maximum `field` value
     if (required_almanax > 25)
@@ -144,7 +144,7 @@ const createFutureEmbed = (required_almanax) => {
     const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("Almanax du **" + current_date.format("DD/MM") + "** au **" + moments().add(required_almanax, 'days').format("DD/MM") + "**")
-    for (i = 0; i < required_almanax; i++) {
+    for (let i = 0; i < required_almanax; i++) {
         const date = current_date.add(1, 'days');
         const almanax = getDate(date.format("DD/MM"))[0];
         embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description}\n`, true);
@@ -153,7 +153,7 @@ const createFutureEmbed = (required_almanax) => {
 }
 
 //
-const createZodiacEmbed = (almanax, zodiac_list) => {
+export const createZodiacEmbed = (almanax, zodiac_list) => {
     const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Zodiac du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
@@ -165,14 +165,4 @@ const createZodiacEmbed = (almanax, zodiac_list) => {
         embed.setImage(almanax.Event_Image)
     }
     return embed;
-}
-
-module.exports = {
-    getAlmanax,
-    getList,
-    getDate,
-    formatDate,
-    createEmbed,
-    createFutureEmbed,
-    createZodiacEmbed
 }

@@ -1,20 +1,14 @@
 const Sentence = require('../resources/sentence.js');
 const Utils = require('../src/utils.js');
-const Discord = require('discord.js');
 const fs = require('fs');
-
-const bot = new Discord.Client()
-
-let empty_iterator = 0;
-let failure_iterator = 0;
-
+import Message, { Message, Guild, Channel } from 'discord.js';
 // 
-const help = (message, sentence) => {
+export const help = (message: Message, sentence: String) => {
     const embed = Sentence.help_message;
     message.channel.send({ embed });
 }
 
-const item = async (message, sentence) => {
+export const item = async (message: Message, sentence: String) => {
     if (sentence.length === 2) {
         message.channel.send("Il faut que tu me précises quel item tu souhaites rechercher parmis la liste des offrandes.");
         return
@@ -26,7 +20,7 @@ const item = async (message, sentence) => {
             message.channel.send("Malgré mes recherches, je n'ai pas trouvé cet item dans la liste des offrandes... Peut etre l'as tu mal orthographié? (Vérifie l'orthographe sur l'encyclopédie du site officiel)")
             return
         }
-        fs.readFile("./resources/config.json", "utf-8", async (err, buffer) => {
+        fs.readFile("./resources/config.json", "utf-8", async (err: Error, buffer: any) => {
             const data = JSON.parse(buffer)
             for (const almanax of result) {
                 const embed = await Utils.createEmbed(almanax, data[message.guild.id].server);
@@ -36,7 +30,7 @@ const item = async (message, sentence) => {
     }
 }
 
-const zodiac = (message, sentence) => {
+export const zodiac = (message: Message, sentence: String) => {
     if (sentence.length === 2) {
         message.channel.send("Donne moi ta date d'anniversaire pour que je te revele ton signe du zodiac!");
         return;
@@ -53,7 +47,7 @@ const zodiac = (message, sentence) => {
     }
 }
 
-const almanax = async (message, sentence) => {
+export const almanax = async (message: Message, sentence: String) => {
     if (sentence.length === 2) {
         message.channel.send("Tu as oublié de me donner la date de l'almanax.");
         return;
@@ -73,7 +67,7 @@ const almanax = async (message, sentence) => {
                 return
             }
         } else {
-            fs.readFile("./resources/config.json", "utf-8", async (err, buffer) => {
+            fs.readFile("./resources/config.json", "utf-8", async (err: Error, buffer: any) => {
                 const data = JSON.parse(buffer)
                 const embed = await Utils.createEmbed(almanax, data[message.guild.id].server);
                 message.channel.send(embed);
@@ -83,7 +77,7 @@ const almanax = async (message, sentence) => {
 }
 
 // 
-const type = (message, sentence) => {
+export const type = (message: Message, sentence: String) => {
     if (sentence.length === 2) {
         message.channel.send("Il faut que tu me précises quel type de bonus Almanax tu recherches, utilise `!bruno list` pour le connaitre.");
         return;
@@ -113,7 +107,7 @@ const type = (message, sentence) => {
 }
 
 //
-const auto = (message, sentence) => {
+export const auto = (message: Message, sentence: String) => {
     if (sentence.length <= 2)
         return message.channel.send("Veut tu l'activé ou le desactivé ?");
     const argument = sentence.slice(2, sentence.length).join(" ");
@@ -125,7 +119,7 @@ const auto = (message, sentence) => {
 	      message.member.guild.me.hasPermission('MANAGE_MESSAGES')))
         return message.channel.send("Tu n'as pas les permissions :sob:, Demande à un admin du serveur d'executer la commande pour toi :smile:");
     if (epured_argument === "true" || epured_argument === "on" || epured_argument === "1" || epured_argument === "start" || epured_argument == "activate") {
-        fs.readFile("./resources/config.json", "utf-8", (err, buffer) => {
+        fs.readFile("./resources/config.json", "utf-8", (err: Error, buffer: any) => {
             const data = JSON.parse(buffer)
             if (data[guild].auto_mode) {
                 const name = message.guild.channels.map(chan => {
@@ -135,11 +129,11 @@ const auto = (message, sentence) => {
             }
             data[guild].auto_mode = true;
             data[guild].channel = channel;
-            fs.writeFile("./resources/config.json", JSON.stringify(data), (err) => {});
+            fs.writeFile("./resources/config.json", JSON.stringify(data), (err: Error) => {});
             return message.channel.send(`J'enverrais dorrenavant les almanax du jours dans ce salon a minuit !`);
         });
     } else if (epured_argument === "false" || epured_argument === "off" || epured_argument === "0" || epured_argument === "stop" || epured_argument === "desactivate") {
-        fs.readFile("./resources/config.json", "utf-8", (err, buffer) => {
+        fs.readFile("./resources/config.json", "utf-8", (err: any, buffer: any) => {
             const data = JSON.parse(buffer);
             if (!data[guild].auto_mode)
                 return message.channel.send(`Oupsi, le mode automatique n'est pas activé sur ce serveur`);
@@ -156,7 +150,7 @@ const auto = (message, sentence) => {
 }
 
 //
-const server = async (message, sentence) => {
+export const server = async (message: Message, sentence: String) => {
     if (sentence.length <= 2)
         return message.channel.send("Precise le serveur (Oshimo, Terra Cogita ou Herdegrize)");
     const argument = sentence.slice(2, sentence.length).join(" ");
@@ -179,74 +173,7 @@ const server = async (message, sentence) => {
 }
 
 // 
-const list_type = (message, sentence) => {
+export const list_type = (message: Message, sentence: String) => {
     const list = Object.keys(Sentence.type_message).join("\n");
     message.channel.send("__Voici les différents types d'almanax existants:__\n" + list);
 }
-
-//
-bot.on('ready', function () {
-    console.log("[BOOT] Bip Boop, Bip Boop, Me voila pret !")
-    console.log("Actuellement connécté sur les serveurs:")
-    try {
-        bot.guilds.forEach((guild) => {
-            console.log(" - " + guild.name)
-        })
-        bot.user.setActivity("le Krosmoz", {type: "WATCHING"})
-    } catch {
-        return;
-    }
-});
-
-bot.on("guildCreate", guild => {
-    console.log(`J'ai rejoins le serveur ${guild.name} (${guild.id}). Il a ${guild.memberCount} membres!`);
-    //!\\ guild.defaultChannel //!\\
-    let channelID;
-    let channels = guild.channels;
-    channelLoop:
-    for (let c of channels) {
-        let channelType = c[1].type;
-        if (channelType === "text") {
-            channelID = c[0];
-            break channelLoop;
-        }
-    }
-    let channel = bot.channels.get(guild.systemChannelID || channelID);
-    try {
-        channel.send(`Salut ! Moi c'est Bruno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple. J'ai été conçu par les créateurs de DT-Price.\nQue dirais tu d'un \`!bruno help\` pour commencer?`);
-    } catch {
-        return;
-    }
-});
-
-// 
-bot.on('message', message => {
-    if (message.content.toLowerCase().startsWith("!bruno")) {
-        const author = message.author.username + "#" + message.author.discriminator;
-        const sentence = message.content.split(" ");
-        console.log("[MESSAGE (" + author + ")] " + message.content);
-        if (sentence.length === 1) {
-            if (empty_iterator <= 3 && failure_iterator <= 4) {
-                message.channel.send(Sentence.empty_message[empty_iterator]);
-                empty_iterator += 1;
-            } else
-                failure_iterator = 5;
-            return;
-        }
-        empty_iterator = 0;
-        const functions = { "help": help, "item": item, "almanax": almanax, "zodiac": zodiac, "type": type, "list": list_type, "auto": auto, "server": server };
-        try {
-            functions[sentence[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence)
-            failure_iterator = 0;
-        } catch {
-            console.error("[ERROR (INVALID_COMMAND)] Command: \"" + sentence[1] + "\".");
-            if (failure_iterator <= 4) {
-                message.channel.send(Sentence.failure_message[failure_iterator]);
-                failure_iterator += 1;
-            } else
-                empty_iterator = 4;
-        }
-    }
-});
-
-bot.login("NjQyOTM1NDYzMDQ4NjQyNTcw.Xchc6g.Rp4_cHb9aXFBf4C_MIrPyZJBuqA");
