@@ -1,6 +1,4 @@
-//const Discord = require('discord.js');
 import * as discord from 'discord.js';
-import { GuildChannel, Collection } from 'discord.js';
 import * as commands from "./commands/";
 import Server from "./models/server";
 
