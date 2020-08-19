@@ -42,7 +42,7 @@ bot.on("guildCreate", guild => {
 
 // 
 bot.on('message', async (message) => {
-    if (message.author.bot)
+    if (message.guild || message.author.bot)
         return;
     const config: any = await Server.findOne({ identifier: message.guild.id });
     if (message.content.toLowerCase().startsWith(config.prefix)) {
@@ -56,7 +56,7 @@ bot.on('message', async (message) => {
         };
         try {
             functions[sentence[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence, config);
-        } catch {
+        } catch (err) {
             console.log(`INVALID_COMMAND: ${sentence[0]}`);
             message.channel.send(`Commande \`${sentence[0]}\` introuvable. Essaye \`${config.prefix}help\`.`);
         }
