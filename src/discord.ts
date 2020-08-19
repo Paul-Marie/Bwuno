@@ -42,13 +42,14 @@ bot.on("guildCreate", guild => {
 
 // 
 bot.on('message', async (message) => {
-    if (message.guild || message.author.bot)
+    if (!message.guild || message.author.bot)
         return;
     const config: any = await Server.findOne({ identifier: message.guild.id });
     if (message.content.toLowerCase().startsWith(config.prefix)) {
         const author = message.author.username + "#" + message.author.discriminator;
         const response: string = message.content.replace(config.prefix, '');
         const sentence = response.split(" ");
+        console.log(`${author}: ${message.content}`);
         const functions = { 
             "help": commands.help, "item": commands.item, "almanax": commands.almanax,
             "zodiac": commands.zodiac, "type": commands.type, "list": commands.list,

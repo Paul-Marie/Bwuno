@@ -19,7 +19,7 @@ const help_message = {
     color: 0x4E4EC8,
     thumbnail: { url: "https://cdn.discordapp.com/attachments/643158383104491545/643462146696413184/aide.png" },
     author: {
-        name: "Bruno de DT-Price",
+        name: "Bruno",
         icon_url: "https://cdn.discordapp.com/avatars/642935463048642570/39d03bf8899872de9ead0e871f6cfda6.png"
     },
     fields: [{
