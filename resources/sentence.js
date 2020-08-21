@@ -114,6 +114,8 @@ const type_message = {
     "Challenge": ['Challenge supplémentaire', 'Challenges augmentés'],
     "Chasseur": ['Gibier abondant'],
     "Craft": ['Objets de qualité', "Économie d'ingrédients", 'Fabrication intensive', 'Fabrique Féérique', 'Bonta et Brâkmar'],
+    "Eco": ["Économie d'ingrédients"],
+    "Economie": ["Économie d'ingrédients"],
     "Economie d'Ingredients": ["Économie d'ingrédients"],
     "Elevage": ['Élevage de Dragodindes'],
     "Etoile": ['Apparition des étoiles', 'Étoiles défilantes'],

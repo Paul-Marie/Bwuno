@@ -58,7 +58,7 @@ export const getAlmanax = (bonus_types) => {
     const result = Object.keys(object).map(key => {
         if (bonus_types.indexOf(object[key].Bonus_Type) >= 0) {
             const date = moments(key, "YYYY-MM-DD", 'fr');
-            return "**" + date.format("DD MMMM") + "**: " + object[key].Bonus_Description + "\n";
+            return `**${date.format("DD MMMM")}**: ${object[key].Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`;
         }
     }).filter(item => {
         return item !== undefined;
