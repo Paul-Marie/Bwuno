@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import Server from "../models/server";
 
 //
-export const auto = async (message: Message, line: Array<string>, config: any) => {
+export const auto = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length > 2)
         return message.channel.send("gneuh");
     const argument: string = (line[1] || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
@@ -25,5 +25,5 @@ export const auto = async (message: Message, line: Array<string>, config: any) =
         await Server.findOneAndUpdate({ identifier: config.identifier }, { auto_mode: false, auto_channel: undefined });
         message.channel.send(`Vous ne recevrez plus les almanax du jour a minuit dans ce salon !`);
     } else
-        return message.channel.send(`erreur`);
+        message.channel.send(`erreur`);
 }

@@ -3,7 +3,7 @@ import { Message, RichEmbed } from 'discord.js';
 
 // TODO to comment
 export const list = (message: Message) => {
-    let type_list: Array<string> = ['', '', ''];
+    let type_list: string[] = ['', '', ''];
     for (const title of Object.keys(sentences.list_message.xp))
         type_list[0] += `🔹 ${title}\n`;
     for (const title of Object.keys(sentences.list_message.job))
