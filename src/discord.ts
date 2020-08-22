@@ -1,17 +1,14 @@
-import * as discord from 'discord.js';
+import { Client, Message, Guild } from 'discord.js';
 import * as commands from "./commands/";
 import Server from "./models/server";
 
-const bot = new discord.Client();
+const bot: Client = new Client();
 
 bot.on('ready', () => {
-    console.log("[BOOT] Bip Boop, Bip Boop, Me voila pret !")
-    console.log("Actuellement connécté sur les serveurs:")
+    console.log("Actuellement connécté sur les serveurs:");
     try {
-        bot.guilds.forEach((guild) => {
-            console.log(" - " + guild.name)
-        })
-        bot.user.setActivity("le Krosmoz", {type: "WATCHING"})
+        bot.guilds.forEach((guild: Guild) => { console.log(" - " + guild.name) });
+        bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
     } catch {
         process.exit(1);
     }
@@ -41,16 +38,16 @@ bot.on("guildCreate", guild => {
 });
 
 // 
-bot.on('message', async (message) => {
+bot.on('message', async (message: Message): Promise<void> => {
     if (!message.guild || message.author.bot)
         return;
     const config: any = await Server.findOne({ identifier: message.guild.id });
     if (message.content.toLowerCase().startsWith(config.prefix)) {
-        const author = message.author.username + "#" + message.author.discriminator;
+        const author: string = message.author.username + "#" + message.author.discriminator;
         const response: string = message.content.replace(config.prefix, '');
-        const sentence = response.split(" ");
+        const sentence: Array<string> = response.split(" ");
         console.log(`${author}: ${message.content}`);
-        const functions = { 
+        const functions: any = { 
             "help": commands.help, "item": commands.item, "almanax": commands.almanax,
             "zodiac": commands.zodiac, "type": commands.type, "list": commands.list,
             "auto": commands.auto, "server": commands.server, "prefix": commands.prefix,
