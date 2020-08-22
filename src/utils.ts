@@ -2,9 +2,9 @@ import { RichEmbed } from 'discord.js';
 import request from 'async-request';
 import * as year from "../resources/year.json";
 import * as settings from "../resources/config.json";
-const moments = require('moment');
+import * as moment from 'moment';
 
-moments.locale('fr');
+moment.locale('fr');
 
 //
 export const formatDate = (sentence: string[]) => {
@@ -30,12 +30,12 @@ export const getPrice = async (item_id: number, server_id: number = 2): Promise<
         const response: any = await request(`${url}/${server_id}/${item_id}`);
         if (response.statusCode === 200) {
             const data: any = JSON.parse(response.body);
-            const current_date = moments();
+            const current_date: moment.Moment = moment();
                   //.subtract(1, 'd').format("YYYY-MM-DD");
-            const date: string = moments().subtract(7, 'd').format("YYYY-MM-DD");
+            const date: string = moment().subtract(7, 'd').format("YYYY-MM-DD");
             const getAverageOfDay = (array: Array<any>, date: string): string => {
-                const days = array.filter((hour) => { return hour.date.includes(date) });
-                const result = days.map((day: any) => {
+                const days: any = array.filter((hour) => { return hour.date.includes(date) });
+                const result: any = days.map((day: any) => {
                     return (day.unit + (day.decade / 10) + (day.hundred / 100)) / 3;
                 });
                 return (result.reduce((a,b) => a + b, 0) / result.length).toFixed(2);
@@ -54,7 +54,7 @@ export const getPrice = async (item_id: number, server_id: number = 2): Promise<
 export const getAlmanax = (bonus_types: string[]) => {
     return Object.keys(year).map(key => {
         if (bonus_types.indexOf(year[key].Bonus_Type) >= 0) {
-            const date = moments(key, "YYYY-MM-DD", 'fr');
+            const date: moment.Moment = moment(key, "YYYY-MM-DD", 'fr');
             return `**${date.format("DD MMMM")}**: ${year[key].Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`;
         }
     }).filter((item: any) => {
@@ -79,7 +79,7 @@ export const getDate = (requested_date: string) => {
                                        "DD/MM/YYYY", "DD-Math.M-YYYY", "DD MM YYYY",
                                        "DD MMM YYYY", "DD MMMM YYYY"];
     return accepted_format.map((format: string) => {
-        const date = moments(requested_date, format, 'fr', true);
+        const date: moment.Moment = moment(requested_date, format, 'fr', true);
         if (date.isValid())
             return year[date.format("2020-MM-DD")];
     }).filter((item: any) => {
@@ -90,11 +90,11 @@ export const getDate = (requested_date: string) => {
 //
 export const getRemainingDay = (almanax_date: string) => {
     const current_date: Date = new Date();
-    const date = moments([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
-    let searched_date = moments([current_date.getFullYear(), Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
+    const date: moment.Moment = moment([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
+    let searched_date: moment.Moment = moment([current_date.getFullYear(), Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
     if (date > searched_date)
-        searched_date = moments([current_date.getFullYear() + 1, Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
-    const diff = date.diff(searched_date, 'days');
+        searched_date = moment([current_date.getFullYear() + 1, Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
+    const diff: number = date.diff(searched_date, 'days');
     return Math.abs(Math.trunc(diff));
 }
 
@@ -105,7 +105,7 @@ export const createEmbed = async (almanax: any, id: number) => {
     almanax.URL = "";
     const embed: RichEmbed = new RichEmbed()
         .setColor('0x4E4EC8')
-        .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
+        .setTitle("**Almanax du " + moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
         .setURL("https://www.krosmoz.com/fr/almanax/" + almanax.Date + "?game=dofustouch")
         .setThumbnail(almanax.Offrande_Image)
         .addField("🙏 Offrande:", "[**" + almanax.Offrande_Name + "**](" + almanax.URL + ") **x" + almanax.Offrande_Quantity + "**")
@@ -126,7 +126,7 @@ export const createEmbed = async (almanax: any, id: number) => {
 
 // 
 export const createFutureEmbed = (required_almanax: number) => {
-    const current_date = moments();
+    const current_date: moment.Moment = moment();
     // TODO replace '25' by the maximum `field` value
     if (required_almanax > 25)
         required_almanax = settings.discord.embed_limit;
@@ -134,9 +134,9 @@ export const createFutureEmbed = (required_almanax: number) => {
         required_almanax = 1;
     const embed: RichEmbed = new RichEmbed()
         .setColor('0x4E4EC8')
-        .setTitle("Almanax du **" + current_date.format("DD/MM") + "** au **" + moments().add(required_almanax, 'days').format("DD/MM") + "**")
+        .setTitle("Almanax du **" + current_date.format("DD/MM") + "** au **" + moment().add(required_almanax, 'days').format("DD/MM") + "**")
     for (let i = 0; i < required_almanax; i++) {
-        const date = current_date.add(1, 'days');
+        const date: moment.Moment = current_date.add(1, 'days');
         const almanax: any = getDate(date.format("DD/MM"))[0];
         embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description}\n`, true);
     }
@@ -145,9 +145,9 @@ export const createFutureEmbed = (required_almanax: number) => {
 
 //
 export const createZodiacEmbed = (almanax: any, zodiac_list: any) => {
-    const embed = new RichEmbed()
+    const embed: RichEmbed = new RichEmbed()
         .setColor('0x4E4EC8')
-        .setTitle("**Zodiac du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
+        .setTitle("**Zodiac du " + moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
         .setDescription("Hmmm... Apres de nombreuse recherche a travers le Krosmoz, je suis en mesure de t'affirmer que ton signe du zodiac est:")
         .setThumbnail(zodiac_list[almanax.Zodiac_Name].Image)
         .addField("**" + zodiac_list[almanax.Zodiac_Name].Name + "**", zodiac_list[almanax.Zodiac_Name].Description)
