@@ -154,6 +154,10 @@ export const createFutureEmbed = (required_almanax) => {
 
 //
 export const createZodiacEmbed = (almanax, zodiac_list) => {
+    console.log("toto")
+    console.log(zodiac_list)
+    console.log(almanax.Date.slice(5))
+    console.log(moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM"))
     const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Zodiac du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
