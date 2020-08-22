@@ -1,7 +1,6 @@
-//const Discord = require('discord.js');
 import * as discord from 'discord.js';
-import { GuildChannel, Collection } from 'discord.js';
 import * as commands from "./commands/";
+import Server from "./models/server";
 
 const bot = new discord.Client();
 
@@ -42,36 +41,26 @@ bot.on("guildCreate", guild => {
 });
 
 // 
-bot.on('message', message => {
-    if (message.content.toLowerCase().startsWith("!bruno")) {
+bot.on('message', async (message) => {
+    if (!message.guild || message.author.bot)
+        return;
+    const config: any = await Server.findOne({ identifier: message.guild.id });
+    if (message.content.toLowerCase().startsWith(config.prefix)) {
         const author = message.author.username + "#" + message.author.discriminator;
-        const sentence = message.content.split(" ");
-        console.log("[MESSAGE (" + author + ")] " + message.content);
-        /*if (sentence.length === 1) {
-            if (empty_iterator <= 3 && failure_iterator <= 4) {
-                message.channel.send(Sentence.empty_message[empty_iterator]);
-                empty_iterator += 1;
-            } else
-                failure_iterator = 5;
-            return;
-        }
-        empty_iterator = 0;
-        */
+        const response: string = message.content.replace(config.prefix, '');
+        const sentence = response.split(" ");
+        console.log(`${author}: ${message.content}`);
         const functions = { 
             "help": commands.help, "item": commands.item, "almanax": commands.almanax,
             "zodiac": commands.zodiac, "type": commands.type, "list": commands.list,
-            "auto": commands.auto, "server": commands.server
+            "auto": commands.auto, "server": commands.server, "prefix": commands.prefix,
+            "lang": commands.lang
         };
         try {
-            functions[sentence[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence)
-            //failure_iterator = 0;
-        } catch {
-            console.error("[ERROR (INVALID_COMMAND)] Command: \"" + sentence[1] + "\".");
-            /*if (failure_iterator <= 4) {
-                message.channel.send(Sentence.failure_message[failure_iterator]);
-                failure_iterator += 1;
-            } else
-                empty_iterator = 4;*/
+            functions[sentence[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence, config);
+        } catch (err) {
+            console.log(`INVALID_COMMAND: ${sentence[0]}`);
+            message.channel.send(`Commande \`${sentence[0]}\` introuvable. Essaye \`${config.prefix}help\`.`);
         }
     }
 });

@@ -58,7 +58,7 @@ export const getAlmanax = (bonus_types) => {
     const result = Object.keys(object).map(key => {
         if (bonus_types.indexOf(object[key].Bonus_Type) >= 0) {
             const date = moments(key, "YYYY-MM-DD", 'fr');
-            return "**" + date.format("DD MMMM") + "**: " + object[key].Bonus_Description + "\n";
+            return `**${date.format("DD MMMM")}**: ${object[key].Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`;
         }
     }).filter(item => {
         return item !== undefined;
@@ -154,6 +154,10 @@ export const createFutureEmbed = (required_almanax) => {
 
 //
 export const createZodiacEmbed = (almanax, zodiac_list) => {
+    console.log("toto")
+    console.log(zodiac_list)
+    console.log(almanax.Date.slice(5))
+    console.log(moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM"))
     const embed = new Discord.RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Zodiac du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")

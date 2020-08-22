@@ -4,16 +4,13 @@ const fs = require('fs');
 import { Message, Guild, Channel } from 'discord.js';
 
 // 
-export const type = (message: Message, line: any) => {
-    if (line.length === 2) {
-        message.channel.send("Il faut que tu me précises quel type de bonus Almanax tu recherches, utilise `!bruno list` pour le connaitre.");
-        return;
-    }
-    const argument = line.slice(2, line.length).join(" ");
-    const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+export const type = (message: Message, line: Array<string>, config: any) => {
+    if (line.length !== 2)
+        return message.channel.send("eececzec");
+    const argument: string = line[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
     const almanax_list = Object.keys(sentences.type_message).map(key => {
         const epured_key = key.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        if (epured_key === epured_argument)
+        if (epured_key === argument)
             return getAlmanax(sentences.type_message[key]);
     }).filter(item => {
         return item !== undefined;

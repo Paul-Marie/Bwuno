@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import * as config from "../resources/config.json";
 import bot from "./discord";
 
+mongoose.set('useFindAndModify', false);
 const databaseURL = process.env.MONGODB_URI || 'mongodb://localhost/bruno';
 
 async function run() {

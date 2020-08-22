@@ -9,3 +9,4 @@ export { list } from "./list";
 export { auto } from "./auto";
 export { server } from "./server";
 export { lang } from "./lang";
+export { prefix } from "./prefix";
