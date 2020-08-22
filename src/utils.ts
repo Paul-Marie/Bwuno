@@ -1,7 +1,7 @@
 import { RichEmbed } from 'discord.js';
 import request from 'async-request';
+import * as year from "../resources/year.json";
 const moments = require('moment');
-const fs = require('fs');
 
 moments.locale('fr');
 
@@ -53,12 +53,10 @@ export const getPrice = async (item_id, server_id = 2) => {
 
 //
 export const getAlmanax = (bonus_types) => {
-    const file = fs.readFileSync('./resources/year.json', "utf8")
-    const object = JSON.parse(file);
-    const result = Object.keys(object).map(key => {
-        if (bonus_types.indexOf(object[key].Bonus_Type) >= 0) {
+    const result = Object.keys(year).map(key => {
+        if (bonus_types.indexOf(year[key].Bonus_Type) >= 0) {
             const date = moments(key, "YYYY-MM-DD", 'fr');
-            return `**${date.format("DD MMMM")}**: ${object[key].Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`;
+            return `**${date.format("DD MMMM")}**: ${year[key].Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`;
         }
     }).filter(item => {
         return item !== undefined;
@@ -68,12 +66,10 @@ export const getAlmanax = (bonus_types) => {
 
 //
 export const getList = (item_name) => {
-    const file = fs.readFileSync('./resources/year.json', "utf8")
-    const object = JSON.parse(file);
-    const result = Object.keys(object).map(key => {
-        const epured = object[key].Offrande_Name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    const result = Object.keys(year).map(key => {
+        const epured = year[key].Offrande_Name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         if (epured === item_name)
-            return object[key];
+            return year[key];
     }).filter(item => {
         return item !== undefined;
     });
@@ -82,15 +78,12 @@ export const getList = (item_name) => {
 
 //
 export const getDate = (requested_date) => {
-    const file = fs.readFileSync('./resources/year.json', "utf8")
-    const object = JSON.parse(file);
     const accepted_format = ["DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
                              "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
     return accepted_format.map(format => {
         const date = moments(requested_date, format, 'fr', true);
-        if (date.isValid()) {
-            return object[date.format("2020-MM-DD")];
-        }
+        if (date.isValid())
+            return year[date.format("2020-MM-DD")];
     }).filter(item => {
         return item !== undefined;
     });
