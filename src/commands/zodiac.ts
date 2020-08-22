@@ -3,7 +3,7 @@ import { getDate, formatDate, createZodiacEmbed } from "../../src/utils";
 import { Message } from 'discord.js';
 
 export const zodiac = (message: Message, line: Array<string>) => {
-    if (line.length <= 2) {
+    if (line.length < 2) {
         return message.channel.send("Donne moi ta date d'anniversaire pour que je te revele ton signe du zodiac!");
     } else {
         line.shift()

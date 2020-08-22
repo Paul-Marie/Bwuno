@@ -1,97 +1,95 @@
 import { RichEmbed } from 'discord.js';
 import request from 'async-request';
 import * as year from "../resources/year.json";
+import * as settings from "../resources/config.json";
 const moments = require('moment');
 
 moments.locale('fr');
 
 //
-export const formatDate = (sentence) => {
-    return ((sentence.map(elem => {
-        return elem.split("-").map(item => {
+export const formatDate = (sentence: string[]) => {
+    return ((sentence.map((elem: string) => {
+        return elem.split("-").map((item: string) => {
             return (item.length === 1) ? "0" + item : item;
         })
-    })).map(elem => {
-        return (elem.map(tmp => {
-            return tmp.split("/").map(item => {
+    })).map((elem: string[]) => {
+        return (elem.map((tmp: string ) => {
+            return tmp.split("/").map((item: string) => {
                 return (item.length === 1) ? "0" + item : item;
             }).join(" ");
         })).join(" ");
-    })).map(toto => {
-        return (toto.length === 1) ? "0" + toto : toto;
+    })).map((elem: string) => {
+        return (elem.length === 1) ? "0" + elem : elem;
     }).join(" ");
 }
 
 //
-export const getPrice = async (item_id, server_id = 2) => {
+export const getPrice = async (item_id: number, server_id: number = 2): Promise<string> => {
     try {
-        const url = "https://api.dt-price.com/value";
-        const response = await request(`${url}/${server_id}/${item_id}`);//, (err, res, body) => {
+        const url: string = settings.dt_price.api_url;
+        const response: any = await request(`${url}/${server_id}/${item_id}`);
         if (response.statusCode === 200) {
-            const data = JSON.parse(response.body);
+            const data: any = JSON.parse(response.body);
             const current_date = moments();
                   //.subtract(1, 'd').format("YYYY-MM-DD");
-            const date = moments().subtract(7, 'd').format("YYYY-MM-DD");
-            const getAverageOfDay = (array, date) => {
-                const days = array.filter(hour => { return hour.date.includes(date) });
-                const result = days.map(day => {
+            const date: string = moments().subtract(7, 'd').format("YYYY-MM-DD");
+            const getAverageOfDay = (array: Array<any>, date: string): string => {
+                const days = array.filter((hour) => { return hour.date.includes(date) });
+                const result = days.map((day: any) => {
                     return (day.unit + (day.decade / 10) + (day.hundred / 100)) / 3;
                 });
                 return (result.reduce((a,b) => a + b, 0) / result.length).toFixed(2);
             };
-            const tmp = parseFloat(getAverageOfDay(data, current_date.format("YYYY-MM-DD")));
-            console.log(tmp);
-            const current_price = (tmp) ? tmp : parseFloat(getAverageOfDay(data, current_date.subtract(1, 'd').format("YYYY-MM-DD")));
-            const week_price = parseFloat(getAverageOfDay(data, date));
+            const tmp: number = parseFloat(getAverageOfDay(data, current_date.format("YYYY-MM-DD")));
+            const current_price: number = (tmp) ? tmp : parseFloat(getAverageOfDay(data, current_date.subtract(1, 'd').format("YYYY-MM-DD")));
+            const week_price: number = parseFloat(getAverageOfDay(data, date));
             return ((current_price - week_price) / week_price * 100).toFixed(2);
         }
     } catch (err) {
-        console.log(err);
-        return 0;
+        return '0';
     }
 }
 
 //
-export const getAlmanax = (bonus_types) => {
-    const result = Object.keys(year).map(key => {
+export const getAlmanax = (bonus_types: string[]) => {
+    return Object.keys(year).map(key => {
         if (bonus_types.indexOf(year[key].Bonus_Type) >= 0) {
             const date = moments(key, "YYYY-MM-DD", 'fr');
             return `**${date.format("DD MMMM")}**: ${year[key].Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`;
         }
-    }).filter(item => {
+    }).filter((item: any) => {
         return item !== undefined;
     });
-    return result;
 }
 
 //
-export const getList = (item_name) => {
-    const result = Object.keys(year).map(key => {
-        const epured = year[key].Offrande_Name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+export const getList = (item_name: string) => {
+    return Object.keys(year).map((key: string) => {
+        const epured: string = year[key].Offrande_Name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         if (epured === item_name)
             return year[key];
-    }).filter(item => {
+    }).filter((item: any) => {
         return item !== undefined;
     });
-    return result;
 }
 
 //
-export const getDate = (requested_date) => {
-    const accepted_format = ["DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
-                             "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
-    return accepted_format.map(format => {
+export const getDate = (requested_date: string) => {
+    const accepted_format: string[] = ["DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM",
+                                       "DD/MM/YYYY", "DD-Math.M-YYYY", "DD MM YYYY",
+                                       "DD MMM YYYY", "DD MMMM YYYY"];
+    return accepted_format.map((format: string) => {
         const date = moments(requested_date, format, 'fr', true);
         if (date.isValid())
             return year[date.format("2020-MM-DD")];
-    }).filter(item => {
+    }).filter((item: any) => {
         return item !== undefined;
     });
 }
 
 //
-export const getRemainingDay = (almanax_date) => {
-    const current_date = new Date();
+export const getRemainingDay = (almanax_date: string) => {
+    const current_date: Date = new Date();
     const date = moments([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
     let searched_date = moments([current_date.getFullYear(), Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
     if (date > searched_date)
@@ -101,11 +99,11 @@ export const getRemainingDay = (almanax_date) => {
 }
 
 // TODO URGENT
-export const createEmbed = async (almanax, id) => {
-    const remaining_days = getRemainingDay(almanax.Date);
-    const average_price = 0;//await getPrice(almanax.URL.substring(62).split('-')[0], id);
-    almanax.URL = 0;
-    const embed = new RichEmbed()
+export const createEmbed = async (almanax: any, id: number) => {
+    const remaining_days: number = getRemainingDay(almanax.Date);
+    const average_price: number = 0;//await getPrice(almanax.URL.substring(62).split('-')[0], id);
+    almanax.URL = "";
+    const embed: RichEmbed = new RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
         .setURL("https://www.krosmoz.com/fr/almanax/" + almanax.Date + "?game=dofustouch")
@@ -127,30 +125,26 @@ export const createEmbed = async (almanax, id) => {
 }
 
 // 
-export const createFutureEmbed = (required_almanax) => {
+export const createFutureEmbed = (required_almanax: number) => {
     const current_date = moments();
     // TODO replace '25' by the maximum `field` value
     if (required_almanax > 25)
-        required_almanax = 25;
+        required_almanax = settings.discord.embed_limit;
      if (required_almanax <= 0)
         required_almanax = 1;
-    const embed = new RichEmbed()
+    const embed: RichEmbed = new RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("Almanax du **" + current_date.format("DD/MM") + "** au **" + moments().add(required_almanax, 'days').format("DD/MM") + "**")
     for (let i = 0; i < required_almanax; i++) {
         const date = current_date.add(1, 'days');
-        const almanax = getDate(date.format("DD/MM"))[0];
+        const almanax: any = getDate(date.format("DD/MM"))[0];
         embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description}\n`, true);
     }
     return embed;
 }
 
 //
-export const createZodiacEmbed = (almanax, zodiac_list) => {
-    console.log("toto")
-    console.log(zodiac_list)
-    console.log(almanax.Date.slice(5))
-    console.log(moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM"))
+export const createZodiacEmbed = (almanax: any, zodiac_list: any) => {
     const embed = new RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Zodiac du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
