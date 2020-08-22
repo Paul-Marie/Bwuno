@@ -1,6 +1,6 @@
-const Discord = require('discord.js')
+import { RichEmbed } from 'discord.js';
+import request from 'async-request';
 const moments = require('moment');
-const request = require('async-request');
 const fs = require('fs');
 
 moments.locale('fr');
@@ -112,7 +112,7 @@ export const createEmbed = async (almanax, id) => {
     const remaining_days = getRemainingDay(almanax.Date);
     const average_price = 0;//await getPrice(almanax.URL.substring(62).split('-')[0], id);
     almanax.URL = 0;
-    const embed = new Discord.RichEmbed()
+    const embed = new RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Almanax du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
         .setURL("https://www.krosmoz.com/fr/almanax/" + almanax.Date + "?game=dofustouch")
@@ -141,7 +141,7 @@ export const createFutureEmbed = (required_almanax) => {
         required_almanax = 25;
      if (required_almanax <= 0)
         required_almanax = 1;
-    const embed = new Discord.RichEmbed()
+    const embed = new RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("Almanax du **" + current_date.format("DD/MM") + "** au **" + moments().add(required_almanax, 'days').format("DD/MM") + "**")
     for (let i = 0; i < required_almanax; i++) {
@@ -158,7 +158,7 @@ export const createZodiacEmbed = (almanax, zodiac_list) => {
     console.log(zodiac_list)
     console.log(almanax.Date.slice(5))
     console.log(moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM"))
-    const embed = new Discord.RichEmbed()
+    const embed = new RichEmbed()
         .setColor('0x4E4EC8')
         .setTitle("**Zodiac du " + moments(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
         .setDescription("Hmmm... Apres de nombreuse recherche a travers le Krosmoz, je suis en mesure de t'affirmer que ton signe du zodiac est:")
