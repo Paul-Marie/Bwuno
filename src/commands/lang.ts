@@ -15,8 +15,7 @@ export const lang = async (message: Message, line: string[], config: any): Promi
     if (line.length !== 2)
         return message.channel.send("erf");
     let argument: string = line[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    if (!message.member.guild.me.hasPermission('ADMINISTRATOR') ||
-	    !message.member.guild.me.hasPermission('MANAGE_MESSAGES'))
+    if (!message.member.guild.me.hasPermission(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
         return message.channel.send("Tu n'as pas les permissions :sob:, Demande à un admin du serveur d'executer la commande pour toi :smile:");
     if (lang_available[argument] === undefined)
         return message.channel.send("Cette langue n'est pas suporté");
