@@ -1,4 +1,4 @@
-import { Client, Message, Guild, Channel, GuildChannel } from 'discord.js';
+import { Client, Message, Guild, Channel, GuildChannel, TextChannel } from 'discord.js';
 import * as commands from "./commands/";
 import Server from "./models/server";
 
@@ -14,29 +14,13 @@ bot.on('ready', () => {
     }
 });
 
-bot.on("guildCreate", (guild) => {
-    const toto: GuildChannel = guild.channels.cache.find((chan: GuildChannel) =>
-        ["general", "bienvenue", "acceuil", "bavardage", "hall"]
-            .includes(chan.name.toLowerCase().normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, ""))
-        );
-    console.log(toto.id)
-    console.log(toto)
-     const channel: any = bot.channels.cache.find((chan: any) =>
+bot.on("guildCreate", (guild: Guild) => {
+    const channel: GuildChannel = guild.channels.cache.find((chan: GuildChannel) =>
         ["general", "bienvenue", "acceuil", "bavardage", "hall"]
             .includes(chan.name.toLowerCase().normalize('NFD')
             .replace(/[\u0300-\u036f]/g, ""))
     );
-    console.log(channel)
-    //channel.send("toto")
-    /*const channel: any = guild.channels.cache.find((chan: any) => {
-      ["general", "bienvenue", "acceuil", "bavardage", "hall"]
-            .includes(chan.name.toLowerCase().normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, ""))
-    });*/
-//channel.send(`Salut ! Moi c'est Bruno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple. J'ai été conçu par les créateurs de DT-Price.\nQue dirais tu d'un \`!bruno help\` pour commencer?`);
-//const toto: any = bot.channels.get(channel.id);
-  //  toto.send(`Salut ! Moi c'est Bruno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple. J'ai été conçu par les créateurs de DT-Price.\nQue dirais tu d'un \`!bruno help\` pour commencer?`);
+    (channel as TextChannel).send(`Salut ! Moi c'est Bruno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple. J'ai été conçu par les créateurs de DT-Price.\nQue dirais tu d'un \`!bruno help\` pour commencer?`);
 });
 
 // 
@@ -47,7 +31,7 @@ bot.on('message', async (message: Message): Promise<void> => {
     if (message.content.toLowerCase().startsWith(config.prefix)) {
         const author: string = message.author.username + "#" + message.author.discriminator;
         const response: string = message.content.replace(config.prefix, '');
-        const sentence: Array<string> = response.split(" ");
+        const sentence: string[] = response.split(" ");
         console.log(`${author}: ${message.content}`);
         const functions: any = { 
             "help": commands.help, "item": commands.item, "almanax": commands.almanax,
