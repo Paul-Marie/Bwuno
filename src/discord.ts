@@ -1,4 +1,6 @@
 import { Client, Message, Guild, GuildChannel, TextChannel } from 'discord.js';
+import { format } from 'format';
+import * as sentences from "../resources/language.json";
 import * as settings from "../resources/config.json";
 import * as commands from "./commands/";
 import Server from "./models/server";
@@ -51,8 +53,7 @@ bot.on('message', async (message: Message): Promise<void> => {
         try {
             functions[sentence[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence, config);
         } catch (err) {
-            console.log(`INVALID_COMMAND: ${sentence[0]}`);
-            message.channel.send(`Commande \`${sentence[0]}\` introuvable. Essaye \`${config.prefix}help\`.`);
+            message.channel.send(format(sentences['fr'].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
         }
     }
 });

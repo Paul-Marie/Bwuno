@@ -1,0 +1,13 @@
+{
+    "0": {
+        "ERROR_COMMAND_NOT_FOUND": "🥵 Commande `%s` introuvable. Utilise `%s`.",
+        "ERROR_UNSUPORTED_LANGUAGE": "🥵 Langage non supporté. Si tu veut ajouté le tiens contacte nous.",
+        "ERROR_ALREADY_CURRENT_LANGUAGE": "🥵 C'est déjà le langage utilisé.",
+        "ERROR_INSUFICIANT_ARGUMENT": "🥵 La commande s'utilise comme ceci: `%s`.",
+        "ERROR_INSUFICIANT_PERMISSION": "🥵 Tu n'as pas les permissions nécéssaire, demande à un admin.",
+        "SUCCESS_LANGUAGE_CHANGED": " La langue à bien été changer en `%s`."
+    },
+    "1": {
+        "SUCCESS_LANGUAGE_CHANGED": " Language successfully switched to `%s`."
+    }
+}
