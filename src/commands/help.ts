@@ -1,8 +1,8 @@
 import * as sentences from "../../resources/sentence";
-import { Message, RichEmbed } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 
 // 
 export const help = (message: Message) => {
-    const embed: RichEmbed = sentences.help_message;
+    const embed: MessageEmbed = sentences.help_message;
     message.channel.send({ embed });
 }

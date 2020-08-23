@@ -10,8 +10,7 @@ export const server = async (message: Message, line: string[], config: any): Pro
     if (line.length <= 1)
         return message.channel.send("Precise le serveur (Oshimo, Terra Cogita ou Herdegrize)");
     if (!message.member.guild.me.hasPermission('ADMINISTRATOR') ||
-	    !(message.member.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS') &&
-	        message.member.guild.me.hasPermission('MANAGE_MESSAGES')))
+	    !message.member.guild.me.hasPermission('MANAGE_MESSAGES'))
         return message.channel.send("Tu n'as pas les permissions, Demande à un admin du serveur.");
     const argument: string = line[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const server: string = tmp[argument[0]];

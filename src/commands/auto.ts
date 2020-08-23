@@ -8,8 +8,7 @@ export const auto = async (message: Message, line: string[], config: any): Promi
         return message.channel.send("gneuh");
     const argument: string = (line[1] || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     if (!message.member.guild.me.hasPermission('ADMINISTRATOR') ||
-	    !(message.member.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS') &&
-	        message.member.guild.me.hasPermission('MANAGE_MESSAGES')))
+	    !message.member.guild.me.hasPermission('MANAGE_MESSAGES'))
         return message.channel.send("Tu n'as pas les permissions, Demande à un admin du serveur");
     let activate: Boolean;
     if (argument === '')

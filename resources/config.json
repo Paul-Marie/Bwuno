@@ -2,7 +2,7 @@
     "discord": {
         "token": "",
         "embed_limit": 25,
-        "length_limit": 2048
+        "length_limit": 2000
     },
     "mongo": {
     },
