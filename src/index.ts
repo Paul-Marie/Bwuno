@@ -2,14 +2,15 @@ import * as mongoose from 'mongoose';
 import * as config from "../resources/config.json";
 import bot from "./discord";
 
-mongoose.set('useFindAndModify', false);
 const databaseURL = process.env.MONGODB_URI || 'mongodb://localhost/bruno';
 
-async function run() {
+async function run(): Promise<void> {
     try {
         await mongoose.connect(databaseURL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            useFindAndModify: false,
+            useCreateIndex: true
         });
     } catch (err) {
         console.error(err);
@@ -19,7 +20,7 @@ async function run() {
     console.log(`Connected to database at ${databaseURL}`);
     try {
         if (process.argv.length === 3) {
-            let script = await import(`${process.argv[2]}`)
+            let script: any = await import(`${process.argv[2]}`)
             script.default();
         } else
             bot.login(config.discord.token);

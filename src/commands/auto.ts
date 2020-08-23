@@ -3,13 +3,11 @@ import { Message } from 'discord.js';
 import Server from "../models/server";
 
 //
-export const auto = async (message: Message, line: Array<string>, config: any) => {
+export const auto = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length > 2)
         return message.channel.send("gneuh");
     const argument: string = (line[1] || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    if (!message.member.guild.me.hasPermission('ADMINISTRATOR') ||
-	    !(message.member.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS') &&
-	        message.member.guild.me.hasPermission('MANAGE_MESSAGES')))
+    if (!message.member.guild.me.hasPermission(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
         return message.channel.send("Tu n'as pas les permissions, Demande à un admin du serveur");
     let activate: Boolean;
     if (argument === '')
@@ -25,5 +23,5 @@ export const auto = async (message: Message, line: Array<string>, config: any) =
         await Server.findOneAndUpdate({ identifier: config.identifier }, { auto_mode: false, auto_channel: undefined });
         message.channel.send(`Vous ne recevrez plus les almanax du jour a minuit dans ce salon !`);
     } else
-        return message.channel.send(`erreur`);
+        message.channel.send(`erreur`);
 }
