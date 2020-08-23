@@ -8,5 +8,8 @@
     },
     "dt_price": {
         "api_url": "https://api.dt-price.com/value"
+    },
+    "bruno": {
+        "default_prefix": "!bruno "
     }
 }

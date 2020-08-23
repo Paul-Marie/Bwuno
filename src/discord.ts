@@ -1,10 +1,11 @@
-import { Client, Message, Guild, Channel, GuildChannel, TextChannel } from 'discord.js';
+import { Client, Message, Guild, GuildChannel, TextChannel } from 'discord.js';
+import * as settings from "../resources/config.json";
 import * as commands from "./commands/";
 import Server from "./models/server";
 
 const bot: Client = new Client();
 
-bot.on('ready', () => {
+bot.on('ready', (): void => {
     console.log("Actuellement connécté sur les serveurs:");
     try {
         bot.guilds.cache.forEach((guild: Guild) => { console.log(" - " + guild.name) });
@@ -14,13 +15,21 @@ bot.on('ready', () => {
     }
 });
 
-bot.on("guildCreate", (guild: Guild) => {
+bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     const channel: GuildChannel = guild.channels.cache.find((chan: GuildChannel) =>
         ["general", "bienvenue", "acceuil", "bavardage", "hall"]
             .includes(chan.name.toLowerCase().normalize('NFD')
             .replace(/[\u0300-\u036f]/g, ""))
     );
     (channel as TextChannel).send(`Salut ! Moi c'est Bruno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple. J'ai été conçu par les créateurs de DT-Price.\nQue dirais tu d'un \`!bruno help\` pour commencer?`);
+    await Server.create({ 
+        identifier: guild.id, name: guild.name, lang: 0, server_id: 2,
+        auto_mode: false, prefix: settings.bruno.default_prefix
+    });
+});
+
+bot.on("guildDelete", async (guild: Guild): Promise<void> => {
+    await Server.findOneAndDelete({ identifier: guild.id });
 });
 
 // 
