@@ -142,18 +142,3 @@ export const createFutureEmbed = (required_almanax: number) => {
     }
     return embed;
 }
-
-//
-export const createZodiacEmbed = (almanax: any, zodiac_list: any) => {
-    const embed: MessageEmbed = new MessageEmbed()
-        .setColor('0x4E4EC8')
-        .setTitle("**Zodiac du " + moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
-        .setDescription("Hmmm... Apres de nombreuse recherche a travers le Krosmoz, je suis en mesure de t'affirmer que ton signe du zodiac est:")
-        .setThumbnail(zodiac_list[almanax.Zodiac_Name].Image)
-        .addField("**" + zodiac_list[almanax.Zodiac_Name].Name + "**", zodiac_list[almanax.Zodiac_Name].Description)
-    if (almanax.Event_Name) {
-        embed.addField("📅 Tu es par ailleur né lors de: **" + almanax.Event_Name + "**", almanax.Event_Description)
-        embed.setImage(almanax.Event_Image)
-    }
-    return embed;
-}

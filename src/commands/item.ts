@@ -1,4 +1,4 @@
-import * as sentences from "../../resources/sentence";
+//import * as sentences from "../../resources/sentence";
 import { getList, createEmbed } from "../../src/utils";
 import { Message, MessageEmbed } from 'discord.js';
 

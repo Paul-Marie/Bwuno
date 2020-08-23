@@ -1,4 +1,4 @@
-import * as sentences from "../../resources/sentence";
+import * as sentences from "../../resources/language.json";
 import { Message } from 'discord.js';
 import Server from "../models/server";
 
