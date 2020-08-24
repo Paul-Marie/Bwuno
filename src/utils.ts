@@ -55,7 +55,7 @@ export const getAlmanax = (bonus_types: string[]) => {
     return Object.keys(year).map(key => {
         if (bonus_types.indexOf(year[key].Bonus_Type) >= 0) {
             const date: moment.Moment = moment(key, "YYYY-MM-DD", 'fr');
-            return `**${date.format("DD MMMM")}**: ${year[key].Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`;
+            return `**${date.format("DD MMMM")}**: ${year[key].Bonus_Description}\n`;
         }
     }).filter((item: any) => {
         return item !== undefined;
@@ -101,15 +101,14 @@ export const getRemainingDay = (almanax_date: string) => {
 // TODO URGENT
 export const createEmbed = async (almanax: any, id: number) => {
     const remaining_days: number = getRemainingDay(almanax.Date);
-    const average_price: string = '0';//await getPrice(almanax.URL.substring(62).split('-')[0], id);
-    almanax.URL = "";
+    const average_price: string = await getPrice(almanax.URL.substring(62).split('-')[0], id);
     const embed: MessageEmbed = new MessageEmbed()
         .setColor('0x4E4EC8')
         .setTitle(`**Almanax du ${moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM")}**`)
         .setURL(`https://www.krosmoz.com/fr/almanax/${almanax.Date}?game=dofustouch`)
         .setThumbnail(almanax.Offrande_Image)
         .addField("🙏 Offrande:", `[**${almanax.Offrande_Name}**](${almanax.URL}) **x${almanax.Offrande_Quantity}**`)
-        .addField("📜 Bonus:", `\`\`\`${almanax.Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\`\`\`\n*Type de Bonus*: __${almanax.Bonus_Type}__`)
+        .addField("📜 Bonus:", `\`\`\`${almanax.Bonus_Description}\`\`\`\n*Type de Bonus*: __${almanax.Bonus_Type}__`)
         .addField("⏳ Temps:", "Cette almanax aura lieu " + (
             (remaining_days) <= 1 ? (
                 (remaining_days == 1) ? "**demain**" : "**aujourd'hui**"
@@ -137,7 +136,7 @@ export const createFutureEmbed = (required_almanax: number) => {
     for (let i = 0; i < required_almanax; i++) {
         const date: moment.Moment = current_date.add(1, 'days');
         const almanax: any = getDate(date.format("DD/MM"))[0];
-        embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`, true);
+        embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description}\n`, true);
     }
     return embed;
 }
