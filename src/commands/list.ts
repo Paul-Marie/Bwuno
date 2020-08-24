@@ -1,20 +1,21 @@
-import * as sentences from "../../resources/sentence";
-import { Message, RichEmbed } from 'discord.js';
+import * as sentences from "../../resources/language.json";
+import * as info from "../../resources/info";
+import { Message, MessageEmbed } from 'discord.js';
 
 // TODO to comment
-export const list = (message: Message) => {
-    let type_list: Array<string> = ['', '', ''];
-    for (const title of Object.keys(sentences.list_message.xp))
+export const list = (message: Message, line: void, config: any): void => {
+    let type_list: string[] = ['', '', ''];
+    for (const title of Object.keys(info.list_message.xp))
         type_list[0] += `🔹 ${title}\n`;
-    for (const title of Object.keys(sentences.list_message.job))
+    for (const title of Object.keys(info.list_message.job))
         type_list[1] += `▫️ ${title}\n`;
-    for (const title of Object.keys(sentences.list_message.miscellaneous))
+    for (const title of Object.keys(info.list_message.miscellaneous))
         type_list[2] += `🔸 ${title}\n`;
-    const embed: RichEmbed  = new RichEmbed()
+    const embed: MessageEmbed  = new MessageEmbed()
         .setColor("0x4E4EC8")
-        .setTitle("Liste des Bonus Almanax:")
-        .addField("XP / Drop:", type_list[0])
-        .addField("Métier:", type_list[1])
-        .addField("Divers", type_list[2])
+        .setTitle(sentences[config.lang].INFO_LIST_TITLE)
+        .addField(sentences[config.lang].INFO_LIST_XP_FIELD, type_list[0])
+        .addField(sentences[config.lang].INFO_LIST_JOB_FIELD, type_list[1])
+        .addField(sentences[config.lang].INFO_LIST_MISCELLANEOUS_FIELD, type_list[2])
     message.channel.send({ embed });
 }

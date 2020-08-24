@@ -1,8 +1,10 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
-    "resolveJsonModule": true
-  },
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
+  }
 }

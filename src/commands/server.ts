@@ -1,22 +1,21 @@
-import { Message, Guild, Channel } from 'discord.js';
-import * as sentences from "../../resources/sentence";
+import * as sentences from "../../resources/language.json";
 import Server from "../models/server";
+import { Message } from 'discord.js';
+import { format } from 'format';
 
-const tmp = { "o": "Oshimo", "t": "Terra Cogita", "h": "Herdegrize" };
-const tmp2 = { "Oshimo": 1, "Terra Cogita": 2, "Herdegrize": 3 };
+const tmp: any = { "o": "Oshimo", "t": "Terra Cogita", "h": "Herdegrize" };
+const tmp2: any = { "Oshimo": 1, "Terra Cogita": 2, "Herdegrize": 3 };
 
 //
-export const server = async (message: Message, line: Array<string>, config: any) => {
+export const server = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length <= 1)
-        return message.channel.send("Precise le serveur (Oshimo, Terra Cogita ou Herdegrize)");
-    if (!message.member.guild.me.hasPermission('ADMINISTRATOR') ||
-	    !(message.member.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS') &&
-	        message.member.guild.me.hasPermission('MANAGE_MESSAGES')))
-        return message.channel.send("Tu n'as pas les permissions, Demande à un admin du serveur.");
-    let argument: string = line[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    const server = tmp[argument[0]];
+        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}server ['Oshimo'|'Terra Cogita'|'Herdegrize']`));
+    if (!message.member.hasPermission(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
+        return message.channel.send(sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS);
+    const argument: string = line[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    const server: string = tmp[argument[0]];
     if (!server)
-        return message.channel.send("Je ne gere malheuresement que les serveurs \`Oshimo\`, \`Terra Cogita\` et \`Herdegrize\` pour le moment.");
+        return message.channel.send(sentences[config.lang].ERROR_UNKNOWN_SERVER);
     await Server.findOneAndUpdate({ identifier: config.identifier }, { server_id: tmp2[server] });
-    return message.channel.send(`Je vous communiquerais maintenant l'évolution des prix des offrandes du serveur \`${server}\``);
+    message.channel.send(format(sentences[config.lang].SUCCESS_SERVER_CHANGED, `${server}`));
 }

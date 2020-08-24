@@ -5,5 +5,14 @@
         "length_limit": 2000
     },
     "mongo": {
+    },
+    "dt_price": {
+        "api_url": "https://api.dt-price.com/value"
+    },
+    "bruno": {
+        "name": "Brüno",
+        "default_prefix": "!bruno ",
+        "imageURL": "https://cdn.discordapp.com/avatars/642935463048642570/39d03bf8899872de9ead0e871f6cfda6.png",
+        "thumbnail": "https://cdn.discordapp.com/attachments/643158383104491545/643462146696413184/aide.png"
     }
 }
