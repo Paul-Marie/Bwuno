@@ -127,8 +127,7 @@ export const createEmbed = async (almanax: any, id: number) => {
 // 
 export const createFutureEmbed = (required_almanax: number) => {
     const current_date: moment.Moment = moment();
-    // TODO replace '25' by the maximum `field` value
-    if (required_almanax > 25)
+    if (required_almanax > settings.discord.embed_limit)
         required_almanax = settings.discord.embed_limit;
      if (required_almanax <= 0)
         required_almanax = 1;
