@@ -4,7 +4,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { format } from 'format';
 
 // 
-export const help = (message: Message, line: void, config: any) => {
+export const help = (message: Message, line: void, config: any): void => {
         const embed: MessageEmbed = new MessageEmbed()
                 .setColor(0x4E4EC8)
                 .setThumbnail(settings.bruno.thumbnail)

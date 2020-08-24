@@ -3,7 +3,7 @@ import * as info from "../../resources/info";
 import { Message, MessageEmbed } from 'discord.js';
 
 // TODO to comment
-export const list = (message: Message, line: void, config: any) => {
+export const list = (message: Message, line: void, config: any): void => {
     let type_list: string[] = ['', '', ''];
     for (const title of Object.keys(info.list_message.xp))
         type_list[0] += `🔹 ${title}\n`;
