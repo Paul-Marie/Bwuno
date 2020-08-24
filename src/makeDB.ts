@@ -15,7 +15,7 @@ export default async () => {
 
     bot.on('ready', async () => {
         try {
-            bot.guilds.forEach((guild) => {
+            bot.guilds.cache.forEach((guild) => {
                 const server = {
                     identifier: guild.id,
                     name: guild.name,
