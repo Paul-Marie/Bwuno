@@ -61,6 +61,7 @@
         "ERROR_ALREADY_CURRENT_LANGUAGE": "🥵 It's already the enabled language.",
         "ERROR_INSUFICIANT_ARGUMENT": "🥵 This command is used like this: `%s`.",
         "ERROR_INCORRECT_DATE_OR_ITEM": "🥵 Date or Item not found.",
+        "ERROR_INCORRECT_DATE": "🥵 Date not found.",
         "ERROR_INSUFICIANT_PERMISSION": "🥵 You don't have required permissions, ask to an admin."
     }
 }
