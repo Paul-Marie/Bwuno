@@ -14,10 +14,10 @@ const lang_available: any = {
 //
 export const lang = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length !== 2)
-        return message.channel.send(format(sentences[config.lang].ERROR_INSUFICIANT_ARGUMENT, `${config.prefix}lang ['fr'|'en'|'es'|'de']`));
+        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}lang ['fr'|'en'|'es'|'de']`));
     let argument: string = line[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     if (!message.member.guild.me.hasPermission(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
-        return message.channel.send(sentences[config.lang].ERROR_INSUFICIANT_PERMISSION);
+        return message.channel.send(sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS);
     if (lang_available[argument] === undefined)
         return message.channel.send(sentences[config.lang].ERROR_UNSUPORTED_LANGUAGE);
     const tmp: number = lang_available[argument];

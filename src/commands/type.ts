@@ -8,7 +8,7 @@ import { format } from 'format';
 // 
 export const type = (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
-        return message.channel.send(format(sentences[config.lang].ERROR_INSUFICIENT_ARGUMENT, `${config.prefix}type [type]`));
+        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}type [type]`));
     const argument: string = line[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
     const almanax_list: any = Object.keys(type_message).map(key => {
         const epured_key: string = key.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");

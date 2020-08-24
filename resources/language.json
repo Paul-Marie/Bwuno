@@ -59,9 +59,9 @@
         "ERROR_AUTO_NOT_ACTIVATED": "🥵 auto mode isn't enabled on this server.",
         "ERROR_AUTO_UNKNOWN_ARGUMENT": "🥵 Invalid argument, use 'on' or 'off'.",
         "ERROR_ALREADY_CURRENT_LANGUAGE": "🥵 It's already the enabled language.",
-        "ERROR_INSUFICIANT_ARGUMENT": "🥵 This command is used like this: `%s`.",
+        "ERROR_INSUFFICIENT_ARGUMENT": "🥵 This command is used like this: `%s`.",
         "ERROR_INCORRECT_DATE_OR_ITEM": "🥵 Date or Item not found.",
         "ERROR_INCORRECT_DATE": "🥵 Date not found.",
-        "ERROR_INSUFICIANT_PERMISSION": "🥵 You don't have required permissions, ask to an admin."
+        "ERROR_INSUFFICIENT_PERMISSIONS": "🥵 You don't have required permissions, ask to an admin."
     }
 }

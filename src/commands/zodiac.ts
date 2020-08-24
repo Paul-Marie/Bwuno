@@ -7,7 +7,7 @@ import * as moment from 'moment';
 
 export const zodiac = (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
-        return message.channel.send(format(sentences[config.lang].ERROR_INSUFICIENT_ARGUMENT, `${config.prefix}zodiac [date]`));
+        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}zodiac [date]`));
     line.shift()
     const argument: string = formatDate(line).toLowerCase();
     const almanax: any = getDate(argument)[0];

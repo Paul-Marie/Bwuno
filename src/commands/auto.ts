@@ -6,10 +6,10 @@ import { format } from 'format';
 //
 export const auto = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length > 2)
-        return message.channel.send(format(sentences[config.lang].ERROR_INSUFICIANT_ARGUMENT, `${config.prefix}auto ['on'|'off']`));
+        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}auto ['on'|'off']`));
     const argument: string = (line[1] || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     if (!message.member.guild.me.hasPermission(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
-        return message.channel.send(sentences[config.lang].ERROR_INSUFICIANT_PERMISSION);
+        return message.channel.send(sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS);
     let activate: Boolean;
     if (argument === '')
         activate = !config.auto_mode;
