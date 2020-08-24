@@ -101,24 +101,24 @@ export const getRemainingDay = (almanax_date: string) => {
 // TODO URGENT
 export const createEmbed = async (almanax: any, id: number) => {
     const remaining_days: number = getRemainingDay(almanax.Date);
-    const average_price: number = 0;//await getPrice(almanax.URL.substring(62).split('-')[0], id);
+    const average_price: string = '0';//await getPrice(almanax.URL.substring(62).split('-')[0], id);
     almanax.URL = "";
     const embed: MessageEmbed = new MessageEmbed()
         .setColor('0x4E4EC8')
-        .setTitle("**Almanax du " + moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM") + "**")
-        .setURL("https://www.krosmoz.com/fr/almanax/" + almanax.Date + "?game=dofustouch")
+        .setTitle(`**Almanax du ${moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM")}**`)
+        .setURL(`https://www.krosmoz.com/fr/almanax/${almanax.Date}?game=dofustouch`)
         .setThumbnail(almanax.Offrande_Image)
-        .addField("🙏 Offrande:", "[**" + almanax.Offrande_Name + "**](" + almanax.URL + ") **x" + almanax.Offrande_Quantity + "**")
-        .addField("📜 Bonus:", "```" + almanax.Bonus_Description + "```\n*Type de Bonus*: " + almanax.Bonus_Type)
+        .addField("🙏 Offrande:", `[**${almanax.Offrande_Name}**](${almanax.URL}) **x${almanax.Offrande_Quantity}**`)
+        .addField("📜 Bonus:", `\`\`\`${almanax.Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\`\`\`\n*Type de Bonus*: __${almanax.Bonus_Type}__`)
         .addField("⏳ Temps:", "Cette almanax aura lieu " + (
             (remaining_days) <= 1 ? (
                 (remaining_days == 1) ? "**demain**" : "**aujourd'hui**"
             ) : `dans **${remaining_days}** jours`), true)
           .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + (
-	      (average_price >= 0)
+	          (Number(average_price) >= 0)
 		    ? "+" : "") + `${average_price}%** comparé à la semaine derniere.`, true)
     if (almanax.Event_Name) {
-        embed.addField("🎉 Event: **" + almanax.Event_Name + "**", almanax.Event_Description)
+        embed.addField(`🎉 Event: **${almanax.Event_Name}**`, almanax.Event_Description)
         embed.setImage(almanax.Event_Image)
     }
     return embed;
@@ -133,11 +133,11 @@ export const createFutureEmbed = (required_almanax: number) => {
         required_almanax = 1;
     const embed: MessageEmbed = new MessageEmbed()
         .setColor('0x4E4EC8')
-        .setTitle("Almanax du **" + current_date.format("DD/MM") + "** au **" + moment().add(required_almanax, 'days').format("DD/MM") + "**")
+        .setTitle(`Almanax du **${current_date.format("DD/MM")}** au **${moment().add(required_almanax, 'days').format("DD/MM")}**`)
     for (let i = 0; i < required_almanax; i++) {
         const date: moment.Moment = current_date.add(1, 'days');
         const almanax: any = getDate(date.format("DD/MM"))[0];
-        embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description}\n`, true);
+        embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description.replace(/(?<=\d+)\s+(?=%)/g, '')}\n`, true);
     }
     return embed;
 }
