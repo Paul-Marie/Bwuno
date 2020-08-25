@@ -53,7 +53,7 @@ bot.on('message', async (message: Message): Promise<void> => {
         try {
             functions[sentence[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence, config);
         } catch (err) {
-            message.channel.send(format(sentences['fr'].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
+            message.channel.send(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
         }
     }
 });
