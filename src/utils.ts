@@ -5,6 +5,7 @@ import * as sentences from "../resources/language.json";
 import * as year from "../resources/year.json";
 import * as settings from "../resources/config.json";
 import * as moment from 'moment';
+import { guild } from './commands';
 
 moment.locale('fr');
 
@@ -144,39 +145,38 @@ export const createFutureEmbed = (required_almanax: number) => {
 }
 
 // TODO URGENT
-export const createGuildEmbed = async (guild_info: any) => {
-    const embed: MessageEmbed = new MessageEmbed()
+export const createGuildEmbed = async (guild_info: any, lang: number): Promise<MessageEmbed> => {
+    const icon: any = { "Meneur": '🔺', "Bras Droit": '▫' };
+    const pillars: string = guild_info.pillars.map((element: any) => {
+        const symbol: string = icon[element.role] || '▪';
+        return `${symbol} [${element.name}](https://google.com) (lvl ${element.lvl}) **${element.role}**`;
+    }).join('\n');
+    const activities: string = guild_info.activities.map((element: any) => {
+        const symbol: string = (element.action.includes("rejoin")) ? '🔹' :
+            (element.action.includes("maison", "home")) ? '▫' : '🔸';
+        const adjective: string = (element.name && !lang) ? 'a' : ' ';
+        return `${symbol} [${element.time}] **${element.name || ' '}** ${adjective} ${element.action}`;
+    }).join('\n');
+    return new MessageEmbed()
         .setColor('0x4E4EC8')
-        /*.setTitle(`**Almanax du ${moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM")}**`)
-        .setURL(`https://www.krosmoz.com/fr/almanax/${almanax.Date}?game=dofustouch`)
-        .setThumbnail(almanax.Offrande_Image)
-        .addField("🙏 Offrande:", `[**${almanax.Offrande_Name}**](${almanax.URL}) **x${almanax.Offrande_Quantity}**`)
-        .addField("📜 Bonus:", `\`\`\`${almanax.Bonus_Description}\`\`\`\n*Type de Bonus*: __${almanax.Bonus_Type}__`)
-        .addField("⏳ Temps:", "Cette almanax aura lieu " + (
-            (remaining_days) <= 1 ? (
-                (remaining_days == 1) ? "**demain**" : "**aujourd'hui**"
-            ) : `dans **${remaining_days}** jours`), true)
-          .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + (
-	          (Number(average_price) >= 0)
-		    ? "+" : "") + `${average_price}%** comparé à la semaine derniere.`, true)
-    if (almanax.Event_Name) {
-        embed.addField(`🎉 Event: **${almanax.Event_Name}**`, almanax.Event_Description)
-        embed.setImage(almanax.Event_Image)
-    }*/
-    return embed;
+        .setTitle(guild_info.guild_name)
+        .setURL(guild_info.link)
+        .setThumbnail(guild_info.icon)
+        .addField(sentences[lang].INFO_GUILD_PILLARS, pillars)
+        .addField(sentences[lang].INFO_GUILD_HISTORY, activities)
+        .setFooter(format(sentences[lang].INFO_GUILD_FOOTER, guild_info.alliance_name,
+            guild_info.alliance_members, guild_info.alliance_guilds_number), guild_info.alliance_emblem);
 }
 
 // TODO URGENT
 export const createGuildErrorEmbed = async (lang: number, argument: string, link: string, mode: number): Promise<MessageEmbed> => {
     const content: any = [ ["guilde", "alliance"], ["guild", "alliance"] ];
-    console.log(link)
-    const embed: MessageEmbed = new MessageEmbed()
+    return new MessageEmbed()
         .setColor('0xFF0000')
 	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} ${sentences[lang]["ERROR_NOT_FOUND"]}`)
 	    .setDescription(format(sentences[lang].ERROR_CONTENT_NOT_FOUND, content[lang][mode], content[lang][mode], link))
 	    .setImage(settings.bruno.not_found_url)
         .setTimestamp()
 	    .setFooter(sentences[lang].ERROR_LOST, settings.bruno.thumbnail_author);
-    return embed;
 }
 
