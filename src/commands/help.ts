@@ -7,7 +7,7 @@ import { format } from 'format';
 export const help = (message: Message, line: void, config: any): void => {
         const embed: MessageEmbed = new MessageEmbed()
                 .setColor(0x4E4EC8)
-                .setThumbnail(settings.bruno.thumbnail)
+                .setThumbnail(settings.bruno.thumbnail_help)
                 .setAuthor(settings.bruno.name, settings.bruno.imageURL)
                 .addField(`\`${config.prefix}help\``, sentences[config.lang].INFO_HELP_BASE)
                 .addField(`\`${config.prefix}lang ['fr'|'en']\``, format(sentences[config.lang].INFO_HELP_LANG, settings.bruno.name))

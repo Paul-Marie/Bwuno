@@ -140,3 +140,40 @@ export const createFutureEmbed = (required_almanax: number) => {
     }
     return embed;
 }
+
+// TODO URGENT
+export const createGuildEmbed = async (guild_info: any) => {
+    const embed: MessageEmbed = new MessageEmbed()
+        .setColor('0x4E4EC8')
+        /*.setTitle(`**Almanax du ${moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM")}**`)
+        .setURL(`https://www.krosmoz.com/fr/almanax/${almanax.Date}?game=dofustouch`)
+        .setThumbnail(almanax.Offrande_Image)
+        .addField("🙏 Offrande:", `[**${almanax.Offrande_Name}**](${almanax.URL}) **x${almanax.Offrande_Quantity}**`)
+        .addField("📜 Bonus:", `\`\`\`${almanax.Bonus_Description}\`\`\`\n*Type de Bonus*: __${almanax.Bonus_Type}__`)
+        .addField("⏳ Temps:", "Cette almanax aura lieu " + (
+            (remaining_days) <= 1 ? (
+                (remaining_days == 1) ? "**demain**" : "**aujourd'hui**"
+            ) : `dans **${remaining_days}** jours`), true)
+          .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + (
+	          (Number(average_price) >= 0)
+		    ? "+" : "") + `${average_price}%** comparé à la semaine derniere.`, true)
+    if (almanax.Event_Name) {
+        embed.addField(`🎉 Event: **${almanax.Event_Name}**`, almanax.Event_Description)
+        embed.setImage(almanax.Event_Image)
+    }*/
+    return embed;
+}
+
+// TODO URGENT
+export const createGuildErrorEmbed = async (lang: number, argument: string, link: string, mode: number): Promise<MessageEmbed> => {
+    const content: any = [ ["guilde", "alliance"], ["guild", "alliance"] ];
+    console.log(link)
+    const embed: MessageEmbed = new MessageEmbed()
+        .setColor('0xFF0000')
+	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} Introuvable`)
+	    .setDescription(`Cette ${content[lang][mode]} n'existe pas selon le site officiel.\nSi tu penses que cette ${content[lang][mode]} existe réelement, clique [ICI](${link}).`)
+	    .setImage(settings.bruno.not_found_url)
+        .setTimestamp()
+	    .setFooter('Je crois que je me suis encore perdu...', settings.bruno.thumbnail_author);
+    return embed;
+}
