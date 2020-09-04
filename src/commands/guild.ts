@@ -1,12 +1,10 @@
 import * as sentences from "../../resources/language.json";
 import * as settings from "../../resources/config.json";
 import { createGuildEmbed, createGuildErrorEmbed } from "../utils";
-import { Message, MessageEmbed } from 'discord.js';
+import { Message } from 'discord.js';
 import { format } from 'format';
 import JSSoup from 'jssoup'; 
 import * as request from 'async-request';
-
-const lang: any = ['fr', 'en', 'es'];
 
 // TODO To optimize / rework entirely
 export const guild = async (message: Message, line: string[], config: any): Promise<Message> => {
@@ -14,7 +12,7 @@ export const guild = async (message: Message, line: string[], config: any): Prom
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}alliance []`));
     line.shift()
     const argument: string = line.join('+').toLowerCase();
-    const base_url: string = format(settings.encyclopedia.guild_url, lang[config.lang]);
+    const base_url: string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.guild_url[config.lang]}`;
     const query_string: string = `?text=${argument}&guild_server_id%5B%5D=${config.server_id+402}&guild_level_min=1&guild_level_max=200`
     const response: any = await request(`${base_url}${query_string}`);
     if (response.statusCode === 200) {
@@ -61,4 +59,4 @@ export const guild = async (message: Message, line: string[], config: any): Prom
             message.channel.send(await createGuildErrorEmbed(config.lang, argument, `${base_url}${query_string}`, 0));
         }
     }
-}        
+}

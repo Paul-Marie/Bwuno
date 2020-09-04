@@ -30,6 +30,9 @@
         "ERROR_INSUFFICIENT_ARGUMENT": "🥵 La commande s'utilise comme ceci: `%s`.",
         "ERROR_INCORRECT_DATE_OR_ITEM": "🥵 Date ou Item introuvable.",
         "ERROR_INCORRECT_DATE": "🥵 Date introuvable.",
+        "ERROR_NOT_FOUND": "Introuvable",
+        "ERROR_CONTENT_NOT_FOUND": "Cette %s n'existe pas selon le site officiel.\nSi tu penses que cette %s existe réelement, clique [ICI](%s).",
+        "ERROR_LOST": "Je crois que je me suis encore perdu...",
         "ERROR_INSUFFICIENT_PERMISSIONS": "🥵 Tu n'as pas les permissions nécéssaire, demande à un admin."
     },
     "1": {
@@ -63,6 +66,9 @@
         "ERROR_INSUFFICIENT_ARGUMENT": "🥵 This command is used like this: `%s`.",
         "ERROR_INCORRECT_DATE_OR_ITEM": "🥵 Date or Item not found.",
         "ERROR_INCORRECT_DATE": "🥵 Date not found.",
+        "ERROR_NOT_FOUND": "not found",
+        "ERROR_CONTENT_NOT_FOUND": "This %s doesn't exist according to official site.\nIf you really think this %s may exist, click [HERE](%s).",
+        "ERROR_LOST": "I got lost, Here we go again...",
         "ERROR_INSUFFICIENT_PERMISSIONS": "🥵 You don't have required permissions, ask to an admin."
     }
 }

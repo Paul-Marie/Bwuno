@@ -11,8 +11,12 @@
     },
     "encyclopedia": {
         "base_url": "https://www.dofus-touch.com",
-        "alliance_url": "https://www.dofus-touch.com/fr/mmorpg/communaute/annuaires/pages-alliances",
-        "guild_url": "https://www.dofus-touch.com/%s/mmorpg/communaute/annuaires/pages-guildes"
+        "alliance_url": [
+            "fr/mmorpg/communaute/annuaires/pages-alliances", "en/mmorpg/community/directories/alliance-pages"
+        ],
+        "guild_url": [
+            "fr/mmorpg/communaute/annuaires/pages-guildes", "en/mmorpg/community/directories/guild-pages"
+        ]
     },
     "bruno": {
         "name": "Brüno",

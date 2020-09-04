@@ -1,5 +1,7 @@
 import { MessageEmbed } from 'discord.js';
+import { format } from 'format';
 import request from 'async-request';
+import * as sentences from "../resources/language.json";
 import * as year from "../resources/year.json";
 import * as settings from "../resources/config.json";
 import * as moment from 'moment';
@@ -170,10 +172,11 @@ export const createGuildErrorEmbed = async (lang: number, argument: string, link
     console.log(link)
     const embed: MessageEmbed = new MessageEmbed()
         .setColor('0xFF0000')
-	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} Introuvable`)
-	    .setDescription(`Cette ${content[lang][mode]} n'existe pas selon le site officiel.\nSi tu penses que cette ${content[lang][mode]} existe réelement, clique [ICI](${link}).`)
+	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} ${sentences[lang]["ERROR_NOT_FOUND"]}`)
+	    .setDescription(format(sentences[lang].ERROR_CONTENT_NOT_FOUND, content[lang][mode], content[lang][mode], link))
 	    .setImage(settings.bruno.not_found_url)
         .setTimestamp()
-	    .setFooter('Je crois que je me suis encore perdu...', settings.bruno.thumbnail_author);
+	    .setFooter(sentences[lang].ERROR_LOST, settings.bruno.thumbnail_author);
     return embed;
 }
+
