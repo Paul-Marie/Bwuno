@@ -1,6 +1,6 @@
 {
     "discord": {
-        "token": "",
+        "token": "NjQyOTM1NDYzMDQ4NjQyNTcw.Xchc6g.Rp4_cHb9aXFBf4C_MIrPyZJBuqA",
         "embed_limit": 25,
         "length_limit": 2000
     },
@@ -9,10 +9,17 @@
     "dt_price": {
         "api_url": "https://api.dt-price.com/value"
     },
+    "encyclopedia": {
+        "base_url": "https://www.dofus-touch.com",
+        "alliance_url": "https://www.dofus-touch.com/fr/mmorpg/communaute/annuaires/pages-alliances",
+        "guild_url": "https://www.dofus-touch.com/%s/mmorpg/communaute/annuaires/pages-guildes"
+    },
     "bruno": {
         "name": "Brüno",
         "default_prefix": "!bruno ",
         "imageURL": "https://cdn.discordapp.com/avatars/642935463048642570/39d03bf8899872de9ead0e871f6cfda6.png",
-        "thumbnail": "https://cdn.discordapp.com/attachments/643158383104491545/643462146696413184/aide.png"
+        "thumbnail_help": "https://cdn.discordapp.com/attachments/643158383104491545/643462146696413184/aide.png",
+        "thumbnail_author": "https://i.imgur.com/jlfQOoY.png",
+        "not_found_url": "https://i.imgur.com/nDZnMwu.jpg"
     }
 }
