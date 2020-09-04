@@ -48,13 +48,13 @@ export const guild = async (message: Message, line: string[], config: any): Prom
                 data.activities = history.map((element: any) => {
                     try {
                         return {
-                            time: element.contents[0].contents[0]._text.replace(/(.*)il y a/g, '').replace(/:/g, '').trim(),
+                            time: element.contents[0].contents[0]._text.replace(/(.*)il y a/g, '').replace(/:/g, '').replace(/ago/g, '').trim(),
                             name: element.contents[1].nextElement._text.trim(),
                             action: element.contents[1].nextElement.nextElement._text.trim()
                         };
                     } catch (err) {
                         return {
-                            time: element.contents[0].contents[0]._text.replace(/(.*)il y a/g, '').replace(/:/g, '').trim(),
+                            time: element.contents[0].contents[0]._text.replace(/(.*)il y a/g, '').replace(/:/g, '').replace(/ago/g, '').trim(),
                             action: element.contents[0].nextElement.nextElement._text.replace(/\s*([.])/g, '').trim() + '.'
                         };
                     }

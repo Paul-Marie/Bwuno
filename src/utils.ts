@@ -146,14 +146,14 @@ export const createFutureEmbed = (required_almanax: number) => {
 
 // TODO URGENT
 export const createGuildEmbed = async (guild_info: any, lang: number): Promise<MessageEmbed> => {
-    const icon: any = { "Meneur": '🔺', "Bras Droit": '▫' };
+    const icon: any = { "Meneur": '🔺', "Leader": '🔺', "Bras Droit": '▫', "Second in Command": '▫' };
     const pillars: string = guild_info.pillars.map((element: any) => {
         const symbol: string = icon[element.role] || '▪';
         return `${symbol} [${element.name}](https://google.com) (lvl ${element.lvl}) **${element.role}**`;
     }).join('\n');
     const activities: string = guild_info.activities.map((element: any) => {
         const symbol: string = (element.action.includes("rejoin")) ? '🔹' :
-            (element.action.includes("maison", "home")) ? '▫' : '🔸';
+            (["maison", "home"].some(elem => element.action.includes(elem))) ? '▫' : '🔸';
         const adjective: string = (element.name && !lang) ? 'a' : ' ';
         return `${symbol} [${element.time}] **${element.name || ' '}** ${adjective} ${element.action}`;
     }).join('\n');
