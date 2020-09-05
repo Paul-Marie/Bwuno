@@ -162,7 +162,9 @@ export const createGuildEmbed = async (guild_info: any, lang: number): Promise<M
         .setTitle(guild_info.guild_name)
         .setURL(guild_info.link)
         .setThumbnail(guild_info.icon)
-        .addField(sentences[lang].INFO_GUILD_PILLARS, pillars)
+        .setDescription(format(sentences[lang].INFO_GUILD_DESCRIPTION, guild_info.level, 
+            moment(guild_info.created_at, "DD/MM/YYYY").format("DD MMMM YYYY"), guild_info.server))
+        .addField(sentences[lang].INFO_GUILD_PILLARS, pillars, true)
         .addField(sentences[lang].INFO_GUILD_HISTORY, activities)
         .setFooter(format(sentences[lang].INFO_GUILD_FOOTER, guild_info.alliance_name,
             guild_info.alliance_members, guild_info.alliance_guilds_number), guild_info.alliance_emblem);

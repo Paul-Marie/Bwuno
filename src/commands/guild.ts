@@ -9,8 +9,8 @@ import * as request from 'async-request';
 // TODO To optimize / rework entirely
 export const guild = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
-        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}alliance []`));
-    line.shift()
+        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}guild [name]`));
+    line.shift();
     const argument: string = line.join('+').toLowerCase();
     const base_url: string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.guild_url[config.lang]}`;
     const query_string: string = `?text=${argument}&guild_server_id%5B%5D=${config.server_id+402}&guild_level_min=1&guild_level_max=200`
@@ -29,7 +29,7 @@ export const guild = async (message: Message, line: string[], config: any): Prom
                 const history: any = soup.findAll('div', 'ak-title');
                 data.link = link;
                 data.guild_name = soup.find('h1').contents[1]._text.trim();
-                data.icon = soup.find('div', 'ak-emblem').attrs.style.replace(/.*\(|\).*/g, '');
+                data.icon = soup.find('div', 'ak-emblem').attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '') + "128_128-0.png";
                 data.level = main_info.nextElement.nextElement.nextElement._text.trim().replace(/(.*)\s/g, '');
                 data.member_number = main_info.contents[1].previousElement._text.trim().replace(/\s(.*)/g, '');
                 data.server = soup.find('span', 'server').nextElement.nextElement.contents[0]._text.trim();
@@ -59,7 +59,6 @@ export const guild = async (message: Message, line: string[], config: any): Prom
                         };
                     }
                 }).slice(0, 15);
-                console.log(data);
                 message.channel.send(await createGuildEmbed(data, config.lang));
             } else
                 message.channel.send(await createGuildErrorEmbed(config.lang, argument, `${base_url}${query_string}`, 0));
