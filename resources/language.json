@@ -13,6 +13,11 @@
         "INFO_HELP_TYPE": "🔍 Liste toute les dates d'almanax comportant le type de bonus désiré",
         "INFO_HELP_ALMANAX": "🔍 Liste les almanax de l'item ou la date spécifié",
         "INFO_HELP_ZODIAC": "🔍 Donne le signe du doziac de la date d'anniversaire spécifié",
+        "INFO_GUILD_HISTORY": "📅 Historique:",
+        "INFO_GUILD_PILLARS": "👪 Membres Principaux:",
+        "INFO_GUILD_INFORMATIONS": "ℹ️ Informations:",
+        "INFO_GUILD_DESCRIPTION": "Niveau: `%s` / Créer le %s\nServeur: `%s`",
+        "INFO_GUILD_FOOTER": "%s -  %s membres  dans  %s guildes",
         "SUCCESS_SERVER_CHANGED": "😇 Je vous communiquerais dorénavent l'évolution des prix du serveur `%s`.",
         "SUCCESS_LANGUAGE_CHANGED": "😇 La langue à bien été changer en `%s`.",
         "SUCCESS_AUTO_ACTIVATED": "😇 J'enverrais dorénavent les almanax du jour a minuit dans ce salon !.",
@@ -30,6 +35,9 @@
         "ERROR_INSUFFICIENT_ARGUMENT": "🥵 La commande s'utilise comme ceci: `%s`.",
         "ERROR_INCORRECT_DATE_OR_ITEM": "🥵 Date ou Item introuvable.",
         "ERROR_INCORRECT_DATE": "🥵 Date introuvable.",
+        "ERROR_NOT_FOUND": "Introuvable",
+        "ERROR_CONTENT_NOT_FOUND": "Cette %s n'existe pas selon le site officiel.\nSi tu penses que cette %s existe réelement, clique [ICI](%s).",
+        "ERROR_LOST": "Je crois que je me suis encore perdu...",
         "ERROR_INSUFFICIENT_PERMISSIONS": "🥵 Tu n'as pas les permissions nécéssaire, demande à un admin."
     },
     "1": {
@@ -46,6 +54,11 @@
         "INFO_HELP_TYPE": "🔍 List all almanax's date with desired bonus type",
         "INFO_HELP_ALMANAX": "🔍 Display all date or item's almanax",
         "INFO_HELP_ZODIAC": "🔍 Enter your birthday to know your Doziac' symbol",
+        "INFO_GUILD_HISTORY": "📅 History:",
+        "INFO_GUILD_PILLARS": "👪 Principal Members:",
+        "INFO_GUILD_INFORMATIONS": "ℹ️ Informations::",
+        "INFO_GUILD_DESCRIPTION": "Level: `%s` / Created the %s\nServer: `%s`",
+        "INFO_GUILD_FOOTER": "%s -  %s members  in  %s guilds",
         "SUCCESS_SERVER_CHANGED": "😇 I'll now comunicate to you `%s`'s prices evolution.",
         "SUCCESS_LANGUAGE_CHANGED": "😇 Language successfully switched to `%s`.",
         "SUCCESS_AUTO_ACTIVATED": "😇 I'll now post almanax of day's resume at midnight in this channel !.",
@@ -63,6 +76,9 @@
         "ERROR_INSUFFICIENT_ARGUMENT": "🥵 This command is used like this: `%s`.",
         "ERROR_INCORRECT_DATE_OR_ITEM": "🥵 Date or Item not found.",
         "ERROR_INCORRECT_DATE": "🥵 Date not found.",
+        "ERROR_NOT_FOUND": "not found",
+        "ERROR_CONTENT_NOT_FOUND": "This %s doesn't exist according to official site.\nIf you really think this %s may exist, click [HERE](%s).",
+        "ERROR_LOST": "I got lost, Here we go again...",
         "ERROR_INSUFFICIENT_PERMISSIONS": "🥵 You don't have required permissions, ask to an admin."
     }
 }

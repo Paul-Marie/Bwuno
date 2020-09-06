@@ -13,12 +13,12 @@ export const auto = async (message: Message, line: string[], config: any): Promi
     let activate: Boolean;
     if (argument === '')
         activate = !config.auto_mode;
-    if (["on", "true", "1", "start"].includes(argument) || activate) {
+    if (["on", "true", "1", "start"].some(elem => argument.includes(elem)) || activate) {
         if (config.auto_mode)
             return message.channel.send(format(sentences[config.lang].ERROR_AUTO_ALREADY_ACTIVATED, `<#${message.channel.id}>`));
         await Server.findOneAndUpdate({ identifier: config.identifier }, { auto_mode: true, auto_channel: message.channel.id });
         message.channel.send(sentences[config.lang].SUCCESS_AUTO_ACTIVATED);
-    } else if (["off", "false", "0", "stop"].includes(argument) || !activate) {
+    } else if (["off", "false", "0", "stop"].some(elem => argument.includes(elem)) || !activate) {
         if (!config.auto_mode)
             return message.channel.send(sentences[config.lang].ERROR_AUTO_NOT_ACTIVATED);
         await Server.findOneAndUpdate({ identifier: config.identifier }, { auto_mode: false, auto_channel: undefined });

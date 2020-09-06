@@ -1,8 +1,11 @@
 import { MessageEmbed } from 'discord.js';
+import { format } from 'format';
 import request from 'async-request';
+import * as sentences from "../resources/language.json";
 import * as year from "../resources/year.json";
 import * as settings from "../resources/config.json";
 import * as moment from 'moment';
+import { guild } from './commands';
 
 moment.locale('fr');
 
@@ -140,3 +143,42 @@ export const createFutureEmbed = (required_almanax: number) => {
     }
     return embed;
 }
+
+// TODO URGENT
+export const createGuildEmbed = async (guild_info: any, lang: number): Promise<MessageEmbed> => {
+    const icon: any = { "Meneur": '🔺', "Leader": '🔺', "Bras Droit": '▫', "Second in Command": '▫' };
+    const pillars: string = guild_info.pillars.map((element: any) => {
+        const symbol: string = icon[element.role] || '▪';
+        return `${symbol} [${element.name}](https://google.com) (lvl ${element.lvl}) **${element.role}**`;
+    }).join('\n');
+    const activities: string = guild_info.activities.map((element: any) => {
+        const symbol: string = (element.action.includes("rejoin")) ? '🔹' :
+            (["maison", "home"].some(elem => element.action.includes(elem))) ? '▫' : '🔸';
+        const adjective: string = (element.name && !lang) ? 'a' : ' ';
+        return `${symbol} [${element.time}] **${element.name || ' '}** ${adjective} ${element.action}`;
+    }).join('\n');
+    return new MessageEmbed()
+        .setColor('0x4E4EC8')
+        .setTitle(guild_info.guild_name)
+        .setURL(guild_info.link)
+        .setThumbnail(guild_info.icon)
+        .setDescription(format(sentences[lang].INFO_GUILD_DESCRIPTION, guild_info.level, 
+            moment(guild_info.created_at, "DD/MM/YYYY").format("DD MMMM YYYY"), guild_info.server))
+        .addField(sentences[lang].INFO_GUILD_PILLARS, pillars, true)
+        .addField(sentences[lang].INFO_GUILD_HISTORY, activities)
+        .setFooter(format(sentences[lang].INFO_GUILD_FOOTER, guild_info.alliance_name,
+            guild_info.alliance_members, guild_info.alliance_guilds_number), guild_info.alliance_emblem);
+}
+
+// TODO URGENT
+export const createGuildErrorEmbed = async (lang: number, argument: string, link: string, mode: number): Promise<MessageEmbed> => {
+    const content: any = [ ["guilde", "alliance"], ["guild", "alliance"] ];
+    return new MessageEmbed()
+        .setColor('0xFF0000')
+	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} ${sentences[lang]["ERROR_NOT_FOUND"]}`)
+	    .setDescription(format(sentences[lang].ERROR_CONTENT_NOT_FOUND, content[lang][mode], content[lang][mode], link))
+	    .setImage(settings.bruno.not_found_url)
+        .setTimestamp()
+	    .setFooter(sentences[lang].ERROR_LOST, settings.bruno.thumbnail_author);
+}
+
