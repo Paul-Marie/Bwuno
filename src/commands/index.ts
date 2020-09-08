@@ -11,4 +11,4 @@ export { server } from "./server";
 export { lang } from "./lang";
 export { prefix } from "./prefix";
 export { guild } from "./guild";
-export { alliance } from "./alliance";
+export { whois } from "./whois";
