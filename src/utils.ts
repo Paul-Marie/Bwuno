@@ -194,13 +194,15 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
         bot.emojis.cache.find(emoji => emoji.id === "754737711729999913").toString(), data.marry_name, data.marry_link) : '';
     const alignment: string = (data.marry_name) ? format(sentences[lang].INFO_WHOIS_ALIGNMENT,
         bot.emojis.cache.find(emoji => emoji.id === alignment_list[data.alignment_name]).toString(), data.alignment_name, data.alignment_level) : '';
+    const kolizeum: string = (data.koli) ? format(sentences[lang].INFO_WHOIS_KOLIZEUM,
+        bot.emojis.cache.find(emoji => emoji.id === "754836911306309792").toString(), data.koli) : '';
     return new MessageEmbed()
         .setColor('0x4E4EC8')
         .setTitle(data.name)
         .setURL(data.link)
         .setThumbnail(data.guild_emblem)
         .setDescription(`${data.title ? ("`" + data.title + "`") : ""}\n${data.presentation || ""}`)
-        .addField(`${data.race} (${data.level}):`, `${informations}${guild}${marry}${alignment}`)
+        .addField(`${data.race} (${data.level}):`, `${informations}${guild}${marry}${alignment}${kolizeum}`)
     /*,)
             bot.emojis.cache.find(emoji => emoji.id === "754496011552161803"), data.element)),*/
         .addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(
