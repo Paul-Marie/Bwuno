@@ -22,7 +22,7 @@
         "INFO_WHOIS_GUILD": "%s Guilde: [%s](%s) (lvl %s)\n",
         "INFO_WHOIS_RANK": "%s Rang: `%s`\n",
         "INFO_WHOIS_MARRY": "%s Marié à: [%s](%s)\n",
-        "INFO_WHOIS_ALIGNEMENT": "%s Alignement: `%s` (lvl %s)\n",
+        "INFO_WHOIS_ALIGNMENT": "%s Alignement: `%s` (lvl %s)\n",
         "INFO_WHOIS_SUCCESS": "%s Succès `%s` (`%s`):",
         "INFO_WHOIS_EXPERIENCE": "%s XP `%s`:",
         "INFO_WHOIS_LADDER_CONTENT": "%s: **%s**\n%s: **%s**\n%s: **%s**\n%s: **%s**",

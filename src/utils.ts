@@ -180,6 +180,7 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
         "Herdegrize": "754738579808321537", "Brutas": "754738573089177700",
         "Dodge": "754738574548533379", "Grandapan": "754738579430965399"
     };
+    const alignment_list: any = { "bonta": "754819105894170707", "brakmar": "754819103704875039" };
     const get_success_icon: any = (success: string) => {
         return Math.floor(Math.sqrt(Math.pow(
             Number(success.replace(/ /g, '')) - 2000, 2)) / 2000)};
@@ -191,16 +192,17 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
         bot.emojis.cache.find(emoji => emoji.id === "754737710937145504").toString(), data.guild_name, data.guild_link, data.guild_level) : '';
     const marry: string = (data.marry_name) ? format(sentences[lang].INFO_WHOIS_MARRY,
         bot.emojis.cache.find(emoji => emoji.id === "754737711729999913").toString(), data.marry_name, data.marry_link) : '';
+    const alignment: string = (data.marry_name) ? format(sentences[lang].INFO_WHOIS_ALIGNMENT,
+        bot.emojis.cache.find(emoji => emoji.id === alignment_list[data.alignment_name]).toString(), data.alignment_name, data.alignment_level) : '';
     return new MessageEmbed()
         .setColor('0x4E4EC8')
         .setTitle(data.name)
         .setURL(data.link)
         .setThumbnail(data.guild_emblem)
         .setDescription(`${data.title ? ("`" + data.title + "`") : ""}\n${data.presentation || ""}`)
-        .addField(`${data.race} (${data.level}):`, `${informations}${guild}${marry}`)
+        .addField(`${data.race} (${data.level}):`, `${informations}${guild}${marry}${alignment}`)
     /*,)
-            bot.emojis.cache.find(emoji => emoji.id === "754496011552161803"), data.element)),
-            bot.emojis.cache.find(emoji => emoji.id === "754770281230237786"), data.alignement))*/
+            bot.emojis.cache.find(emoji => emoji.id === "754496011552161803"), data.element)),*/
         .addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(
             sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].success, data.ladder[1].text,
             data.ladder[1].success, data.ladder[2].text, data.ladder[2].success, data.ladder[3].text.replace(/ Cogita/g,''), data.ladder[3].success,
