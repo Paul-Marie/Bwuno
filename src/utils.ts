@@ -5,11 +5,11 @@ import * as sentences from "../resources/language.json";
 import * as year from "../resources/year.json";
 import * as settings from "../resources/config.json";
 import * as moment from 'moment';
-import { guild } from './commands';
+//import { guild } from './commands';
 
 moment.locale('fr');
 
-//
+// TODO to replace by triche regexp
 export const formatDate = (sentence: string[]) => {
     return ((sentence.map((elem: string) => {
         return elem.split("-").map((item: string) => {
@@ -171,8 +171,34 @@ export const createGuildEmbed = async (guild_info: any, lang: number): Promise<M
 }
 
 // TODO URGENT
-export const createGuildErrorEmbed = async (lang: number, argument: string, link: string, mode: number): Promise<MessageEmbed> => {
-    const content: any = [ ["guilde", "alliance"], ["guild", "alliance"] ];
+export const createPlayerEmbed = async (data: any, lang: number): Promise<MessageEmbed> => {
+    const icon: any = { "Meneur": '🔺', "Leader": '🔺', "Bras Droit": '▫', "Second in Command": '▫' };
+    /*const pillars: string = guild_info.pillars.map((element: any) => {
+        const symbol: string = icon[element.role] || '▪';
+        return `${symbol} [${element.name}](https://google.com) (lvl ${element.lvl}) **${element.role}**`;
+    }).join('\n');
+    const activities: string = guild_info.activities.map((element: any) => {
+        const symbol: string = (element.action.includes("rejoin")) ? '🔹' :
+            (["maison", "home"].some(elem => element.action.includes(elem))) ? '▫' : '🔸';
+        const adjective: string = (element.name && !lang) ? 'a' : ' ';
+        return `${symbol} [${element.time}] **${element.name || ' '}** ${adjective} ${element.action}`;
+    }).join('\n');
+    */
+    return new MessageEmbed()
+        .setColor('0x4E4EC8')
+        .setTitle(data.name)
+        .setURL(data.link)
+        .setThumbnail(data.icon)
+        .setDescription(data.description)
+        //.addField(sentences[lang].INFO_GUILD_PILLARS, pillars, true)
+        //.addField(sentences[lang].INFO_GUILD_HISTORY, activities)
+        .setImage(data.image)
+        .setFooter(format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name,
+            data.alliance_members, data.alliance_guilds_number), data.alliance_emblem);
+}
+
+export const createErrorEmbed = async (lang: number, link: string, mode: number): Promise<MessageEmbed> => {
+    const content: any = [ ["guilde", "alliance", "personne"], ["guild", "alliance", "player"] ];
     return new MessageEmbed()
         .setColor('0xFF0000')
 	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} ${sentences[lang]["ERROR_NOT_FOUND"]}`)

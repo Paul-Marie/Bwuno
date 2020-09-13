@@ -1,6 +1,6 @@
 import * as sentences from "../../resources/language.json";
 import * as settings from "../../resources/config.json";
-import { createGuildEmbed, createGuildErrorEmbed } from "../utils";
+import { createGuildEmbed, createErrorEmbed } from "../utils";
 import { Message } from 'discord.js';
 import { format } from 'format';
 import JSSoup from 'jssoup'; 
@@ -61,9 +61,9 @@ export const guild = async (message: Message, line: string[], config: any): Prom
                 }).slice(0, 15);
                 message.channel.send(await createGuildEmbed(data, config.lang));
             } else
-                message.channel.send(await createGuildErrorEmbed(config.lang, argument, `${base_url}${query_string}`, 0));
+                message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0));
         } catch (err) {
-            message.channel.send(await createGuildErrorEmbed(config.lang, argument, `${base_url}${query_string}`, 0));
+            message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0));
         }
     }
 }
