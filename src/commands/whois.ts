@@ -37,50 +37,50 @@ export const whois = async (message: Message, line: string[], config: any): Prom
             if (answer.statusCode === 200) {
                 const data: any = {};
                 const soup: JSSoup = new JSSoup(answer.body);
-                const presentation: any = soup.find('div', 'ak-character-presentation');
                 const main_info: any = soup.find('div', 'ak-directories-main-infos');
-                const layers_info: any = soup.findAll('div', 'ak-panel-content');
+                // TODO change orientation
                 data.image = `${soup.find('div', 'ak-entitylook').attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}200_350-0.png`;
                 data.name = soup.find('h1', 'ak-return-link').contents[1]._text.trim();
                 data.level = main_info.nextElement.nextElement.nextElement._text.trim().replace(/(.*)\s/g, '');
                 data.race = main_info.contents[1].previousElement._text.trim();
                 try {
-                    data.title = main_info.contents[2].previousElement._text.trim();
+                    data.title = soup.find('span', 'ak-directories-grade').nextElement._text.trim();
                 } catch { };
-                data.server = server_name[config.server_id];
+                data.server = soup.find('span', 'ak-directories-server-name').nextElement._text.trim();
                 try {
-                    data.presentation = presentation.contents[1].nextElement._text;
-                    data.presentation_date = presentation.contents[1].previousElement._text.replace(/(.*)\s/g, '');
-                } catch {  };
-                try {
-                    data.guild_name = layers_info[4].contents[1].nextElement._text.trim();
-                    data.guild_link = layers_info[4].contents[1].attrs.href;
-                    data.guild_image = `${layers_info[4].contents[1].previousElement.attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}128_128-0.png`;
-                    data.guild_level = layers_info[4].contents[3].nextElement._text.trim().replace(/(.*)\s/g, '');
-                    data.guild_members = layers_info[4].contents[5].nextElement._text.trim().replace(/\s(.*)/g, '');
+                    data.presentation = soup.find('div', 'ak-character-presentation').contents[1].nextElement._text.trim();
                 } catch { };
                 try {
-                    data.alliance_image = layers_info[5].contents[1].previousElement.attrs.style.replace(/.*\(|\).*/g, '');
-                    data.alliance_link = layers_info[5].contents[1].attrs.href;
-                    data.alliance_name = layers_info[5].contents[1].nextElement._text.trim();
-                    data.alliance_guilds_number = layers_info[5].contents[3].nextElement._text.trim().replace(/\s(.*)/g, '');
-                    data.alliance_members = layers_info[5].contents[4].nextElement._text.trim().replace(/\s(.*)/g, '');
+                    data.guild_emblem = `${soup.find('div', 'ak-character-illu').contents[0].attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}128_128-0.png`;
+                    data.guild_link = `${settings.encyclopedia.base_url}${soup.find('a', 'ak-infos-guildname').attrs.href}`;
+                    data.guild_name = soup.find('a', 'ak-infos-guildname').nextElement._text.trim();
+                    data.guild_level = soup.find('span', 'ak-infos-guildlevel').nextElement._text.trim().replace(/(.*)\s/g, '');
+                    data.guild_members = soup.find('span', 'ak-infos-guildmembers').nextElement.nextElement.nextElement._text.trim().replace(/\s(.*)/g, '');
                 } catch { };
                 try {
-                    data.success = layers_info[6].contents[0].contents[1].contents[0].nextElement.contents[0].nextElement.nextElement.nextElement._text.trim();
-                    data.success_last_time = layers_info[6].contents[1].contents[1].nextElement._text.trim().replace(/(.*)il y a/g, '').replace(/:/g, '').replace(/ago/g, '').trim();
+                    data.alliance_emblem = soup.find('div', 'ak-infos-alliance-illu').contents[0].attrs.style.replace(/.*\(|\).*/g, '');
+                    data.alliance_link = `${settings.encyclopedia.base_url}${soup.find('a', 'ak-infos-alliancename').attrs.href}`;
+                    data.alliance_name = soup.find('a', 'ak-infos-alliancename').nextElement._text.trim();
+                    data.alliance_guilds_number = soup.find('span', 'ak-infos-allianceguild').nextElement._text.trim().replace(/\s(.*)/g, '');
+                    data.alliance_members = soup.find('span', 'ak-infos-allianceguild').nextElement.nextElement.nextElement._text.trim().replace(/\s(.*)/g, '');
+                } catch { };
+                try {
+                    data.success_percent = soup.find('div', 'ak-progress-bar-text').nextElement._text.trim();
                     // TODO erase `as unlocked`
-                    data.success_last_name = layers_info[6].contents[1].contents[3]._text.trim();
+                    data.success_last_name = soup.find('div', 'ak-last-achievement').contents[3]._text.trim();//.nextElement._text.trim();
+                    data.success_last_time = soup.find('div', 'ak-last-achievement').contents[1].nextElement._text.trim().replace(/(.*)il y a/g, '').replace(/:/g, '').replace(/ago/g, '').trim();
                 } catch { };
                 try {
-                    data.marry_name = layers_info[7].contents[2].nextElement._text.trim();
-                    data.marry_link = `${base_url}/${layers_info[7].contents[2].attrs.href}`;
+                    data.marry_name = soup.find('a', 'ak-infos-spousename').nextElement._text.trim();
+                    data.marry_link = `${base_url}/${soup.find('a', 'ak-infos-spousename').attrs.href}`;
                 } catch { };
                 try {
-                    data.jobs = layers_info[8].nextElement.contents.map((element: any) => {
+                    const jobs: JSSoup = soup.findAll('div', 'ak-title');
+                    jobs.pop()
+                    data.jobs = jobs.map((element: any) => {
                         return {
-                            level: element.contents[0].contents[0].contents[1].contents[1].nextElement._text.trim(),
-                            name: element.contents[0].contents[0].contents[1].contents[0].nextElement.nextElement._text.trim()
+                            level: element.nextElement.contents[0].nextElement.nextElement._text.trim(),
+                            name: element.nextElement.nextElement._text.trim()
                         }
                     });
                 } catch { };
@@ -93,11 +93,10 @@ export const whois = async (message: Message, line: string[], config: any): Prom
                       }*/
                 } catch { };
                 try {
-                    data.ladder = layers_info[10].contents.map((element: any) => {
-                        return element.contents[0].previousElement.previousElement._text;
-                    });
-                    data.ladder.shift();
-                    data.classification = layers_info[10].contents[3].contents[1].contents.map((element: any) => {
+                    data.xp = soup.find('div', 'ak-total-xp').contents[1].nextElement._text.trim();
+                    data.koli = soup.find('div', 'ak-total-kolizeum').contents[1].nextElement._text.trim();
+                    data.success = soup.find('div', 'ak-total-success').contents[1].nextElement._text.trim();
+                    data.ladder = soup.find('tbody').contents.map((element: any) => {
                         return {
                             text: element.contents[0].contents[0]._text.trim(),
                             xp: element.contents[1].contents[0]._text,
