@@ -185,17 +185,20 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
             Number(success.replace(/ /g, '')) - 2000, 2)) / 2000)};
     const success_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === success_list[get_success_icon(data.success)]);
     const xp_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754770281230237786");
+    const informations: string = format(sentences[lang].INFO_WHOIS_SERVER,
+        bot.emojis.cache.find(emoji => emoji.id === server_list[data.server]).toString(), data.server);
+    const guild: string = (data.guild_name) ? format(sentences[lang].INFO_WHOIS_GUILD,
+        bot.emojis.cache.find(emoji => emoji.id === "754737710937145504").toString(), data.guild_name, data.guild_link, data.guild_level) : '';
+    const marry: string = (data.marry_name) ? format(sentences[lang].INFO_WHOIS_MARRY,
+        bot.emojis.cache.find(emoji => emoji.id === "754737711729999913").toString(), data.marry_name, data.marry_link) : '';
     return new MessageEmbed()
         .setColor('0x4E4EC8')
         .setTitle(data.name)
         .setURL(data.link)
         .setThumbnail(data.guild_emblem)
         .setDescription(`${data.title ? ("`" + data.title + "`") : ""}\n${data.presentation || ""}`)
-        .addField(`${data.race} (${data.level}):`, format(
-            sentences[lang].INFO_WHOIS_INFORMATIONS,
-            (bot.emojis.cache.find(emoji => emoji.id === server_list[data.server]) as GuildEmoji).toString(), data.server,
-            (bot.emojis.cache.find(emoji => emoji.id === "754737710937145504") as GuildEmoji).toString(), data.guild_name, data.guild_link, data.guild_level,
-            (bot.emojis.cache.find(emoji => emoji.id === "754737711729999913") as GuildEmoji).toString(), data.marry_name, data.marry_link))/*,)
+        .addField(`${data.race} (${data.level}):`, `${informations}${guild}${marry}`)
+    /*,)
             bot.emojis.cache.find(emoji => emoji.id === "754496011552161803"), data.element)),
             bot.emojis.cache.find(emoji => emoji.id === "754770281230237786"), data.alignement))*/
         .addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(

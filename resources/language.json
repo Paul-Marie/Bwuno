@@ -18,7 +18,7 @@
         "INFO_GUILD_INFORMATIONS": "ℹ️ Informations:",
         "INFO_GUILD_DESCRIPTION": "Niveau: `%s` / Créer le %s\nServeur: `%s`",
         "INFO_GUILD_FOOTER": "%s -  %s membres  dans  %s guildes",
-        "INFO_WHOIS_INFORMATIONS": "%s Serveur: `%s`\n%s Guilde: [%s](%s) (lvl %s)\n%s Marié à: [%s](%s)",
+        "INFO_WHOIS_SERVER": "%s Serveur: `%s`\n",
         "INFO_WHOIS_GUILD": "%s Guilde: [%s](%s) (lvl %s)\n",
         "INFO_WHOIS_RANK": "%s Rang: `%s`\n",
         "INFO_WHOIS_MARRY": "%s Marié à: [%s](%s)\n",
