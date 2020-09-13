@@ -18,6 +18,7 @@
         "INFO_GUILD_INFORMATIONS": "ℹ️ Informations:",
         "INFO_GUILD_DESCRIPTION": "Niveau: `%s` / Créer le %s\nServeur: `%s`",
         "INFO_GUILD_FOOTER": "%s -  %s membres  dans  %s guildes",
+        "INFO_WHOIS_INFORMATIONS": "Serveur: `%s`\nTitre: `%s`\nGuilde: [%s](%s) (lvl %s)\nMarié à: [%s](%s)",
         "SUCCESS_SERVER_CHANGED": "😇 Je vous communiquerais dorénavent l'évolution des prix du serveur `%s`.",
         "SUCCESS_LANGUAGE_CHANGED": "😇 La langue à bien été changer en `%s`.",
         "SUCCESS_AUTO_ACTIVATED": "😇 J'enverrais dorénavent les almanax du jour a minuit dans ce salon !.",

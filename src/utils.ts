@@ -1,11 +1,11 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, GuildEmoji } from 'discord.js';
 import { format } from 'format';
 import request from 'async-request';
 import * as sentences from "../resources/language.json";
 import * as year from "../resources/year.json";
 import * as settings from "../resources/config.json";
 import * as moment from 'moment';
-//import { guild } from './commands';
+import bot from "./discord";
 
 moment.locale('fr');
 
@@ -171,27 +171,37 @@ export const createGuildEmbed = async (guild_info: any, lang: number): Promise<M
 }
 
 // TODO URGENT
-export const createPlayerEmbed = async (data: any, lang: number): Promise<MessageEmbed> => {
+export const createPlayerEmbed = async (data: any, lang: number) => {//: Promise<MessageEmbed> => {
     const icon: any = { "Meneur": '🔺', "Leader": '🔺', "Bras Droit": '▫', "Second in Command": '▫' };
-    /*const pillars: string = guild_info.pillars.map((element: any) => {
-        const symbol: string = icon[element.role] || '▪';
-        return `${symbol} [${element.name}](https://google.com) (lvl ${element.lvl}) **${element.role}**`;
-    }).join('\n');
-    const activities: string = guild_info.activities.map((element: any) => {
-        const symbol: string = (element.action.includes("rejoin")) ? '🔹' :
-            (["maison", "home"].some(elem => element.action.includes(elem))) ? '▫' : '🔸';
-        const adjective: string = (element.name && !lang) ? 'a' : ' ';
-        return `${symbol} [${element.time}] **${element.name || ' '}** ${adjective} ${element.action}`;
-    }).join('\n');
-    */
+    const success_list: string[] = [
+        "754494905375785080", "754494973101211659", "754494998040543346",
+        "754494998342402070", "754495072648560723"];
+    const server_list: any = {
+        "Oshimo": "754738578327601153", "Terra Cogita": "754738579778961458",
+        "Herdegrize": "754738579808321537", "Brutas": "754738573089177700",
+        "Dodge": "754738574548533379", "Grandapan": "754738579430965399"
+    };
+    const get_success_icon: any = (success: string) => {
+        return Math.floor(Math.sqrt(Math.pow(
+            Number(success.replace(/ /g, '')) - 2000, 2)) / 2000)};
+    const player_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754737709821591562");
+    const success_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === success_list[get_success_icon(data.success)]);
+    const carac_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754496011552161803");
+    const server_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === server_list[data.server]);
+    const title_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754737709532053679");
+    const guild_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754737710937145504");
+    const marry_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754737709532053679");
     return new MessageEmbed()
         .setColor('0x4E4EC8')
         .setTitle(data.name)
         .setURL(data.link)
-        .setThumbnail(data.icon)
-        .setDescription(data.description)
-        //.addField(sentences[lang].INFO_GUILD_PILLARS, pillars, true)
-        //.addField(sentences[lang].INFO_GUILD_HISTORY, activities)
+        .setThumbnail(data.guild_emblem)
+        .setDescription(data.presentation || '')
+        .addField(`${player_icon} ${data.race} (${data.level}):`,
+                  `${server_icon}, ${data.server}, ${title_icon}, ${data.title} ${guild_icon} ${data.guild_name} ${data.guild_link} ${data.guild_level} ${marry_icon} ${data.marry_name} ${data.marry_link}`)//))/*,)
+//            bot.emojis.cache.find(emoji => emoji.id === "754496011552161803"), data.element))*/
+        //.addField(`${guild}`, format(
+            //sentences[lang].INFO_WHOIS_INFORMATIONS))
         .setImage(data.image)
         .setFooter(format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name,
             data.alliance_members, data.alliance_guilds_number), data.alliance_emblem);
