@@ -108,7 +108,7 @@ const formateData = (answer: any, base_url: string, link: string) => {
     try {
         data.alignment_name = soup.find('span', 'ak-alignment-name').nextElement._text.trim();
         data.alignment_level = soup.find('span', 'ak-alignment-level').nextElement._text.trim();
-    } catch (err) { console.log(err) };
+    } catch { };
     try {
         data.characteristics_link = `${settings.encyclopedia.base_url}${soup.findAll('ul', "ak-nav-links")[0].contents[1].contents[0].attrs.href}`;
         /*const ack: any = await request(data.characteristics_link);

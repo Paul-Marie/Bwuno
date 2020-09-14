@@ -186,25 +186,26 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
             Number(success.replace(/ /g, '')) - 2000, 2)) / 2000)};
     const success_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === success_list[get_success_icon(data.success)]);
     const xp_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754770281230237786");
+    const jobs_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754731377274126438");
     const informations: string = format(sentences[lang].INFO_WHOIS_SERVER,
         bot.emojis.cache.find(emoji => emoji.id === server_list[data.server]).toString(), data.server);
     const guild: string = (data.guild_name) ? format(sentences[lang].INFO_WHOIS_GUILD,
         bot.emojis.cache.find(emoji => emoji.id === "754737710937145504").toString(), data.guild_name, data.guild_link, data.guild_level) : '';
     const marry: string = (data.marry_name) ? format(sentences[lang].INFO_WHOIS_MARRY,
         bot.emojis.cache.find(emoji => emoji.id === "754737711729999913").toString(), data.marry_name, data.marry_link) : '';
-    const alignment: string = (data.marry_name) ? format(sentences[lang].INFO_WHOIS_ALIGNMENT,
+    const alignment: string = (data.alignment_name) ? format(sentences[lang].INFO_WHOIS_ALIGNMENT,
         bot.emojis.cache.find(emoji => emoji.id === alignment_list[data.alignment_name]).toString(), data.alignment_name, data.alignment_level) : '';
     const kolizeum: string = (data.koli) ? format(sentences[lang].INFO_WHOIS_KOLIZEUM,
         bot.emojis.cache.find(emoji => emoji.id === "754836911306309792").toString(), data.koli) : '';
-    return new MessageEmbed()
+    const stats: string = (data.koli) ? format(sentences[lang].INFO_WHOIS_STATS,
+        bot.emojis.cache.find(emoji => emoji.id === "754496011552161803").toString(), data.koli) : '';
+    const embed: MessageEmbed = new MessageEmbed()
         .setColor('0x4E4EC8')
         .setTitle(data.name)
         .setURL(data.link)
-        .setThumbnail(data.guild_emblem)
+        .setThumbnail(data.guild_emblem.replace(/dofus/g, 'dofustouch'))
         .setDescription(`${data.title ? ("`" + data.title + "`") : ""}\n${data.presentation || ""}`)
         .addField(`${data.race} (${data.level}):`, `${informations}${guild}${marry}${alignment}${kolizeum}`)
-    /*,)
-            bot.emojis.cache.find(emoji => emoji.id === "754496011552161803"), data.element)),*/
         .addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(
             sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].success, data.ladder[1].text,
             data.ladder[1].success, data.ladder[2].text, data.ladder[2].success, data.ladder[3].text.replace(/ Cogita/g,''), data.ladder[3].success,
@@ -217,6 +218,11 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
         .setFooter((data.alliance_name) ?
             format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name,
                    data.alliance_members, data.alliance_guilds_number) : "", data.alliance_emblem);
+    if (data.jobs.length)
+        embed.addField(format(sentences[lang].INFO_WHOIS_JOBS, jobs_icon.toString()), data.jobs.map((element: any) => {
+            return `🔸 \`${element.name}\` ${element.level.replace(/\D/g, "")}`;
+        }).join('\n'), true);
+    return embed;
 }
 
 export const createErrorEmbed = async (lang: number, link: string, mode: number): Promise<MessageEmbed> => {
