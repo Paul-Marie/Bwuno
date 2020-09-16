@@ -20,6 +20,7 @@
         "INFO_GUILD_FOOTER": "%s -  %s membres  dans  %s guildes",
         "INFO_WHOIS_SERVER": "%s Serveur: `%s`\n",
         "INFO_WHOIS_GUILD": "%s Guilde: [%s](%s) (lvl %s)\n",
+        "INFO_WHOIS_ROLE": "%s Poste: **%s** (pour %s membres)\n",
         "INFO_WHOIS_RANK": "%s Rang: `%s`\n",
         "INFO_WHOIS_MARRY": "%s Marié à: [%s](%s)\n",
         "INFO_WHOIS_ALIGNMENT": "%s Alignement: `%s` (lvl %s)\n",
