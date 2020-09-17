@@ -17,11 +17,11 @@
         "player_url": [ "fr/mmorpg/communaute/annuaires/pages-persos", "en/mmorpg/community/directories/character-pages" ]
     },
     "bruno": {
-        "name": "Brüno",
-        "default_prefix": "!bruno ",
-        "imageURL": "https://cdn.discordapp.com/avatars/642935463048642570/39d03bf8899872de9ead0e871f6cfda6.png",
-        "thumbnail_help": "https://cdn.discordapp.com/attachments/643158383104491545/643462146696413184/aide.png",
-        "thumbnail_author": "https://i.imgur.com/jlfQOoY.png",
-        "not_found_url": "https://i.imgur.com/nDZnMwu.jpg"
+        "name": "Bwuno",
+        "default_prefix": "!bwuno ",
+        "imageURL": "",
+        "thumbnail_help": "",
+        "thumbnail_author": "",
+        "not_found_url": ""
     }
 }
