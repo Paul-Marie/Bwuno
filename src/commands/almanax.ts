@@ -3,6 +3,8 @@ import { getDate, formatDate, getList, createEmbed, createFutureEmbed } from "..
 import { Message, MessageEmbed } from 'discord.js';
 import { format } from 'format';
 
+// TODO make possible to use `{prefix}almanax` and get today's almanax
+// Send all almanax's informations Embed from a date
 export const almanax = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}almanax [date|item]`));
@@ -25,7 +27,7 @@ export const almanax = async (message: Message, line: string[], config: any): Pr
     }
 }
 
-//
+// Send all almanax's informations Embed from an item's name
 export const item = async (message: Message, line: string[], config: any): Promise<Message> => {
     line.shift();
     const argument: string = line.join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");

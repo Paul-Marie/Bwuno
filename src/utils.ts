@@ -26,7 +26,7 @@ export const formatDate = (sentence: string[]) => {
     }).join(" ");
 }
 
-//
+// Return the mean price of last 7 days of an item
 export const getPrice = async (item_id: number, server_id: number = 2): Promise<string> => {
     try {
         const url: string = settings.dt_price.api_url;
@@ -53,7 +53,7 @@ export const getPrice = async (item_id: number, server_id: number = 2): Promise<
     }
 }
 
-//
+// Return all almanax's date with the requested bonus's type
 export const getAlmanax = (bonus_types: string[]) => {
     return Object.keys(year).map(key => {
         if (bonus_types.indexOf(year[key].Bonus_Type) >= 0) {
@@ -65,7 +65,7 @@ export const getAlmanax = (bonus_types: string[]) => {
     });
 }
 
-//
+// Return all almanax's objects where `item_name` is the offander
 export const getList = (item_name: string) => {
     return Object.keys(year).map((key: string) => {
         const epured: string = year[key].Offrande_Name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
@@ -76,11 +76,11 @@ export const getList = (item_name: string) => {
     });
 }
 
-//
+// Return all almanax of day from a string
 export const getDate = (requested_date: string) => {
-    const accepted_format: string[] = ["DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM",
-                                       "DD/MM/YYYY", "DD-Math.M-YYYY", "DD MM YYYY",
-                                       "DD MMM YYYY", "DD MMMM YYYY"];
+    const accepted_format: string[] = [
+        "DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
+        "DD-Math.M-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
     return accepted_format.map((format: string) => {
         const date: moment.Moment = moment(requested_date, format, 'fr', true);
         if (date.isValid())
@@ -90,7 +90,7 @@ export const getDate = (requested_date: string) => {
     });
 }
 
-//
+// Return the number of day between today and the requested date
 export const getRemainingDay = (almanax_date: string) => {
     const current_date: Date = new Date();
     const date: moment.Moment = moment([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
@@ -101,7 +101,7 @@ export const getRemainingDay = (almanax_date: string) => {
     return Math.abs(Math.trunc(diff));
 }
 
-// TODO URGENT
+// Create an embed with all almanax of day's informations
 export const createEmbed = async (almanax: any, id: number) => {
     const remaining_days: number = getRemainingDay(almanax.Date);
     const average_price: string = await getPrice(almanax.URL.substring(62).split('-')[0], id);
@@ -126,7 +126,7 @@ export const createEmbed = async (almanax: any, id: number) => {
     return embed;
 }
 
-// 
+// Return an embed where all field are almanax from tomorrow to the next 25 days
 export const createFutureEmbed = (required_almanax: number) => {
     const current_date: moment.Moment = moment();
     if (required_almanax > settings.discord.embed_limit)
@@ -144,7 +144,7 @@ export const createFutureEmbed = (required_almanax: number) => {
     return embed;
 }
 
-// TODO URGENT
+// Create and return an Embed containing all guild's informations
 export const createGuildEmbed = async (guild_info: any, lang: number): Promise<MessageEmbed> => {
     const icon: any = { "Meneur": '🔺', "Leader": '🔺', "Bras Droit": '▫', "Second in Command": '▫' };
     const pillars: string = guild_info.pillars.map((element: any) => {
@@ -170,7 +170,7 @@ export const createGuildEmbed = async (guild_info: any, lang: number): Promise<M
             guild_info.alliance_members, guild_info.alliance_guilds_number), guild_info.alliance_emblem);
 }
 
-// TODO URGENT
+// TODO Uggly function returning an Embed all formated info on a player
 export const createPlayerEmbed = async (data: any, lang: number): Promise<MessageEmbed> => {
     const success_list: string[] = [
         "754731377995415703", "754494973101211659", "754494998040543346",
@@ -226,6 +226,7 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
     return embed;
 }
 
+// Create an Embed sent in case of error(s)
 export const createErrorEmbed = async (lang: number, link: string, mode: number): Promise<MessageEmbed> => {
     const content: any = [ ["guilde", "alliance", "personne"], ["guild", "alliance", "player"] ];
     return new MessageEmbed()
@@ -237,6 +238,7 @@ export const createErrorEmbed = async (lang: number, link: string, mode: number)
 	    .setFooter(sentences[lang].ERROR_LOST, settings.bruno.thumbnail_author);
 }
 
+// Return main element from target' statistics
 const getElement = (stats: any[], lvl: string): string => {
     const level: number = Number(lvl);
     const getTotal = (name: string) => Number(stats.filter((elem: any) => elem.name === name)[0].total);

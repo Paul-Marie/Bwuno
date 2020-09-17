@@ -3,7 +3,7 @@ import * as settings from "../../resources/config.json";
 import { Message, MessageEmbed } from 'discord.js';
 import { format } from 'format';
 
-// 
+// Return an Embed object containing all commands' informations
 export const help = (message: Message, line: void, config: any): void => {
         const embed: MessageEmbed = new MessageEmbed()
                 .setColor(0x4E4EC8)

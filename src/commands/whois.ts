@@ -9,6 +9,7 @@ import * as request from 'async-request';
 const server_name: string[] = [undefined, "Oshimo", "Terra Cogita", "Herdegrize"]
 
 // TODO To optimize / rework entirely
+// Display all player informations
 export const whois = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}whois [pseudo]`));
@@ -54,11 +55,12 @@ export const whois = async (message: Message, line: string[], config: any): Prom
     }
 }
 
+// Parse all page informations and return an epured object
 const formateData = async (answer: any, base_url: string, link: string, lang: number) => {
     const data: any = {};
     const soup: JSSoup = new JSSoup(answer.body);
     const main_info: any = soup.find('div', 'ak-directories-main-infos');
-    // TODO change orientation
+    // TODO may change image's orientation ?
     data.image = `${soup.find('div', 'ak-entitylook').attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}200_350-0.png`;
     data.name = soup.find('h1', 'ak-return-link').contents[1]._text.trim();
     data.level = main_info.nextElement.nextElement.nextElement._text.trim().replace(/(.*)\s/g, '');
@@ -141,6 +143,7 @@ const formateData = async (answer: any, base_url: string, link: string, lang: nu
     return data;
 }
 
+// Parse each guild member's page until find the required player and return his role
 const getGuildRole = async (link: string, name: string, lang: number, page: number = 1) => {
     const guild_answer: any = await request(`${link}/memb${["res", "ers"][lang]}?page=${page}`);
     const guild_page: JSSoup = new JSSoup(guild_answer.body);

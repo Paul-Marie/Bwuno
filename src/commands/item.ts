@@ -1,8 +1,8 @@
-//import * as sentences from "../../resources/sentence";
 import { getList, createEmbed } from "../../src/utils";
 import { Message, MessageEmbed } from 'discord.js';
 
-//
+// This command was moved to `almanax` command, you can now research almanax by it's offander's item
+// by requesting `${prefix}almanax <item>`. This command will search for an item'stats in encyclopedia
 export const item = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length === 1)
         return message.channel.send("Tu as oublié l'item.");

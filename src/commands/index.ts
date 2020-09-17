@@ -1,5 +1,6 @@
-// File to re-export all comands/* module 
-
+/*
+  File to re-export all comands/* module 
+*/
 export { help } from "./help";
 export { item } from "./item";
 export { almanax } from "./almanax";

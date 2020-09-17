@@ -5,6 +5,7 @@
         "length_limit": 2000
     },
     "mongo": {
+        "url": "mongodb://localhost/bruno"
     },
     "dt_price": {
         "api_url": "https://api.dt-price.com/value"

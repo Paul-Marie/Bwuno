@@ -6,7 +6,7 @@ import { format } from 'format';
 import JSSoup from 'jssoup'; 
 import * as request from 'async-request';
 
-// TODO To optimize / rework entirely
+// Send an Embed containing all guild's information
 export const guild = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}guild [name]`));

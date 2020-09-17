@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 
+// Discord' server model
 const serverSchema = new mongoose.Schema({
     identifier: { type: String, required: true, unique: true },
     name: { type: String, required: true },

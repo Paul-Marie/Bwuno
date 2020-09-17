@@ -5,6 +5,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { format } from 'format';
 import * as request from 'async-request';
 
+// TODO not functionnal. Dofus-Touch's website suck so hard, it's nearly impossible to fetch an alliance with a name
 export const alliance = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}alliance []`));

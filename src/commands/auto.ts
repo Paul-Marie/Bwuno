@@ -3,7 +3,7 @@ import Server from "../models/server";
 import { Message } from 'discord.js';
 import { format } from 'format';
 
-//
+// Activate or desactivate `auto_mode` for a discord' server
 export const auto = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length > 2)
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}auto ['on'|'off']`));

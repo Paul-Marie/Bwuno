@@ -1,3 +1,6 @@
+/*
+  This file contain all the discord logic.
+*/
 import { Client, Message, Guild, GuildChannel, TextChannel } from 'discord.js';
 import { format } from 'format';
 import * as sentences from "../resources/language.json";
@@ -7,6 +10,7 @@ import Server from "./models/server";
 
 const bot: Client = new Client();
 
+// Called when Bwuno is online
 bot.on('ready', (): void => {
     console.log("Actuellement connécté sur les serveurs:");
     try {
@@ -17,6 +21,7 @@ bot.on('ready', (): void => {
     }
 });
 
+// Called when Bwuno join a new discord' server
 bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     const channel: GuildChannel = guild.channels.cache.find((chan: GuildChannel) =>
         ["general", "bienvenue", "acceuil", "bavardage", "hall"]
@@ -30,11 +35,12 @@ bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     });
 });
 
+// Called when Bwuno is kick or ban of a discord' server
 bot.on("guildDelete", async (guild: Guild): Promise<void> => {
     await Server.findOneAndDelete({ identifier: guild.id });
 });
 
-// 
+// Called each time a message is posted on a guild where Bwuno belongs to
 bot.on('message', async (message: Message): Promise<void> => {
     if (!message.guild || message.author.bot)
         return;
