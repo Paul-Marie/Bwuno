@@ -1,12 +1,15 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, GuildEmoji } from 'discord.js';
+import { format } from 'format';
 import request from 'async-request';
+import * as sentences from "../resources/language.json";
 import * as year from "../resources/year.json";
 import * as settings from "../resources/config.json";
 import * as moment from 'moment';
+import bot from "./discord";
 
 moment.locale('fr');
 
-//
+// TODO to replace by triche regexp
 export const formatDate = (sentence: string[]) => {
     return ((sentence.map((elem: string) => {
         return elem.split("-").map((item: string) => {
@@ -139,4 +142,120 @@ export const createFutureEmbed = (required_almanax: number) => {
         embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description}\n`, true);
     }
     return embed;
+}
+
+// TODO URGENT
+export const createGuildEmbed = async (guild_info: any, lang: number): Promise<MessageEmbed> => {
+    const icon: any = { "Meneur": '🔺', "Leader": '🔺', "Bras Droit": '▫', "Second in Command": '▫' };
+    const pillars: string = guild_info.pillars.map((element: any) => {
+        const symbol: string = icon[element.role] || '▪';
+        return `${symbol} [${element.name}](https://google.com) (lvl ${element.lvl}) **${element.role}**`;
+    }).join('\n');
+    const activities: string = guild_info.activities.map((element: any) => {
+        const symbol: string = (element.action.includes("rejoin")) ? '🔹' :
+            (["maison", "home"].some(elem => element.action.includes(elem))) ? '▫' : '🔸';
+        const adjective: string = (element.name && !lang) ? 'a' : ' ';
+        return `${symbol} [${element.time}] **${element.name || ' '}** ${adjective} ${element.action}`;
+    }).join('\n');
+    return new MessageEmbed()
+        .setColor('0x4E4EC8')
+        .setTitle(guild_info.guild_name)
+        .setURL(guild_info.link)
+        .setThumbnail(guild_info.icon)
+        .setDescription(format(sentences[lang].INFO_GUILD_DESCRIPTION, guild_info.level, 
+            moment(guild_info.created_at, "DD/MM/YYYY").format("DD MMMM YYYY"), guild_info.server))
+        .addField(sentences[lang].INFO_GUILD_PILLARS, pillars, true)
+        .addField(sentences[lang].INFO_GUILD_HISTORY, activities)
+        .setFooter(format(sentences[lang].INFO_GUILD_FOOTER, guild_info.alliance_name,
+            guild_info.alliance_members, guild_info.alliance_guilds_number), guild_info.alliance_emblem);
+}
+
+// TODO URGENT
+export const createPlayerEmbed = async (data: any, lang: number): Promise<MessageEmbed> => {
+    const success_list: string[] = [
+        "754731377995415703", "754494973101211659", "754494998040543346",
+        "754494998342402070", "754495072648560723"];
+    const server_list: any = {
+        "Oshimo": "754738578327601153", "Terra Cogita": "754738579778961458",
+        "Herdegrize": "754738579808321537", "Brutas": "754738573089177700",
+        "Dodge": "754738574548533379", "Grandapan": "754738579430965399"
+    };
+    const alignment_list: any = { "bonta": "754819105894170707", "brakmar": "754819103704875039" };
+    const get_success_icon: any = (success: string) => {
+        return Math.floor(Math.sqrt(Math.pow(
+            Number(success.replace(/ /g, '')) - 2000, 2)) / 2000)};
+    const success_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === success_list[get_success_icon(data.success)]);
+    const xp_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754770281230237786");
+    const jobs_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754731377274126438");
+    const informations: string = format(sentences[lang].INFO_WHOIS_SERVER,
+        bot.emojis.cache.find(emoji => emoji.id === server_list[data.server]).toString(), data.server);
+    const guild: string = (data.guild_name) ? format(sentences[lang].INFO_WHOIS_GUILD,
+        bot.emojis.cache.find(emoji => emoji.id === "754737710937145504").toString(), data.guild_name, data.guild_link, data.guild_level) : '';
+    const role: string = (data.guild_name) ? format(sentences[lang].INFO_WHOIS_ROLE,
+        bot.emojis.cache.find(emoji => emoji.id === "754737709532053679").toString(), data.guild_role, data.guild_members) : '';
+    const marry: string = (data.marry_name) ? format(sentences[lang].INFO_WHOIS_MARRY,
+        bot.emojis.cache.find(emoji => emoji.id === "754737711729999913").toString(), data.marry_name, data.marry_link) : '';
+    const alignment: string = (data.alignment_name) ? format(sentences[lang].INFO_WHOIS_ALIGNMENT,
+        bot.emojis.cache.find(emoji => emoji.id === alignment_list[data.alignment_name]).toString(), data.alignment_name, data.alignment_level) : '';
+    const kolizeum: string = (data.koli) ? format(sentences[lang].INFO_WHOIS_KOLIZEUM,
+        bot.emojis.cache.find(emoji => emoji.id === "754836911306309792").toString(), data.koli) : '';
+    const element: string = (data.characteristics_element.length) ? getElement(data.characteristics_element, data.level) : '';
+    const embed: MessageEmbed = new MessageEmbed()
+        .setColor('0x4E4EC8')
+        .setTitle(data.name)
+        .setURL(data.link)
+        .setThumbnail(data.guild_emblem.replace(/dofus/g, 'dofustouch'))
+        .setDescription(`${data.title ? ("`" + data.title + "`") : ""}\n${data.presentation || ""}`)
+        .addField(`${data.race} ${element} (lvl ${data.level}):`, `${informations}${guild}${role}${marry}${alignment}${kolizeum}`)
+        .addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(
+            sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].success, data.ladder[1].text,
+            data.ladder[1].success, data.ladder[2].text, data.ladder[2].success, data.ladder[3].text.replace(/ Cogita/g,''), data.ladder[3].success,
+        ), true)
+        .addField(format(sentences[lang].INFO_WHOIS_EXPERIENCE, xp_icon.toString(), data.xp), format(
+            sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].xp, data.ladder[1].text,
+            data.ladder[1].xp, data.ladder[2].text, data.ladder[2].xp, data.ladder[3].text.replace(/ Cogita/g,''), data.ladder[3].xp,
+        ), true)
+        .setImage(data.image.replace(/touch/g, ''))
+        .setFooter((data.alliance_name) ?
+            format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name,
+                   data.alliance_members, data.alliance_guilds_number) : "", data.alliance_emblem);
+    if (data.jobs.length)
+        embed.addField(format(sentences[lang].INFO_WHOIS_JOBS, jobs_icon.toString()), data.jobs.map((element: any) => {
+            return `🔸 \`${element.name}\` ${element.level.replace(/\D/g, "")}`;
+        }).join('\n'), true);
+    return embed;
+}
+
+export const createErrorEmbed = async (lang: number, link: string, mode: number): Promise<MessageEmbed> => {
+    const content: any = [ ["guilde", "alliance", "personne"], ["guild", "alliance", "player"] ];
+    return new MessageEmbed()
+        .setColor('0xFF0000')
+	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} ${sentences[lang]["ERROR_NOT_FOUND"]}`)
+	    .setDescription(format(sentences[lang].ERROR_CONTENT_NOT_FOUND, content[lang][mode], content[lang][mode], link))
+	    .setImage(settings.bruno.not_found_url)
+        .setTimestamp()
+	    .setFooter(sentences[lang].ERROR_LOST, settings.bruno.thumbnail_author);
+}
+
+const getElement = (stats: any[], lvl: string): string => {
+    const level: number = Number(lvl);
+    const getTotal = (name: string) => Number(stats.filter((elem: any) => elem.name === name)[0].total);
+    const round = (nbr: number) => Math.round((nbr + Number.EPSILON) * 100) / 100;
+    if (level >= 180 && getTotal("Initiative") < 1000)
+        return "*no stuff*";
+    const list: any = {
+        "terre": getTotal("Force"), "feu": getTotal("Intelligence"), "eau": getTotal("Chance"),
+        "air": getTotal("Agilité"), "multi": getTotal("Puissance"), "sasa": getTotal("Puissance"),
+        "retrait": round(getTotal("Retrait PA") / 200)
+    };
+    const max: number = round(list.multi) + Math.max(...(Object.values(list) as number[]));
+    const result: string[] = [];
+    for (const name in list) {
+        // TODO just in case we must had other value to own a more accurate element
+        if (!["retrait"].some(elem => name.includes(elem)))
+            list[name] = round((list[name] + round(list["multi"] * 0.8)) / max);
+        if (list[name] >= 0.7)
+            result.push(name);
+    }
+    return `*${result.join(' / ')}*`;
 }

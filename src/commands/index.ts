@@ -10,3 +10,5 @@ export { auto } from "./auto";
 export { server } from "./server";
 export { lang } from "./lang";
 export { prefix } from "./prefix";
+export { guild } from "./guild";
+export { whois } from "./whois";
