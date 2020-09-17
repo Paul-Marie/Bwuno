@@ -1,6 +1,6 @@
 import * as sentences from "../../resources/language.json";
 import * as settings from "../../resources/config.json";
-import { createGuildEmbed, createErrorEmbed } from "../utils";
+import { createGuildEmbed, createErrorEmbed } from "../utils/embed";
 import { Message } from 'discord.js';
 import { format } from 'format';
 import JSSoup from 'jssoup'; 

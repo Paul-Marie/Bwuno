@@ -1,3 +1,5 @@
+// TODO create a json
+
 export const type_message: any = {
     "Alchimiste": ["Ceuillette abondante"],
     "Benediction": ['Bénédiction de Miss Triste', 'Bénédiction du Fin Patraque', 'Vitalité débordante'],

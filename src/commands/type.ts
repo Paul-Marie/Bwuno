@@ -1,7 +1,7 @@
 import * as sentences from "../../resources/language.json";
 import { type_message } from "../../resources/info";
 import * as settings from "../../resources/config.json";
-import { getAlmanax } from "../../src/utils";
+import { getAlmanax } from "../utils/utils";
 import { Message } from 'discord.js';
 import { format } from 'format';
 

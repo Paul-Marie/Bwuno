@@ -1,4 +1,4 @@
-import { getDate, formatDate } from "../../src/utils";
+import { getDate, formatDate } from "../utils/utils";
 import { Message, MessageEmbed } from 'discord.js';
 import { format } from 'format';
 import * as zodiac_data from "../../resources/zodiac.json";

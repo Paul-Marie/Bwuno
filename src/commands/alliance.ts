@@ -11,11 +11,8 @@ export const alliance = async (message: Message, line: string[], config: any): P
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}alliance []`));
     line.shift()
     const argument: string = line.join('+').toLowerCase();
-    console.log(argument)
-    console.log(`${settings.encyclopedia.alliance_url}/${argument}`)
     const response: any = await request(`${settings.encyclopedia.alliance_url}/${argument}`);
     //const response: any = await request(`https://google.com`);
-    console.log(response)
     if (response.statusCode === 200) {
         const data: any = JSON.parse(response.body);
         //const current_date: moment.Moment = moment();

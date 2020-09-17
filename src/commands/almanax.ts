@@ -1,5 +1,6 @@
 import * as sentences from "../../resources/language.json";
-import { getDate, formatDate, getList, createEmbed, createFutureEmbed } from "../../src/utils";
+import { getDate, formatDate, getList } from "../utils/utils";
+import { createEmbed, createFutureEmbed } from "../utils/embed";
 import { Message, MessageEmbed } from 'discord.js';
 import { format } from 'format';
 

@@ -1,4 +1,5 @@
-import { getList, createEmbed } from "../../src/utils";
+import { getList } from "../utils/utils";
+import {createEmbed } from "../utils/embed";
 import { Message, MessageEmbed } from 'discord.js';
 
 // This command was moved to `almanax` command, you can now research almanax by it's offander's item
