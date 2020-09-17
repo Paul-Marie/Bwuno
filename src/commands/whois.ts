@@ -125,9 +125,7 @@ const formateData = async (answer: any, base_url: string, link: string, lang: nu
         }
     } catch { };
     try {
-        data.xp = soup.find('div', 'ak-total-xp').contents[1].nextElement._text.trim();
-        data.koli = soup.find('div', 'ak-total-kolizeum').contents[1].nextElement._text.trim();
-        data.success = soup.find('div', 'ak-total-success').contents[1].nextElement._text.trim();
+        data.success = soup.find('span', 'ak-score-text').contents[0]._text.trim();
         data.ladder = soup.find('tbody').contents.map((element: any) => {
             return {
                 text: element.contents[0].contents[0]._text.trim(),
@@ -136,9 +134,10 @@ const formateData = async (answer: any, base_url: string, link: string, lang: nu
                 success: element.contents[3].contents[0]._text
             };
         });
+        data.xp = soup.find('div', 'ak-total-xp').contents[1].nextElement._text.trim() || '-';
+        data.koli = soup.find('div', 'ak-total-kolizeum').contents[1].nextElement._text.trim() || '-';
     } catch { };
     data.link = link;
-    console.log(data)
     return data;
 }
 
