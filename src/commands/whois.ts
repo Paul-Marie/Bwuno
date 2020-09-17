@@ -59,7 +59,6 @@ const formateData = async (answer: any, base_url: string, link: string, lang: nu
     const soup: JSSoup = new JSSoup(answer.body);
     const main_info: any = soup.find('div', 'ak-directories-main-infos');
     // TODO change orientation
-    //console.log(data)
     data.image = `${soup.find('div', 'ak-entitylook').attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}200_350-0.png`;
     data.name = soup.find('h1', 'ak-return-link').contents[1]._text.trim();
     data.level = main_info.nextElement.nextElement.nextElement._text.trim().replace(/(.*)\s/g, '');
@@ -111,12 +110,19 @@ const formateData = async (answer: any, base_url: string, link: string, lang: nu
         data.alignment_level = soup.find('span', 'ak-alignment-level').nextElement._text.trim();
     } catch { };
     try {
-        data.characteristics_link = `${settings.encyclopedia.base_url}${soup.findAll('ul', "ak-nav-links")[0].contents[1].contents[0].attrs.href}`;
-        /*const ack: any = await request(data.characteristics_link);
-          if (ack.statusCode === 200) {
-          const search: JSSoup = new JSSoup(ack.body);
-          data.characteristics_element = search.findAll('div', "ak-caracteristics-table-container")[0].contents[1];
-          }*/
+        data.characteristics_link = `https://www.dofus-touch.com/fr/mmorpg/communaute/annuaires/pages-persos/${link.replace(/(.*\/)*/, '')}/caracteristiques`;
+        const ack: any = await request(data.characteristics_link);
+        if (ack.statusCode === 200) {
+            const search: JSSoup = new JSSoup(ack.body);
+            data.characteristics_element = search.findAll('tr', "ak-bg-odd").concat(search.findAll('tr', "ak-bg-even")).map((elem: any) => {
+                if (elem.contents[3])
+                    return {
+                        name: elem.contents[1].nextElement.contents[0]._text,
+                        base: elem.contents[3].contents[0]._text,
+                        total: elem.contents[4].contents[0]._text
+                    };
+            }).filter((elem: any) => elem);
+        }
     } catch { };
     try {
         data.xp = soup.find('div', 'ak-total-xp').contents[1].nextElement._text.trim();
@@ -132,8 +138,7 @@ const formateData = async (answer: any, base_url: string, link: string, lang: nu
         });
     } catch { };
     data.link = link;
-    // TODO get player's element
-    //console.log(data)
+    console.log(data)
     return data;
 }
 

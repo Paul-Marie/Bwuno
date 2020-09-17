@@ -199,13 +199,14 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
         bot.emojis.cache.find(emoji => emoji.id === alignment_list[data.alignment_name]).toString(), data.alignment_name, data.alignment_level) : '';
     const kolizeum: string = (data.koli) ? format(sentences[lang].INFO_WHOIS_KOLIZEUM,
         bot.emojis.cache.find(emoji => emoji.id === "754836911306309792").toString(), data.koli) : '';
+    const element: string = (data.characteristics_element.length) ? getElement(data.characteristics_element, data.level) : '';
     const embed: MessageEmbed = new MessageEmbed()
         .setColor('0x4E4EC8')
         .setTitle(data.name)
         .setURL(data.link)
         .setThumbnail(data.guild_emblem.replace(/dofus/g, 'dofustouch'))
         .setDescription(`${data.title ? ("`" + data.title + "`") : ""}\n${data.presentation || ""}`)
-        .addField(`${data.race} (${data.level}):`, `${informations}${guild}${role}${marry}${alignment}${kolizeum}`)
+        .addField(`${data.race} ${element} (lvl ${data.level}):`, `${informations}${guild}${role}${marry}${alignment}${kolizeum}`)
         .addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(
             sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].success, data.ladder[1].text,
             data.ladder[1].success, data.ladder[2].text, data.ladder[2].success, data.ladder[3].text.replace(/ Cogita/g,''), data.ladder[3].success,
@@ -236,3 +237,25 @@ export const createErrorEmbed = async (lang: number, link: string, mode: number)
 	    .setFooter(sentences[lang].ERROR_LOST, settings.bruno.thumbnail_author);
 }
 
+const getElement = (stats: any[], lvl: string): string => {
+    const level: number = Number(lvl);
+    const getTotal = (name: string) => Number(stats.filter((elem: any) => elem.name === name)[0].total);
+    const round = (nbr: number) => Math.round((nbr + Number.EPSILON) * 100) / 100;
+    if (level >= 180 && getTotal("Initiative") < 1000)
+        return "*no stuff*";
+    const list: any = {
+        "terre": getTotal("Force"), "feu": getTotal("Intelligence"), "eau": getTotal("Chance"),
+        "air": getTotal("Agilité"), "multi": getTotal("Puissance"), "sasa": getTotal("Puissance"),
+        "retrait": round(getTotal("Retrait PA") / 200)
+    };
+    const max: number = round(list.multi) + Math.max(...(Object.values(list) as number[]));
+    const result: string[] = [];
+    for (const name in list) {
+        // TODO just in case we must had other value to own a more accurate element
+        if (!["retrait"].some(elem => name.includes(elem)))
+            list[name] = round((list[name] + round(list["multi"] * 0.8)) / max);
+        if (list[name] >= 0.7)
+            result.push(name);
+    }
+    return `*${result.join(' / ')}*`;
+}
