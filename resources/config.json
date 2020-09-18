@@ -8,6 +8,7 @@
         "url": "mongodb://localhost/bruno"
     },
     "dt_price": {
+        "invite_url": "https://discord.com/invite/NvruPar",
         "api_url": "https://api.dt-price.com/value"
     },
     "encyclopedia": {
@@ -19,6 +20,7 @@
     "bruno": {
         "name": "Bwuno",
         "default_prefix": "!bwuno ",
+        "invite_link": "https://discordapp.com/oauth2/authorize?&client_id=642935463048642570&scope=bot&permissions=469990567",
         "imageURL": "",
         "thumbnail_help": "",
         "thumbnail_author": "",
