@@ -2,7 +2,7 @@ import * as sentences from "../../resources/language.json";
 import * as info from "../../resources/info";
 import { Message, MessageEmbed } from 'discord.js';
 
-// TODO to comment
+// Display list of all almanax's bonuses type
 export const list = (message: Message, line: void, config: any): void => {
     let type_list: string[] = ['', '', ''];
     for (const title of Object.keys(info.list_message.xp))

@@ -1,11 +1,11 @@
 import * as sentences from "../../resources/language.json";
 import { type_message } from "../../resources/info";
 import * as settings from "../../resources/config.json";
-import { getAlmanax } from "../../src/utils";
+import { getAlmanax } from "../utils/utils";
 import { Message } from 'discord.js';
 import { format } from 'format';
 
-// 
+// Send a succession of message containing all almanax's date with the required type
 export const type = (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}type [type]`));

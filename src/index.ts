@@ -2,11 +2,10 @@ import * as mongoose from 'mongoose';
 import * as config from "../resources/config.json";
 import bot from "./discord";
 
-const databaseURL = process.env.MONGODB_URI || 'mongodb://localhost/bruno';
-
+// Start MongoDB's database and import a file if launched with a third argument
 async function run(): Promise<void> {
     try {
-        await mongoose.connect(databaseURL, {
+        await mongoose.connect(config.mongo.url, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useFindAndModify: false,
@@ -16,8 +15,7 @@ async function run(): Promise<void> {
         console.error(err);
         process.exit(1);
     }
-
-    console.log(`Connected to database at ${databaseURL}`);
+    console.log(`Connected to database at ${config.mongo.url}`);
     try {
         if (process.argv.length === 3) {
             let script: any = await import(`${process.argv[2]}`)

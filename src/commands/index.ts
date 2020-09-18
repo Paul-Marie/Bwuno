@@ -1,5 +1,6 @@
-// File to re-export all comands/* module 
-
+/*
+  File to re-export all comands/* module 
+*/
 export { help } from "./help";
 export { item } from "./item";
 export { almanax } from "./almanax";
@@ -10,3 +11,6 @@ export { auto } from "./auto";
 export { server } from "./server";
 export { lang } from "./lang";
 export { prefix } from "./prefix";
+export { guild } from "./guild";
+export { whois } from "./whois";
+export { info } from "./info";

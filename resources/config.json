@@ -5,14 +5,25 @@
         "length_limit": 2000
     },
     "mongo": {
+        "url": "mongodb://localhost/bruno"
     },
     "dt_price": {
+        "invite_url": "https://discord.com/invite/NvruPar",
         "api_url": "https://api.dt-price.com/value"
     },
+    "encyclopedia": {
+        "base_url": "https://www.dofus-touch.com",
+        "alliance_url": [ "fr/mmorpg/communaute/annuaires/pages-alliances", "en/mmorpg/community/directories/alliance-pages" ],
+        "guild_url": [ "fr/mmorpg/communaute/annuaires/pages-guildes", "en/mmorpg/community/directories/guild-pages" ],
+        "player_url": [ "fr/mmorpg/communaute/annuaires/pages-persos", "en/mmorpg/community/directories/character-pages" ]
+    },
     "bruno": {
-        "name": "Brüno",
-        "default_prefix": "!bruno ",
-        "imageURL": "https://cdn.discordapp.com/avatars/642935463048642570/39d03bf8899872de9ead0e871f6cfda6.png",
-        "thumbnail": "https://cdn.discordapp.com/attachments/643158383104491545/643462146696413184/aide.png"
+        "name": "Bwuno",
+        "default_prefix": "!bwuno ",
+        "invite_link": "https://discordapp.com/oauth2/authorize?&client_id=642935463048642570&scope=bot&permissions=469990567",
+        "imageURL": "",
+        "thumbnail_help": "",
+        "thumbnail_author": "",
+        "not_found_url": ""
     }
 }

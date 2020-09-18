@@ -1,3 +1,6 @@
+/*
+  This file contain all the discord logic.
+*/
 import { Client, Message, Guild, GuildChannel, TextChannel } from 'discord.js';
 import { format } from 'format';
 import * as sentences from "../resources/language.json";
@@ -7,6 +10,7 @@ import Server from "./models/server";
 
 const bot: Client = new Client();
 
+// Called when Bwuno is online
 bot.on('ready', (): void => {
     console.log("Actuellement connécté sur les serveurs:");
     try {
@@ -17,7 +21,11 @@ bot.on('ready', (): void => {
     }
 });
 
+// Called when Bwuno join a new discord' server
 bot.on("guildCreate", async (guild: Guild): Promise<void> => {
+    const guilds = await Server.findOne({ identifier: guild.id });
+    if (guilds !== undefined)
+        return;
     const channel: GuildChannel = guild.channels.cache.find((chan: GuildChannel) =>
         ["general", "bienvenue", "acceuil", "bavardage", "hall"]
             .includes(chan.name.toLowerCase().normalize('NFD')
@@ -30,11 +38,12 @@ bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     });
 });
 
+// Called when Bwuno is kick or ban of a discord' server
 bot.on("guildDelete", async (guild: Guild): Promise<void> => {
     await Server.findOneAndDelete({ identifier: guild.id });
 });
 
-// 
+// Called each time a message is posted on a guild where Bwuno belongs to
 bot.on('message', async (message: Message): Promise<void> => {
     if (!message.guild || message.author.bot)
         return;
@@ -48,7 +57,8 @@ bot.on('message', async (message: Message): Promise<void> => {
             "help": commands.help, "item": commands.item, "almanax": commands.almanax,
             "zodiac": commands.zodiac, "type": commands.type, "list": commands.list,
             "auto": commands.auto, "server": commands.server, "prefix": commands.prefix,
-            "lang": commands.lang
+            "lang": commands.lang, "guild": commands.guild, "whois": commands.whois,
+            "info": commands.info
         };
         try {
             functions[sentence[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence, config);

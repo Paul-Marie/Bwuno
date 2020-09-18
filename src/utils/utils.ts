@@ -1,12 +1,11 @@
-import { MessageEmbed } from 'discord.js';
 import request from 'async-request';
-import * as year from "../resources/year.json";
-import * as settings from "../resources/config.json";
+import * as year from "../../resources/year.json";
+import * as settings from "../../resources/config.json";
 import * as moment from 'moment';
 
 moment.locale('fr');
 
-//
+// TODO to replace by triche regexp
 export const formatDate = (sentence: string[]) => {
     return ((sentence.map((elem: string) => {
         return elem.split("-").map((item: string) => {
@@ -23,7 +22,7 @@ export const formatDate = (sentence: string[]) => {
     }).join(" ");
 }
 
-//
+// Return the mean price of last 7 days of an item
 export const getPrice = async (item_id: number, server_id: number = 2): Promise<string> => {
     try {
         const url: string = settings.dt_price.api_url;
@@ -50,7 +49,7 @@ export const getPrice = async (item_id: number, server_id: number = 2): Promise<
     }
 }
 
-//
+// Return all almanax's date with the requested bonus's type
 export const getAlmanax = (bonus_types: string[]) => {
     return Object.keys(year).map(key => {
         if (bonus_types.indexOf(year[key].Bonus_Type) >= 0) {
@@ -62,7 +61,7 @@ export const getAlmanax = (bonus_types: string[]) => {
     });
 }
 
-//
+// Return all almanax's objects where `item_name` is the offander
 export const getList = (item_name: string) => {
     return Object.keys(year).map((key: string) => {
         const epured: string = year[key].Offrande_Name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
@@ -73,11 +72,11 @@ export const getList = (item_name: string) => {
     });
 }
 
-//
+// Return all almanax of day from a string
 export const getDate = (requested_date: string) => {
-    const accepted_format: string[] = ["DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM",
-                                       "DD/MM/YYYY", "DD-Math.M-YYYY", "DD MM YYYY",
-                                       "DD MMM YYYY", "DD MMMM YYYY"];
+    const accepted_format: string[] = [
+        "DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
+        "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
     return accepted_format.map((format: string) => {
         const date: moment.Moment = moment(requested_date, format, 'fr', true);
         if (date.isValid())
@@ -87,7 +86,7 @@ export const getDate = (requested_date: string) => {
     });
 }
 
-//
+// Return the number of day between today and the requested date
 export const getRemainingDay = (almanax_date: string) => {
     const current_date: Date = new Date();
     const date: moment.Moment = moment([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
@@ -98,45 +97,26 @@ export const getRemainingDay = (almanax_date: string) => {
     return Math.abs(Math.trunc(diff));
 }
 
-// TODO URGENT
-export const createEmbed = async (almanax: any, id: number) => {
-    const remaining_days: number = getRemainingDay(almanax.Date);
-    const average_price: string = await getPrice(almanax.URL.substring(62).split('-')[0], id);
-    const embed: MessageEmbed = new MessageEmbed()
-        .setColor('0x4E4EC8')
-        .setTitle(`**Almanax du ${moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM")}**`)
-        .setURL(`https://www.krosmoz.com/fr/almanax/${almanax.Date}?game=dofustouch`)
-        .setThumbnail(almanax.Offrande_Image)
-        .addField("🙏 Offrande:", `[**${almanax.Offrande_Name}**](${almanax.URL}) **x${almanax.Offrande_Quantity}**`)
-        .addField("📜 Bonus:", `\`\`\`${almanax.Bonus_Description}\`\`\`\n*Type de Bonus*: __${almanax.Bonus_Type}__`)
-        .addField("⏳ Temps:", "Cette almanax aura lieu " + (
-            (remaining_days) <= 1 ? (
-                (remaining_days == 1) ? "**demain**" : "**aujourd'hui**"
-            ) : `dans **${remaining_days}** jours`), true)
-          .addField("💵 Prix:", "Le prix moyen de l'offrande est actuellement de **" + (
-	          (Number(average_price) >= 0)
-		    ? "+" : "") + `${average_price}%** comparé à la semaine derniere.`, true)
-    if (almanax.Event_Name) {
-        embed.addField(`🎉 Event: **${almanax.Event_Name}**`, almanax.Event_Description)
-        embed.setImage(almanax.Event_Image)
+// Return main element from target' statistics
+export const getElement = (stats: any[], lvl: string): string => {
+    const level: number = Number(lvl);
+    const getTotal = (name: string) => Number(stats.filter((elem: any) => elem.name === name)[0].total);
+    const round = (nbr: number) => Math.round((nbr + Number.EPSILON) * 100) / 100;
+    if (level >= 180 && getTotal("Initiative") < 1000)
+        return "*no stuff*";
+    const list: any = {
+        "terre": getTotal("Force"), "feu": getTotal("Intelligence"), "eau": getTotal("Chance"),
+        "air": getTotal("Agilité"), "multi": getTotal("Puissance"), "sasa": getTotal("Puissance"),
+        "retrait": round(getTotal("Retrait PA") / 200)
+    };
+    const max: number = round(list.multi) + Math.max(...(Object.values(list) as number[]));
+    const result: string[] = [];
+    for (const name in list) {
+        // TODO just in case we must had other value to own a more accurate element
+        if (!["retrait"].some(elem => name.includes(elem)))
+            list[name] = round((list[name] + round(list["multi"] * 0.8)) / max);
+        if (list[name] >= 0.7)
+            result.push(name);
     }
-    return embed;
-}
-
-// 
-export const createFutureEmbed = (required_almanax: number) => {
-    const current_date: moment.Moment = moment();
-    if (required_almanax > settings.discord.embed_limit)
-        required_almanax = settings.discord.embed_limit;
-     if (required_almanax <= 0)
-        required_almanax = 1;
-    const embed: MessageEmbed = new MessageEmbed()
-        .setColor('0x4E4EC8')
-        .setTitle(`Almanax du **${current_date.format("DD/MM")}** au **${moment().add(required_almanax, 'days').format("DD/MM")}**`)
-    for (let i = 0; i < required_almanax; i++) {
-        const date: moment.Moment = current_date.add(1, 'days');
-        const almanax: any = getDate(date.format("DD/MM"))[0];
-        embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.Offrande_Quantity}** [**${almanax.Offrande_Name}**](${almanax.URL})\n📜 ${almanax.Bonus_Description}\n`, true);
-    }
-    return embed;
+    return `*${result.join(' / ')}*`;
 }
