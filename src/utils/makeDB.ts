@@ -1,10 +1,9 @@
-Object.defineProperty(exports, "__esModule", { value: true });
 import * as mongoose from 'mongoose';
 import * as discord from 'discord.js';
 import * as config from "../resources/config.json";
-
 import Server from './models/server';
 
+// CAUTION: This will drop bruno's database and recreate it with default value
 export default async () => {
     console.log("Clearing database...");
     await mongoose.connection.dropDatabase();

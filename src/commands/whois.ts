@@ -1,179 +1,160 @@
-const Sentence = require('../resources/sentence.js');
-const Utils = require('../src/utils.js');
-const fs = require('fs');
-import Message, { Message, Guild, Channel } from 'discord.js';
-// 
-export const help = (message: Message, sentence: String) => {
-    const embed = Sentence.help_message;
-    message.channel.send({ embed });
-}
+import * as sentences from "../../resources/language.json";
+import * as settings from "../../resources/config.json";
+import { createPlayerEmbed, createErrorEmbed } from "../utils/embed";
+import { Message } from 'discord.js';
+import { format } from 'format';
+import JSSoup from 'jssoup'; 
+import * as request from 'async-request';
 
-export const item = async (message: Message, sentence: String) => {
-    if (sentence.length === 2) {
-        message.channel.send("Il faut que tu me précises quel item tu souhaites rechercher parmis la liste des offrandes.");
-        return
-    } else {
-        const argument = sentence.slice(2, sentence.length).join(" ");
-        const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        const result = Utils.getList(epured_argument);
-        if (!result[0]) {
-            message.channel.send("Malgré mes recherches, je n'ai pas trouvé cet item dans la liste des offrandes... Peut etre l'as tu mal orthographié? (Vérifie l'orthographe sur l'encyclopédie du site officiel)")
-            return
-        }
-        fs.readFile("./resources/config.json", "utf-8", async (err: Error, buffer: any) => {
-            const data = JSON.parse(buffer)
-            for (const almanax of result) {
-                const embed = await Utils.createEmbed(almanax, data[message.guild.id].server);
-                message.channel.send(embed);
-            }
-        });
-    }
-}
+const server_name: string[] = [undefined, "Oshimo", "Terra Cogita", "Herdegrize"]
 
-export const zodiac = (message: Message, sentence: String) => {
-    if (sentence.length === 2) {
-        message.channel.send("Donne moi ta date d'anniversaire pour que je te revele ton signe du zodiac!");
-        return;
-    } else {
-        const argument = Utils.formatDate(sentence.slice(2, sentence.length));
-        const epured_argument = argument.toLowerCase();
-        const almanax = Utils.getDate(epured_argument)[0];
-        if (!almanax) {
-            message.channel.send("Je n'ai pas compris cette date.")
-            return;
-        }
-        const embed = Utils.createZodiacEmbed(almanax, Sentence.zodiac_list)
-        message.channel.send(embed);
-    }
-}
-
-export const almanax = async (message: Message, sentence: String) => {
-    if (sentence.length === 2) {
-        message.channel.send("Tu as oublié de me donner la date de l'almanax.");
-        return;
-    } else {
-        const epur = ([x, y, ...arr]) => arr;
-        const argument = Utils.formatDate(sentence.slice(2, sentence.length));
-        const epured_argument = argument.toLowerCase();
-        const almanax = Utils.getDate(epured_argument)[0];
-        if (!almanax) {
-            const param = epur(sentence).join('');
-            if (param.startsWith('+')) {
-                const required_almanax = Number(param.slice(1, param.length));
-                const embed = Utils.createFutureEmbed(required_almanax);
-                message.channel.send(embed);
-            } else {
-                message.channel.send("Je n'ai pas compris cette date.")
-                return
-            }
-        } else {
-            fs.readFile("./resources/config.json", "utf-8", async (err: Error, buffer: any) => {
-                const data = JSON.parse(buffer)
-                const embed = await Utils.createEmbed(almanax, data[message.guild.id].server);
-                message.channel.send(embed);
+// TODO To optimize / rework entirely
+// Display all player informations
+export const whois = async (message: Message, line: string[], config: any): Promise<Message> => {
+    if (line.length < 2)
+        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}whois [pseudo]`));
+    line.shift();
+    const argument: string = line[0].toLowerCase();
+    const base_url: string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.player_url[config.lang]}`;
+    const query_string: string = `?text=${argument}&character_level_min=1&character_level_max=200`;
+    const response: any = await request(`${base_url}${query_string}`);
+    if (response.statusCode === 200) {
+        try {
+            const search: JSSoup = new JSSoup(response.body);
+            const search_result: any = search.findAll('tr');
+            search_result.shift();
+            let filtered_result = await search_result.filter((result: any) => {
+                return result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                    == argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                    && result.contents[5].nextElement._text === server_name[config.server_id]
             });
+            if (!filtered_result.length)
+                filtered_result = await search_result.filter((result: any) => {
+                    return argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "") ===
+                        result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                });
+            const link: string = `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
+            const answer: any = await request(link);
+            if (answer.statusCode === 200) {
+                const data = await formateData(answer, base_url, link, config.lang);
+                message.channel.send(await createPlayerEmbed(data, config.lang));
+            } else if (answer.statusCode === 410) {
+                filtered_result = await search_result.filter((result: any) => {
+                    return argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "") ===
+                        result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                });
+                const link: string = `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
+                const answer: any = await request(link);
+                const data = await formateData(answer, base_url, link, config.lang);
+                message.channel.send(await createPlayerEmbed(data, config.lang));
+            } else
+                message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2));
+        } catch (err) {
+            message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2));
         }
     }
 }
 
-// 
-export const type = (message: Message, sentence: String) => {
-    if (sentence.length === 2) {
-        message.channel.send("Il faut que tu me précises quel type de bonus Almanax tu recherches, utilise `!bruno list` pour le connaitre.");
-        return;
-    }
-    const argument = sentence.slice(2, sentence.length).join(" ");
-    const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    const almanax_list = Object.keys(Sentence.type_message).map(key => {
-        const epured_key = key.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        if (epured_key === epured_argument)
-            return Utils.getAlmanax(Sentence.type_message[key]);
-    }).filter(item => {
-        return item !== undefined;
-    })[0];
-    if (almanax_list) {
-        let result = "";
-        for (const element of almanax_list) {
-            if (result.length + element.length <= 2000) {
-                result += element;
-            } else {
-                message.channel.send(result);
-                result = element;
+// Parse all page informations and return an epured object
+const formateData = async (answer: any, base_url: string, link: string, lang: number) => {
+    const data: any = {};
+    const soup: JSSoup = new JSSoup(answer.body);
+    const main_info: any = soup.find('div', 'ak-directories-main-infos');
+    // TODO may change image's orientation ?
+    data.image = `${soup.find('div', 'ak-entitylook').attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}200_350-0.png`;
+    data.name = soup.find('h1', 'ak-return-link').contents[1]._text.trim();
+    data.level = main_info.nextElement.nextElement.nextElement._text.trim().replace(/(.*)\s/g, '');
+    data.race = main_info.contents[1].previousElement._text.trim();
+    data.server = soup.find('span', 'ak-directories-server-name').nextElement._text.trim();
+    try {
+        data.title = soup.find('span', 'ak-directories-grade').nextElement._text.trim();
+    } catch { };
+    try {
+        data.presentation = soup.find('div', 'ak-character-presentation').contents[1].nextElement._text.trim();
+    } catch { };
+    try {
+        data.guild_emblem = `${soup.find('div', 'ak-character-illu').contents[0].attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}128_128-0.png`;
+        data.guild_link = `${settings.encyclopedia.base_url}${soup.find('a', 'ak-infos-guildname').attrs.href}`;
+        data.guild_name = soup.find('a', 'ak-infos-guildname').nextElement._text.trim();
+        data.guild_level = soup.find('span', 'ak-infos-guildlevel').nextElement._text.trim().replace(/(.*)\s/g, '');
+        data.guild_members = soup.find('span', 'ak-infos-guildmembers').nextElement._text.trim().replace(/\s(.*)/g, '');
+        data.guild_role = await getGuildRole(data.guild_link, data.name, lang);
+    } catch { };
+    try {
+        data.alliance_emblem = soup.find('div', 'ak-infos-alliance-illu').contents[0].attrs.style.replace(/.*\(|\).*/g, '');
+        data.alliance_link = `${settings.encyclopedia.base_url}${soup.find('a', 'ak-infos-alliancename').attrs.href}`;
+        data.alliance_name = soup.find('a', 'ak-infos-alliancename').nextElement._text.trim();
+        data.alliance_guilds_number = soup.find('span', 'ak-infos-allianceguild').nextElement._text.trim().replace(/\s(.*)/g, '');
+        data.alliance_members = soup.find('span', 'ak-infos-allianceguild').nextElement.nextElement.nextElement._text.trim().replace(/\s(.*)/g, '');
+    } catch { };
+    try {
+        data.success_percent = soup.find('div', 'ak-progress-bar-text').nextElement._text.trim();
+        // TODO erase `as unlocked`
+        data.success_last_name = soup.find('div', 'ak-last-achievement').contents[3]._text.trim();//.nextElement._text.trim();
+        data.success_last_time = soup.find('div', 'ak-last-achievement').contents[1].nextElement._text.trim().replace(/(.*)il y a/g, '').replace(/:/g, '').replace(/ago/g, '').trim();
+    } catch { };
+    try {
+        data.marry_name = soup.find('a', 'ak-infos-spousename').nextElement._text.trim();
+        data.marry_link = `${base_url}/${soup.find('a', 'ak-infos-spousename').attrs.href}`;
+    } catch { };
+    try {
+        const jobs: JSSoup = soup.findAll('div', 'ak-title');
+        jobs.pop()
+        data.jobs = jobs.map((element: any) => {
+            return {
+                level: element.nextElement.contents[0].nextElement.nextElement._text.trim(),
+                name: element.nextElement.nextElement._text.trim()
             }
+        });
+    } catch { };
+    try {
+        data.alignment_name = soup.find('span', 'ak-alignment-name').nextElement._text.trim();
+        data.alignment_level = soup.find('span', 'ak-alignment-level').nextElement._text.trim();
+    } catch { };
+    try {
+        data.characteristics_link = `https://www.dofus-touch.com/fr/mmorpg/communaute/annuaires/pages-persos/${link.replace(/(.*\/)*/, '')}/caracteristiques`;
+        const ack: any = await request(data.characteristics_link);
+        if (ack.statusCode === 200) {
+            const search: JSSoup = new JSSoup(ack.body);
+            data.characteristics_element = search.findAll('tr', "ak-bg-odd").concat(search.findAll('tr', "ak-bg-even")).map((elem: any) => {
+                if (elem.contents[3])
+                    return {
+                        name: elem.contents[1].nextElement.contents[0]._text,
+                        base: elem.contents[3].contents[0]._text,
+                        total: elem.contents[4].contents[0]._text
+                    };
+            }).filter((elem: any) => elem);
         }
-        message.channel.send(result);
-    } else
-        message.channel.send("Hmmm, Il semble que ce type n'existe pas. Est il bien présent dans la liste des types d'Almanax valides? (`!bruno list`).");
-}
-
-//
-export const auto = (message: Message, sentence: String) => {
-    if (sentence.length <= 2)
-        return message.channel.send("Veut tu l'activé ou le desactivé ?");
-    const argument = sentence.slice(2, sentence.length).join(" ");
-    const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    const guild = message.guild.id;
-    const channel = message.channel.id;
-    if (!(message.member.guild.me.hasPermission('ADMINISTRATOR') &&
-	      message.member.guild.me.hasPermission('MANAGE_ROLES_OR_PERMISSIONS') &&
-	      message.member.guild.me.hasPermission('MANAGE_MESSAGES')))
-        return message.channel.send("Tu n'as pas les permissions :sob:, Demande à un admin du serveur d'executer la commande pour toi :smile:");
-    if (epured_argument === "true" || epured_argument === "on" || epured_argument === "1" || epured_argument === "start" || epured_argument == "activate") {
-        fs.readFile("./resources/config.json", "utf-8", (err: Error, buffer: any) => {
-            const data = JSON.parse(buffer)
-            if (data[guild].auto_mode) {
-                const name = message.guild.channels.map(chan => {
-                    if (chan.id == data[guild].channel) return chan.name;
-                }).filter(item => item !== undefined)[0];
-                return message.channel.send(`Oups, il est déja activé dans le salon \`#${name}\``);
-            }
-            data[guild].auto_mode = true;
-            data[guild].channel = channel;
-            fs.writeFile("./resources/config.json", JSON.stringify(data), (err: Error) => {});
-            return message.channel.send(`J'enverrais dorrenavant les almanax du jours dans ce salon a minuit !`);
+    } catch { };
+    try {
+        data.success = soup.find('span', 'ak-score-text').contents[0]._text.trim();
+        data.ladder = soup.find('tbody').contents.map((element: any) => {
+            return {
+                text: element.contents[0].contents[0]._text.trim(),
+                xp: element.contents[1].contents[0]._text,
+                koli: element.contents[2].contents[0]._text,
+                success: element.contents[3].contents[0]._text
+            };
         });
-    } else if (epured_argument === "false" || epured_argument === "off" || epured_argument === "0" || epured_argument === "stop" || epured_argument === "desactivate") {
-        fs.readFile("./resources/config.json", "utf-8", (err: any, buffer: any) => {
-            const data = JSON.parse(buffer);
-            if (!data[guild].auto_mode)
-                return message.channel.send(`Oupsi, le mode automatique n'est pas activé sur ce serveur`);
-            //else if (data[guild].channel !== channel)
-            //    return message.channel.send(`Il faut etre dans le salon textuel ou vous avez activé le mode automatique pour le désactivé`);
-            data[guild].auto_mode = false;
-            delete data[guild].channel;
-            fs.writeFile("./resources/config.json", JSON.stringify(data), (err) => {});
-            message.channel.send(`Vous ne recevrez plus les almanax du jour a minuit dans ce salon !`);
-        });
-    } else
-        // utilise start / stop / 1 / 0 / true / false / on / off / activate / desactivate
-        return message.channel.send("ptdr t nûl.");
+        data.xp = soup.find('div', 'ak-total-xp').contents[1].nextElement._text.trim() || '-';
+        data.koli = soup.find('div', 'ak-total-kolizeum').contents[1].nextElement._text.trim() || '-';
+    } catch { };
+    data.link = link;
+    return data;
 }
 
-//
-export const server = async (message: Message, sentence: String) => {
-    if (sentence.length <= 2)
-        return message.channel.send("Precise le serveur (Oshimo, Terra Cogita ou Herdegrize)");
-    const argument = sentence.slice(2, sentence.length).join(" ");
-    const epured_argument = argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    const tmp = { "o": "Oshimo", "t": "Terra Cogita", "h": "Herdegrize" };
-    const tmp2 = { "Oshimo": 1, "Terra Cogita": 2, "Herdegrize": 3 };
-    const server = tmp[epured_argument[0]];
-    if (!server)
-        return message.channel.send("Je ne gere malheuresement que les serveurs Oshimo, Terra Cogita et Herdegrize pour le moment.");
-    await fs.readFile("./resources/config.json", "utf-8", async (err, buffer) => {
-        const guild = message.guild.id;
-        const data = JSON.parse(buffer)
-        data[guild].server = tmp2[server];
-        console.log("tata");
-        await fs.writeFile("./resources/config.json", JSON.stringify(data), (err) => {});
-        console.log("titi");
-    });
-    console.log("toto");
-    return message.channel.send(`Je vous communiquerais maintenant l'évolution des prix des offrandes du serveur \`${server}\``);
-}
-
-// 
-export const list_type = (message: Message, sentence: String) => {
-    const list = Object.keys(Sentence.type_message).join("\n");
-    message.channel.send("__Voici les différents types d'almanax existants:__\n" + list);
+// Parse each guild member's page until find the required player and return his role
+const getGuildRole = async (link: string, name: string, lang: number, page: number = 1) => {
+    const guild_answer: any = await request(`${link}/memb${["res", "ers"][lang]}?page=${page}`);
+    const guild_page: JSSoup = new JSSoup(guild_answer.body);
+    const guild_content = guild_page.findAll('tr', 'tr_class');
+    const guild_role = guild_content.map((element: any) => {
+        return {
+            name: element.contents[0].contents[1].contents[0]._text,
+            grade: element.contents[3].contents[0]._text
+        }
+    }).filter((elem: any) => elem.name === name)[0];
+    if (!guild_role)
+        return await getGuildRole(link, name, lang, page + 1);
+    return guild_role.grade;
 }

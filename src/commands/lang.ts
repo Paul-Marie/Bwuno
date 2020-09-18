@@ -11,7 +11,7 @@ const lang_available: any = {
     //"de": 3, "deutsh": 3, "allemand": 3, "germany": 3, "germain": 3
 }
 
-//
+// Change Bwuno's language
 export const lang = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length !== 2)
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}lang ['fr'|'en'|'es'|'de']`));
