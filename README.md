@@ -27,28 +27,32 @@ Bwuno proposes de nombreuses commandes, mais voici les plus importantes:
 
 *   🎯 **almanax**: Permet de recuperer les informations de l'almanax en fonction d'une date ou d'une offrande
 *   🔍 **whois**: Affiche les informations d'un joueur depuis le site officiel de dofus-touch
-*   💰 **prefix**: Change le prefix de Bwuno sur le serveur discord pour ne plus avoir à utilisez `!bruno <command> [argument]`
+*   💰 **prefix**: Change le prefix de Bwuno pour ne plus avoir à utilisez `!bruno <command> [argument]`
 *   🤖 **auto**: active le mode automatique et poster les almanax du jour à minuit sur ce serveur
 *   💊 **type**: Liste toutes les dates d'almanax avec le bonus désiré (Economie d'ingrédient, bonus xp, etc...)
 
 ## Mais c'est un peu un remix de Kaelly-Touch non ?
 
-Et bien non ! c'est un bot discord à part entiere. Le code source de kaelly-touch n'ont jamais été ne serait-ce que regardé par les créateurs de Bwuno.
-Ils ont des commandes en commun car celle-ci était prévu mais ne sont pas faite pareille
+Et bien non ! *c'est un bot discord à part entiere*. Le code source de kaelly-touch n'ont jamais été ne serait-ce que regardé par les créateurs de Bwuno.
+Ils ont des commandes en commun car celle-ci était __prévu__ mais ne sont pas faite pareille.
 
-Example:
-<img align="center" style="float: left; margin: 0 10px 0 0;" src="https://i.imgur.com/5HgLgYB.png" height="400" width="350"/>
-<img align="left" style="float: centrer; margin: 0 10px 0 0;" src="https://i.imgur.com/y02c7ap.png" height="400" width="350"/>
-<img align="center" style="float: centrer; margin: 0 10px 0 0;" src="https://i.imgur.com/qA5pKJi.png" height="400" width="350"/>
-<img align="center" style="float: centrer; margin: 0 10px 0 0;" src="https://i.imgur.com/cFT5kJU.png" height="400" width="350"/>
-<img align="center" style="float: centrer; margin: 0 10px 0 0;" src="https://i.imgur.com/v06HATS.png" height="300" width="350"/>
-<img align="center" style="float: centrer; margin: 0 10px 0 0;" src="https://i.imgur.com/F9DXhL8.png" height="400" width="350"/>
+Les quelques rares commande que Bwuno et Kaelly-Touch ont en commun sont plus **complète** chez Bwuno
+
+**Example**: *(Kaelly à gauche et Bwuno à droite)*
+
+<img align="left" style="float: center; margin: 0 10px 0 0;" src="https://i.imgur.com/5HgLgYB.png" height="400" width="350"/>
+<img align="center" style="float: left; margin: 0 10px 0 0;" src="https://i.imgur.com/y02c7ap.png" height="400" width="350"/>
+<img align="left" style="float: center; margin: 0 10px 0 0;" src="https://i.imgur.com/qA5pKJi.png" height="400" width="350"/>
+<img align="center" style="float: left; margin: 0 10px 0 0;" src="https://i.imgur.com/cFT5kJU.png" height="400" width="350"/>
+<img align="left" style="float: center; margin: 0 10px 0 0; margin-bottom: 100px;" src="https://i.imgur.com/v06HATS.png" height="300" width="350"/>
+<img align="center" style="float: left; margin: 0 10px 0 0; margin-bottom: 100px;" src="https://i.imgur.com/F9DXhL8.png" height="400" width="350"/>
+
 
 > Bwuno ne fait pas non plus tout ce que peut faire Kaelly-Touch et n'est pas disponible pour Dofus PC, donc hésitez pas à allez voir Kaelly-Touch
 
 ## Installation
 
-Cette partie est réserver aux développeur ou personnes souhaitant lancez Bwuno depuis leur machine,
+⚠️ Cette partie est réserver aux développeur ou personnes souhaitant lancez Bwuno depuis leur machine,
 Si vous souhaitez simplement l'utiliser sur ton serveur discord sans avoir à gerer l'hebergement et tout, [clique ici](https://discordapp.com/oauth2/authorize?&client_id=642935463048642570&scope=bot&permissions=469990567)
 
 ```sh
@@ -60,9 +64,9 @@ Maintenant ouvrez le fichier `./resources/config.json` et remplissez les champs 
 Assurez vous de posseder une version de [Node.JS](https://nodejs.org/fr/download/) suppérieur à 10,
 Puis lancez votre bot avec [yarn](https://classic.yarnpkg.com/fr/docs/install/#debian-stable) ou [npm](https://nodejs.org/fr/download/) (au choix)
 ```sh
-yarn;							# Sert à installer les paquets nécéssaire
+yarn;				# Sert à installer les paquets nécéssaire
 yarn start ./utils/makeDB.ts;	# Creer la base de données en locale
-yarn start;						# Lance le bot sur votre machine
+yarn start;			# Lance le bot sur votre machine
 ```
 Je vous recommande personellement d'utiliser [PM2](https://pm2.keymetrics.io/docs/usage/quick-start/) ou [screen](https://www.gnu.org/software/screen/screen.html) pour garder votre bot actif tout le temps.
 
