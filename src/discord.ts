@@ -24,7 +24,7 @@ bot.on('ready', (): void => {
 // Called when Bwuno join a new discord' server
 bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     const guilds = await Server.findOne({ identifier: guild.id });
-    if (guilds !== undefined)
+    if (guilds)
         return;
     const channel: GuildChannel = guild.channels.cache.find((chan: GuildChannel) =>
         ["general", "bienvenue", "acceuil", "bavardage", "hall"]
