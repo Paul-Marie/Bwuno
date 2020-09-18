@@ -76,7 +76,7 @@ export const getList = (item_name: string) => {
 export const getDate = (requested_date: string) => {
     const accepted_format: string[] = [
         "DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
-        "DD-Math.M-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
+        "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
     return accepted_format.map((format: string) => {
         const date: moment.Moment = moment(requested_date, format, 'fr', true);
         if (date.isValid())

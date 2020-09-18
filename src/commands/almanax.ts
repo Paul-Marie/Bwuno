@@ -1,14 +1,15 @@
 import * as sentences from "../../resources/language.json";
+import * as year from "../../resources/year.json";
 import { getDate, formatDate, getList } from "../utils/utils";
 import { createEmbed, createFutureEmbed } from "../utils/embed";
 import { Message, MessageEmbed } from 'discord.js';
-import { format } from 'format';
+import * as moment from 'moment';
 
 // TODO make possible to use `{prefix}almanax` and get today's almanax
 // Send all almanax's informations Embed from a date
 export const almanax = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
-        return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}almanax [date|item]`));
+        return message.channel.send(await createEmbed(year[moment().format("2020-MM-DD")], config.server));
     line.shift()
     const argument: string = formatDate(line).toLowerCase();
     const almanax: any = getDate(argument)[0];
