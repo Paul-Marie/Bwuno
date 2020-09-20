@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as discord from 'discord.js';
-import * as config from "../resources/config.json";
-import Server from './models/server';
+import * as config from "../../resources/config.json";
+import Server from '../models/server';
 
 // CAUTION: This will drop bruno's database and recreate it with default value
 export default async () => {
@@ -21,7 +21,7 @@ export default async () => {
                     lang: 0,
                     server_id: 2,
                     auto_mode: false,
-                    prefix: "!bruno ",
+                    prefix: config.bruno.default_prefix,
                 };
                 server_list.push(server);
             });
