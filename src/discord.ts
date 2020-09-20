@@ -50,7 +50,7 @@ bot.on('message', async (message: Message): Promise<void> => {
     const config: any = await Server.findOne({ identifier: message.guild.id });
     if (message.mentions.has(bot.user))
         message.channel.send(format(sentences[config.lang].INFO_MENTION,
-            Math.floor(Math.random() * 90000) + 10000, `${config.prefix}help`));
+            Math.floor(Math.random() * 90000) + 10000, config.prefix));
     else if (message.content.toLowerCase().startsWith(config.prefix)) {
         const author: string = message.author.username + "#" + message.author.discriminator;
         const response: string = message.content.replace(config.prefix, '').trim();
