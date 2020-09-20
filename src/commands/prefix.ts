@@ -16,6 +16,6 @@ export const prefix = async (message: Message, line: string[], config: any): Pro
         if (argument.length >= 3)
             argument += ' ';
         await Server.findOneAndUpdate({ identifier: config.identifier }, { prefix: argument });
-        message.channel.send(format(sentences[config.lang].SUCCESS_PREFIX_CHANGED, `${argument}help`));
+        message.channel.send(format(sentences[config.lang].SUCCESS_PREFIX_CHANGED, argument, `${argument}help`));
     }
 }
