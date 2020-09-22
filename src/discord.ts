@@ -50,12 +50,13 @@ bot.on('message', async (message: Message): Promise<void> => {
     if (!message.guild || message.author.bot)
         return;
     const config: any = await Server.findOne({ identifier: message.guild.id });
-    if (message.mentions.has(bot.user))
+    if (message.mentions.has(bot.user) && !message.mentions.everyone)
         message.channel.send(format(sentences[config.lang].INFO_MENTION,
             Math.floor(Math.random() * 90000) + 10000, config.prefix));
-    else if (message.content.toLowerCase().startsWith(config.prefix)) {
+    else if (message.content.toLowerCase().startsWith(config.prefix.toLowerCase())) {
         const author: string = message.author.username + "#" + message.author.discriminator;
-        const response: string = message.content.replace(config.prefix, '').trim();
+        const response: string = message.content.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+            .replace(config.prefix.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""), '').trim();
         const sentence: string[] = response.split(" ");
         console.log(`${author}: ${message.content}`);
         const functions: any = { 
