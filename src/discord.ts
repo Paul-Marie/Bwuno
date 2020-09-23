@@ -21,6 +21,13 @@ bot.on('ready', (): void => {
     }
 });
 
+// Called when Bwuno is offline
+bot.on('shardDisconnect', (event: CloseEvent, id: number): void => {
+    console.log(`Disconnected: ${id}`);
+    console.log(event);
+    process.exit(1);
+});
+
 // Called when Bwuno join a new discord' server
 bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     const guilds = await Server.findOne({ identifier: guild.id });
