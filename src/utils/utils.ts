@@ -22,6 +22,12 @@ export const formatDate = (sentence: string[]) => {
     }).join(" ");
 }
 
+const getAverageOfDay = (array: any[], date: string): number => {
+    const days: any = array.filter((hour: any) => hour.date.includes(date));
+    const result: number[] = days.map((day: any) => (day.unit + (day.decade / 10) + (day.hundred / 100)) / 3);
+    return result.reduce((a,b) => a + b, 0) / result.length;
+};
+
 // Return the mean price of last 7 days of an item
 export const getPrice = async (item_id: number, server_id: number = 2): Promise<string> => {
     try {
@@ -30,18 +36,10 @@ export const getPrice = async (item_id: number, server_id: number = 2): Promise<
         if (response.statusCode === 200) {
             const data: any = JSON.parse(response.body);
             const current_date: moment.Moment = moment();
-                  //.subtract(1, 'd').format("YYYY-MM-DD");
             const date: string = moment().subtract(7, 'd').format("YYYY-MM-DD");
-            const getAverageOfDay = (array: Array<any>, date: string): string => {
-                const days: any = array.filter((hour) => { return hour.date.includes(date) });
-                const result: any = days.map((day: any) => {
-                    return (day.unit + (day.decade / 10) + (day.hundred / 100)) / 3;
-                });
-                return (result.reduce((a,b) => a + b, 0) / result.length).toFixed(2);
-            };
-            const tmp: number = parseFloat(getAverageOfDay(data, current_date.format("YYYY-MM-DD")));
-            const current_price: number = (tmp) ? tmp : parseFloat(getAverageOfDay(data, current_date.subtract(1, 'd').format("YYYY-MM-DD")));
-            const week_price: number = parseFloat(getAverageOfDay(data, date));
+            const tmp: number = getAverageOfDay(data, current_date.format("YYYY-MM-DD"));
+            const current_price: number = tmp || getAverageOfDay(data, current_date.subtract(1, 'd').format("YYYY-MM-DD"));
+            const week_price: number = getAverageOfDay(data, date);
             return ((current_price - week_price) / week_price * 100).toFixed(2);
         }
     } catch (err) {
