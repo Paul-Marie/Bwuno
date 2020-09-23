@@ -8,7 +8,7 @@ import * as settings from "../resources/config.json";
 import * as commands from "./commands/";
 import Server from "./models/server";
 
-const bot: Client = new Client();
+export const bot: Client = new Client();
 
 // Called when Bwuno is online
 bot.on('ready', (): void => {
@@ -73,5 +73,3 @@ bot.on('message', async (message: Message): Promise<void> => {
         }
     }
 });
-
-export default bot;

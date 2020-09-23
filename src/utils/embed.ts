@@ -1,10 +1,10 @@
 import { MessageEmbed, GuildEmoji } from 'discord.js';
 import { format } from 'format';
 import { getRemainingDay, getPrice, getDate, getElement } from "./utils";
+import { bot } from "../discord";
 import * as sentences from "../../resources/language.json";
 import * as settings from "../../resources/config.json";
 import * as moment from 'moment';
-import bot from "../discord";
 
 moment.locale('fr');
 
