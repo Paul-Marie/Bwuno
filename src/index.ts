@@ -3,7 +3,7 @@ import * as config from "../resources/config.json";
 import bot from "./discord";
 
 // Start MongoDB's database and import a file if launched with a third argument
-async function run(): Promise<void> {
+(async (run) => {
     try {
         await mongoose.connect(config.mongo.url, {
             useNewUrlParser: true,
@@ -26,6 +26,4 @@ async function run(): Promise<void> {
         console.error(err)
         process.exit(1);
     }
-}
-
-run();
+})();
