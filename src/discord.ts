@@ -8,7 +8,7 @@ import * as settings from "../resources/config.json";
 import * as commands from "./commands/";
 import Server from "./models/server";
 
-const bot: Client = new Client();
+export const bot: Client = new Client();
 
 // Called when Bwuno is online
 bot.on('ready', (): void => {
@@ -19,6 +19,13 @@ bot.on('ready', (): void => {
     } catch {
         process.exit(1);
     }
+});
+
+// Called when Bwuno is offline
+bot.on('shardDisconnect', (event: CloseEvent, id: number): void => {
+    console.log(`Disconnected: ${id}`);
+    console.log(event);
+    process.exit(1);
 });
 
 // Called when Bwuno join a new discord' server
@@ -73,5 +80,3 @@ bot.on('message', async (message: Message): Promise<void> => {
         }
     }
 });
-
-export default bot;
