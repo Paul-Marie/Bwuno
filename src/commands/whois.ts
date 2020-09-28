@@ -21,7 +21,7 @@ export const whois = async (message: Message, line: string[], config: any): Prom
     const response: any = await request(`${base_url}${query_string}`);
     if (response.statusCode === 200) {
         try {
-            const link = await getPlayerPage(`${base_url}${query_string}`, argument, server, 1);
+            const link = await getPlayerPage(`${base_url}${query_string}`, argument, 1);
             const answer: any = await request(link);
             if (answer.statusCode === 200) {
                 const data = await formateData(answer, base_url, link, config.lang);
@@ -139,7 +139,7 @@ const getGuildRole = async (link: string, name: string, lang: number, page: numb
 }
 
 // Parse each player's page until find the required player and return his page
-const getPlayerPage = async (link: string, name: string, server: string, page: number = 1): Promise<string> => {
+const getPlayerPage = async (link: string, name: string, page: number = 1): Promise<string> => {
     const answer: any = await request(`${link}?page=${page}`);
     const list: JSSoup = new JSSoup(answer.body);
     const content = list.findAll('tr');
@@ -149,6 +149,6 @@ const getPlayerPage = async (link: string, name: string, server: string, page: n
             == name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
     });
     if (!filtered_result.length && page < 10)
-        return await getPlayerPage(link, name, server_id, page + 1);
+        return await getPlayerPage(link, name, page + 1);
     return `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
 }
