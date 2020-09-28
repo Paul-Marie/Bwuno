@@ -34,10 +34,12 @@ export const guild = async (message: Message, line: string[], config: any): Prom
                 data.member_number = main_info.contents[1].previousElement._text.trim().replace(/\s(.*)/g, '');
                 data.server = soup.find('span', 'server').nextElement.nextElement.contents[0]._text.trim();
                 data.created_at = soup.find('span', 'ak-directories-creation-date').contents[0]._text.trim().replace(/(.*)\s/g, '')
-                data.alliance_emblem = alliance.contents[0].nextElement.attrs.style.replace(/.*\(|\).*/g, '');
-                data.alliance_name = alliance.contents[1].nextElement.contents[0]._text.trim();
-                data.alliance_guilds_number = alliance.contents[1].contents[2].nextElement._text.trim().replace(/\s(.*)/g, '');
-                data.alliance_members = alliance.contents[1].contents[4].nextElement._text.trim().replace(/\s(.*)/g, '');
+                try {
+                    data.alliance_emblem = alliance.contents[0].nextElement.attrs.style.replace(/.*\(|\).*/g, '');
+                    data.alliance_name = alliance.contents[1].nextElement.contents[0]._text.trim();
+                    data.alliance_guilds_number = alliance.contents[1].contents[2].nextElement._text.trim().replace(/\s(.*)/g, '');
+                    data.alliance_members = alliance.contents[1].contents[4].nextElement._text.trim().replace(/\s(.*)/g, '');
+                } catch {};
                 data.pillars = members.map((element: any) => {
                     return {
                         name: element.contents[0].contents[0]._text.trim(),
@@ -63,6 +65,7 @@ export const guild = async (message: Message, line: string[], config: any): Prom
             } else
                 message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0));
         } catch (err) {
+            console.log(err)
             message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0));
         }
     }
