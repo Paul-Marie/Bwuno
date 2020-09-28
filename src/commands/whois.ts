@@ -6,7 +6,7 @@ import { format } from 'format';
 import JSSoup from 'jssoup'; 
 import * as request from 'async-request';
 
-const server_name: string[] = [undefined, "Oshimo", "Terra Cogita", "Herdegrize"]
+const server_id: any = { "o": 403, "t": 404, "h": 405 };
 
 // TODO To optimize / rework entirely
 // Display all player informations
@@ -15,36 +15,15 @@ export const whois = async (message: Message, line: string[], config: any): Prom
         return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}whois [pseudo]`));
     line.shift();
     const argument: string = line[0].toLowerCase();
+    const server: string = server_id[line[1]?.toLowerCase()[0]] || config.server_id + 402;
     const base_url: string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.player_url[config.lang]}`;
-    const query_string: string = `?text=${argument}&character_level_min=1&character_level_max=200`;
+    const query_string: string = `?text=${argument}&character_homeserv[]=${server}&character_level_min=1&character_level_max=200`;
     const response: any = await request(`${base_url}${query_string}`);
     if (response.statusCode === 200) {
         try {
-            const search: JSSoup = new JSSoup(response.body);
-            const search_result: any = search.findAll('tr');
-            search_result.shift();
-            let filtered_result = await search_result.filter((result: any) => {
-                return result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-                    == argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-                    && result.contents[5].nextElement._text === server_name[config.server_id]
-            });
-            if (!filtered_result.length)
-                filtered_result = await search_result.filter((result: any) => {
-                    return argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "") ===
-                        result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-                });
-            const link: string = `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
+            const link = await getPlayerPage(`${base_url}${query_string}`, argument, server, 1);
             const answer: any = await request(link);
             if (answer.statusCode === 200) {
-                const data = await formateData(answer, base_url, link, config.lang);
-                message.channel.send(await createPlayerEmbed(data, config.lang));
-            } else if (answer.statusCode === 410) {
-                filtered_result = await search_result.filter((result: any) => {
-                    return argument.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "") ===
-                        result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-                });
-                const link: string = `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
-                const answer: any = await request(link);
                 const data = await formateData(answer, base_url, link, config.lang);
                 message.channel.send(await createPlayerEmbed(data, config.lang));
             } else
@@ -157,4 +136,19 @@ const getGuildRole = async (link: string, name: string, lang: number, page: numb
     if (!guild_role)
         return await getGuildRole(link, name, lang, page + 1);
     return guild_role.grade;
+}
+
+// Parse each player's page until find the required player and return his page
+const getPlayerPage = async (link: string, name: string, server: string, page: number = 1): Promise<string> => {
+    const answer: any = await request(`${link}?page=${page}`);
+    const list: JSSoup = new JSSoup(answer.body);
+    const content = list.findAll('tr');
+    content.shift();
+    const filtered_result = await content.filter((result: any) => {
+        return result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+            == name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+    });
+    if (!filtered_result.length && page < 10)
+        return await getPlayerPage(link, name, server_id, page + 1);
+    return `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
 }
