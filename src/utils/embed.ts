@@ -114,14 +114,17 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
         .setThumbnail(data.guild_emblem.replace(/dofus/g, 'dofustouch'))
         .setDescription(`${data.title ? ("`" + data.title + "`") : ""}\n${data.presentation || ""}`)
         .addField(`${data.race} ${element} (lvl ${data.level}):`, `${informations}${guild}${role}${marry}${alignment}${kolizeum}`)
-        .addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(
+    if (data.ladder) {
+        embed.addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(
             sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].success, data.ladder[1].text,
             data.ladder[1].success, data.ladder[2].text, data.ladder[2].success, data.ladder[3].text.replace(/ Cogita/g,''), data.ladder[3].success,
         ), true)
-        .addField(format(sentences[lang].INFO_WHOIS_EXPERIENCE, xp_icon.toString(), data.xp), format(
-            sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].xp, data.ladder[1].text,
-            data.ladder[1].xp, data.ladder[2].text, data.ladder[2].xp, data.ladder[3].text.replace(/ Cogita/g,''), data.ladder[3].xp,
-        ), true)
+            .addField(format(sentences[lang].INFO_WHOIS_EXPERIENCE, xp_icon.toString(), data.xp), format(
+                sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].xp, data.ladder[1].text,
+                data.ladder[1].xp, data.ladder[2].text, data.ladder[2].xp, data.ladder[3].text.replace(/ Cogita/g,''), data.ladder[3].xp,
+            ), true)
+    }
+    embed
         .setImage(data.image.replace(/touch/g, ''))
         .setFooter((data.alliance_name) ?
             format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name,
