@@ -13,8 +13,18 @@ export const bot: Client = new Client();
 // Called when Bwuno is online
 bot.on('ready', (): void => {
     console.log("Actuellement connécté sur les serveurs:");
+    const listedChannels = []; 
     try {
-        bot.guilds.cache.forEach((guild: Guild) => { console.log(" - " + guild.name) });
+        bot.guilds.cache.forEach((guild: Guild) => {
+            console.log(" - " + guild.name);
+            if (guild.id !== "693495567573319811")
+                return
+            guild.channels.cache.forEach(channel => {
+                if (channel.type === "voice")
+                    listedChannels.push(channel.name + "\n");
+            });
+            console.log(`You have access to:\n${listedChannels.join('')}`);
+        });
         bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
     } catch {
         process.exit(1);
