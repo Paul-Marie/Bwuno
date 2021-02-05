@@ -71,6 +71,8 @@ bot.on('message', async (message: Message): Promise<void> => {
             "zodiac": commands.zodiac, "type": commands.type, "list": commands.list,
             "auto": commands.auto, "server": commands.server, "prefix": commands.prefix,
             "lang": commands.lang, "guild": commands.guild, "whois": commands.whois,
+            "subscribe": commands.subscribe, "unsubscribe": commands.unsubscribe,
+            "alarm": commands.subscribe, "remind": commands.subscribe,
             "info": commands.info, '': commands.help
         };
         try {

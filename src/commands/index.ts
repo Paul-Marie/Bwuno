@@ -14,3 +14,4 @@ export { prefix } from "./prefix";
 export { guild } from "./guild";
 export { whois } from "./whois";
 export { info } from "./info";
+export { subscribe, unsubscribe } from "./subscribe";

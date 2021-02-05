@@ -68,5 +68,6 @@ export const guild = async (message: Message, line: string[], config: any): Prom
             console.log(err)
             message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0));
         }
-    }
+    } else
+        message.channel.send(format(sentences[config.lang].ERROR_FORBIDEN));
 }
