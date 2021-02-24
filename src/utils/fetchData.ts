@@ -25,41 +25,73 @@ const getData = async () => (
 );
 
 const parseData = (date: string, body: any) => {
-    //const root: HTMLElement = parse(body);
     const root: HTMLElement = parse(body);
-    const event: HTMLElement = root.querySelector('#almanax_event');
-    const content: HTMLElement = root.querySelectorAll('.mid')[2];
-    const meryde_image: HTMLElement = root.querySelector('#almanax_boss_image');
-    const meryde: Node[] = root.querySelector('#almanax_boss').childNodes;
-    console.log(meryde)
-    //const bonus_description = content
-    return {
-        Meryde_Name: (meryde.filter(node => node.nodeType === 1)[0] as any).rawAttrs,
-        Meryde_Description: '',
-        Meryde_Image: (meryde_image.childNodes.filter(node => node.nodeType === 1)[0] as any).rawAttrs,
-        Bonus_Description: '',
-        Bonus_Type: '',
-        Offrande_Name: '',
-        Offrande_Quantity: '',
+    const event: Node[] = root.querySelector('#almanax_event_image')?.childNodes;
+    const content: Node[] = root.querySelectorAll('.mid')[2].childNodes;
+    const meryde_image: Node[] = root.querySelector('#almanax_boss_image').childNodes;
+    const meryde_description: Node[] = root.querySelector('#almanax_boss_desc').childNodes;
+    const zodiac: Node[] = root.querySelector('.zodiac_more').childNodes;
+    const offering: Node[] = root.querySelector('.more-infos-content').childNodes;
+    //const bonus: Node[] = root.querySelector('#mid').childNodes;
+    //console.dir(content[3].childNodes.map(elem => `${elem.rawText} ${elem.childNodes.map(e => ` ${e.rawText} `)}`).join(' ').replace(/\s+/g, ' ').trim(), { depth: 5 });
+    //console.dir(offering.filter((elem: any) => elem.rawAttrs !== 'class="more-infos-content"').map((elem: any) => elem.rawText.trim()).join(' ').trim().split(' ').slice(-1)[0].trim())
+    //console.dir(content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => `${elem.rawText}`).join(' ').replace(/\s+/g, ' ').trim(), { depth: 5 });
+    //console.dir((event) ? root.querySelector('#almanax_event_desc').childNodes : null, { depth: 5 });
+    const [ quantity, name ] = (offering.map(elem => elem.rawText).join(' ').replace(/\s+/g, ' ').trim().split(' ').filter((_, i) => i > 0 && i < 3));
+    //console.dir((event) ? root.querySelector('#almanax_event_desc').childNodes.map(elem => elem.rawText).join(' ').replace(/\s+/g, ' ').trim() : null, { depth: 5 });
+    //console.dir((event) ? root.querySelector('#almanax_event_desc').childNodes[1].rawText.trim() : null, { depth: 3 });
+    //console.dir(event) ? (root.querySelector('#almanax_event_image').childNodes[1] as any).rawAttrs.split('"')[1] : undefined),
+    //console.dir(zodiac, { depth: 3 });
+    //console.log(content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => `${elem.rawText}`).join(' ').replace(/\s+(\W)/g, "$1").trim())
+    console.log({
+        Meryde_Name: meryde_description.filter(node => node.nodeType === 1)[0].childNodes[0].rawText.trim(),
+        Meryde_Description: (meryde_description.filter(node => node.nodeType === 3)[1] as any).rawText.trim(),
+        Meryde_Image: (meryde_image.filter(node => node.nodeType === 1)[0] as any).rawAttrs.split('"')[1],
+        Bonus_Description: content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => elem.rawText).join(' ').replace(/\s+(\W)/g, "$1").trim(),
+        Bonus_Type: content[2].rawText.split(':')[1].trim(),
+        Offrande_Name: name,
+        Offrande_Quantity: quantity,
         Offrande_Image: '',
-        Zodiac_Name: '',
+        Offrande_URL: '',
+        Event_Name: (event) ? root.querySelector('#almanax_event_desc').childNodes[1].rawText.trim() : undefined,
+        Event_Description: (event) ? root.querySelector('#almanax_event_desc').childNodes.slice(-1)[0].rawText.trim() : undefined,
+        Event_Image: (event) ? (root.querySelector('#almanax_event_image').childNodes[1] as any).rawAttrs.split('"')[1] : undefined,
+        Zodiac_Name: zodiac[1].childNodes[0].rawText,
+        Date: date
+    });
+    return {
+        Meryde_Name: meryde_description.filter(node => node.nodeType === 1)[0].childNodes[0].rawText.trim(),
+        Meryde_Description: (meryde_description.filter(node => node.nodeType === 3)[1] as any).rawText.split('"')[1],
+        Meryde_Image: (meryde_image.filter(node => node.nodeType === 1)[0] as any).rawAttrs.trim(),
+        Bonus_Description: content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => elem.rawText).join(' ').replace(/\s+(\W)/g, "$1").trim(),
+        Bonus_Type: content[2].rawText.split(':')[1].trim(),
+        Offrande_Name: name,
+        Offrande_Quantity: quantity,
+        Offrande_Image: '',
+        Offrande_URL: '',
+        Event_Description: (event) ? root.querySelector('#almanax_event_desc').childNodes.slice(-1)[0].rawText.trim() : undefined,
+        Event_Image: (event) ? (root.querySelector('#almanax_event_image').childNodes[1] as any).rawAttrs.split('"')[1] : undefined,
+        Event_Name: (event) ? root.querySelector('#almanax_event_desc').childNodes[1].rawText.trim() : undefined,
+        Zodiac_Name: zodiac[1].childNodes[0].rawText,
         Date: date
     };
 }
 
-const formatData = async (data: any) => {
-    let result = {};
-    for (let month: number = 1; month <= 12; month++) {
-        for (let day: number = 1; day <= dates[month - 1]; day++) {
-            const date: string = `2021-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-            const url: string = `${uri}/${date}/${suffix}`;
-            const response: any = await axios.get(url);
+const formatData = (data: any) => {
+    const result = {};
+    [...Array(12)].map((_, month) => (
+        [...Array(dates[month])].map(async (_, day) => {
+            const formatNumber = (nbr: number) => `${((nbr + 1) < 10) ? '0' + (nbr + 1) : nbr + 1}`;
+            const date: string = `2021-${formatNumber(month)}-${formatNumber(day)}`;
+            const url: string = `${uri}/${date}${suffix}`;
+            const response: AxiosResponse<any> = await axios.get(url);
             if (response.status === 200) {
                 result[date] = parseData(date, response.data);
                 console.log(response.status)
-            }
-        }
-    }
+            } else
+                console.error(`Invalid error code: ${response.status}`);
+        })
+    ));
 };
 
 // Download items and almanax list and make a static JSON of data
