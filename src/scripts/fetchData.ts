@@ -49,7 +49,7 @@ const parseData = (date: string, items: any[], body: any) => {
         MerydeName: meryde_description.filter(node => node.nodeType === 1)[0].childNodes[0].rawText.trim(),
         MerydeDescription: (meryde_description.filter(node => node.nodeType === 3)[1] as any).rawText.replace(/\s+(\W)/g, "$1").trim(),
         MerydeImage: (meryde_image.filter(node => node.nodeType === 1)[0] as any).rawAttrs.split('"')[1],
-        BonusDescription: content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => elem.rawText).join(' ').replace(/\s+(\W)/g, "$1").trim(),
+        BonusDescription: content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => ` ${elem.rawText} `).join(' ').replace(/\s+(\W)/g, "$1").trim(),
         BonusType: content[2].rawText.split(':')[1].trim(),
         OfferingName: name,
         OfferingQuantity: quantity,
@@ -93,7 +93,7 @@ export default async () => {
         type: types[item.typeId].superTypeId
     }));
     const result: any = await getAlmanaxs(items);
-    const json: string = JSON.stringify(result, null, 4);
+    const json: string = JSON.stringify(Object.fromEntries(Object.entries(result).sort()), null, 4);
     await fs.writeFile("./resources/year.json", json, "utf8");
     process.exit(0);
 };

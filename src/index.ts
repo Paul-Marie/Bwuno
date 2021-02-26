@@ -18,7 +18,7 @@ import { bot } from "./discord";
     console.log(`Connected to database at ${config.mongo.url}`);
     try {
         if (process.argv.length !== 2) {
-            let script: any = await import(`./utils/${process.argv[2]}`)
+            let script: any = await import(`./scripts/${process.argv[2]}`)
             script.default();
         } else
             bot.login(config.discord.token);

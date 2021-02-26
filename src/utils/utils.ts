@@ -50,9 +50,9 @@ export const getPrice = async (item_id: number, server_id: number = 2): Promise<
 // Return all almanax's date with the requested bonus's type
 export const getAlmanax = (bonus_types: string[]) => {
     return Object.keys(year).map(key => {
-        if (bonus_types.indexOf(year[key].Bonus_Type) >= 0) {
+        if (bonus_types.indexOf(year[key].BonusType) >= 0) {
             const date: moment.Moment = moment(key, "YYYY-MM-DD", 'fr');
-            return `**${date.format("DD MMMM")}**: ${year[key].Bonus_Description}\n`;
+            return `**${date.format("DD MMMM")}**: ${year[key].BonusDescription}\n`;
         }
     }).filter((item: any) => {
         return item !== undefined;
@@ -62,7 +62,7 @@ export const getAlmanax = (bonus_types: string[]) => {
 // Return all almanax's objects where `item_name` is the offander
 export const getList = (item_name: string) => {
     return Object.keys(year).map((key: string) => {
-        const epured: string = year[key].Offrande_Name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        const epured: string = year[key].OfferingName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         if (epured === item_name)
             return year[key];
     }).filter((item: any) => {
@@ -78,7 +78,7 @@ export const getDate = (requested_date: string) => {
     return accepted_format.map((format: string) => {
         const date: moment.Moment = moment(requested_date, format, 'fr', true);
         if (date.isValid())
-            return year[date.format("2020-MM-DD")];
+            return year[date.format("2021-MM-DD")];
     }).filter((item: any) => {
         return item !== undefined;
     });
