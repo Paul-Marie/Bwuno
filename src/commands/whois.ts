@@ -1,10 +1,18 @@
 import * as sentences from "../../resources/language.json";
 import * as settings from "../../resources/config.json";
+//import fetch from 'node-fetch';
+import axios, { AxiosResponse } from 'axios';
 import { createPlayerEmbed, createErrorEmbed } from "../utils/embed";
 import { Message } from 'discord.js';
 import { format } from 'format';
 import JSSoup from 'jssoup'; 
 import * as request from 'async-request';
+
+const fetch = require('node-fetch');
+const https = require('https');
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 const server_id: any = { "o": 403, "t": 404, "h": 405 };
 
@@ -18,8 +26,96 @@ export const whois = async (message: Message, line: string[], config: any): Prom
     const server: string = server_id[line[1]?.toLowerCase()[0]] || config.server_id + 402;
     const base_url: string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.player_url[config.lang]}`;
     const query_string: string = `?text=${argument}&character_homeserv[]=${server}&character_level_min=1&character_level_max=200`;
-    const response: any = await request(`${base_url}${query_string}`);
-    if (response.statusCode === 200) {
+    //const response: any = await request(`${base_url}${query_string}`);
+    /*const response: any = await axios.get(`${base_url}${query_string}`, {
+        headers: {
+            'origin': 'file://',
+            'accept': '*\/*',
+            'accept-encoding': 'gzip, deflate, br',
+            'accept-language': 'en-US',
+            'content-type': 'application/json',
+            'authority': 'earlyproxy.touch.dofus.com',
+            'user-agent': 'Mozilla/5.0 (Linux; Android 7.0; Nexus 5X Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.106 Mobile Safari/537.36'
+        }
+    });*/
+
+    /*const responseS: any = await fetch(`${base_url}${query_string}`, {
+        "credentials": "include",
+        "headers": {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*\/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Upgrade-Insecure-Requests": "0",
+            "Pragma": "no-cache",
+            "Cookie": 'LANG=fr; ALREADY_VISITED=1; PRIV={"v1":{"fbtr":{"c":"y","ttl":19063},"ggan":{"c":"y","ttl":19063},"otad":{"c":"y","ttl":19063},"fbok":{"c":"y","ttl":19063},"ggpl":{"c":"y","ttl":19063},"twtr":{"c":"y","ttl":19063},"dsrd":{"c":"y","ttl":19063},"pwro":{"c":"y","ttl":19063},"ytbe":{"c":"y","ttl":19063},"twch":{"c":"y","ttl":19063},"gphy":{"c":"y","ttl":19063},"ggmp":{"c":"y","ttl":19063}}}; CNIL=1; _ga=GA1.1.964384916.1612526760; _gid=GA1.1.889149667.1614210961; SID=CBB73A2287BDBDAC91C2B5C8FC360000; _gat=1',
+            "Cache-Control": "no-cache"
+        },
+        "agent": httpsAgent,
+        "method": "GET",
+        "mode": "cors",
+    });*/
+
+    /*const response = await fetch(`${base_url}${query_string}`, {
+        "credentials": "include",
+        "headers": {
+            Host: "www.dofus-touch.com",
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0",
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*\/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            Connection: "keep-alive",
+            Cookie: 'zbot0=1598348356466; PRH=2; announce=MzU1; LANG=fr; PRIV={"v1":{"ytbe":{"c":"y","ttl":18889},"fbtr":{"c":"y","ttl":18889},"ggan":{"c":"y","ttl":18889},"otad":{"c":"y","ttl":18889},"fbok":{"c":"y","ttl":18889},"ggpl":{"c":"y","ttl":18889},"twtr":{"c":"y","ttl":18889},"dsrd":{"c":"y","ttl":18889},"pwro":{"c":"y","ttl":18889},"twch":{"c":"y","ttl":18889},"gphy":{"c":"y","ttl":18889},"ggmp":{"c":"y","ttl":18889}}}; CNIL=1; _ga=GA1.1.1441471276.1597520844; _fbp=fb.1.1597520844332.440417564; __cfduid=d8a0d850a111f17dcc87174cafc9718a41613413619; DFSTCHAPP=1; _gid=GA1.1.1942105426.1614206345; SID=CBB73A2287BDBDAC91C2B5C8FC360000; size=96; display=table; __cf_bm=83427ab9b57cc69a2c5392ebae2cd332c649afe2-1614294846-1800-AeBys95tua25BHlgvSKtaESZR1o9gsvyWOEh3YrSibCOwgY2+KJyeIz7FdK0Gi/IjQXzZKbrRwqWMv5A19w5nQg=; _gat=1',
+            "Upgrade-Insecure-Requests": 1,
+            "Pragma": "no-cache",
+            "Cache-Control": "no-cache"
+        },
+        "method": "GET",
+        "agent": httpsAgent,
+        "mode": "cors"
+    });*/
+
+
+    /*const response = await fetch("https://www.dofus-touch.com/fr/mmorpg/communaute/annuaires/pages-persos?text=lethargi&character_level_min=20&character_level_max=200&_pjax=div.ak-main-page", {
+        "credentials": "include",
+        "headers": {
+            "Host": "www.dofus-touch.com",
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0",
+            "Accept": "text/html, *\/*; q=0.01",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-PJAX": "true",
+            "X-PJAX-Container": "div.ak-main-page",
+            "X-Requested-With": "XMLHttpRequest",
+            "Pragma": "no-cache",
+            "Cookie": 'zbot0=1598348356466; PRH=2; announce=MzU1; LANG=fr; PRIV={"v1":{"ytbe":{"c":"y","ttl":18889},"fbtr":{"c":"y","ttl":18889},"ggan":{"c":"y","ttl":18889},"otad":{"c":"y","ttl":18889},"fbok":{"c":"y","ttl":18889},"ggpl":{"c":"y","ttl":18889},"twtr":{"c":"y","ttl":18889},"dsrd":{"c":"y","ttl":18889},"pwro":{"c":"y","ttl":18889},"twch":{"c":"y","ttl":18889},"gphy":{"c":"y","ttl":18889},"ggmp":{"c":"y","ttl":18889}}}; CNIL=1; _ga=GA1.1.1441471276.1597520844; _fbp=fb.1.1597520844332.440417564; __cfduid=d8a0d850a111f17dcc87174cafc9718a41613413619; DFSTCHAPP=1; _gid=GA1.1.1942105426.1614206345; SID=CBB73A2287BDBDAC91C2B5C8FC360000; size=96; display=table; __cf_bm=7c7dfcd2cf052df6d75891c85cc4fb488067b114-1614296647-1800-AZqv+x9ePXvZc0D1ZvTaWloP2umXmzbG9Ede2AFv5peJmTAsoLwfKz4fJXQsDPjs4Nulv3zEz4IWUSvvpurGA04=; _gat=1; _gali=text_0',
+            "Cache-Control": "no-cache"
+        },
+        "referrer": "https://www.dofus-touch.com/fr/mmorpg/communaute/annuaires/pages-persos",
+        "method": "GET",
+        "agent": httpsAgent,
+        "mode": "cors"
+    });*/
+
+    const response = await axios({
+        "url": "https://www.dofus-touch.com/fr/mmorpg/communaute/annuaires/pages-persos?text=lethargi&character_level_min=20&character_level_max=200",
+        "headers": {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Upgrade-Insecure-Requests": "1",
+            "Pragma": "no-cache",
+            "TE": "Trailers",
+            "Connection": "keep-alive",
+            "Cookie": 'zbot0=1598348356466; PRH=2; announce=MzU1; LANG=fr; PRIV={"v1":{"ytbe":{"c":"y","ttl":18889},"fbtr":{"c":"y","ttl":18889},"ggan":{"c":"y","ttl":18889},"otad":{"c":"y","ttl":18889},"fbok":{"c":"y","ttl":18889},"ggpl":{"c":"y","ttl":18889},"twtr":{"c":"y","ttl":18889},"dsrd":{"c":"y","ttl":18889},"pwro":{"c":"y","ttl":18889},"twch":{"c":"y","ttl":18889},"gphy":{"c":"y","ttl":18889},"ggmp":{"c":"y","ttl":18889}}}; CNIL=1; _ga=GA1.1.1441471276.1597520844; _fbp=fb.1.1597520844332.440417564; __cfduid=d8a0d850a111f17dcc87174cafc9718a41613413619; DFSTCHAPP=1; _gid=GA1.1.1942105426.1614206345; SID=CBB73A2287BDBDAC91C2B5C8FC360000; size=96; display=table; __cf_bm=b66b6fc2cadd6bfa54ecc8ec3507a411f60a85a1-1614297547-1800-AURRZEx+DK5mTfVvPFK1JbZp7/N0e6PyoaLc4OrTW6oovdyNsxHEy1i5B5zL0TDleGUQGNtJB5Rhar0+e4G0C4g=',
+            "Host": "www.dofus-touch.com",
+            "Cache-Control": "no-cache"
+        },
+        "method": "GET",
+    });
+    
+    console.log(response.status);
+    if (response.status === 200) {
         try {
             const link = await getPlayerPage(`${base_url}${query_string}`, argument, 1);
             const answer: any = await request(link);
