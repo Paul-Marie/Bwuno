@@ -23,11 +23,11 @@ export const zodiac = (message: Message, line: string[], config: any): Promise<M
         .setColor('0x4E4EC8')
         .setTitle(`**Zodiac du ${moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM")}**`)
         .setDescription(`Hmmm... Apres de nombreuse recherche a travers le Krosmoz, je suis en mesure de t'affirmer que ton signe du zodiac est:`)
-        .setThumbnail(zodiac_data[almanax.Zodiac_Name].Image)
-        .addField(`**${astro_sign[almanax.Zodiac_Name]} ${zodiac_data[almanax.Zodiac_Name].Name}**`, zodiac_data[almanax.Zodiac_Name].Description)
+        .setThumbnail(zodiac_data[almanax.ZodiacName].Image)
+        .addField(`**${astro_sign[almanax.ZodiacName]} ${zodiac_data[almanax.ZodiacName].Name}**`, zodiac_data[almanax.ZodiacName].Description)
     if (almanax.Event_Name) {
-        embed.addField(`📅 Tu es par ailleur né lors de: **${almanax.Event_Name}**`, almanax.Event_Description)
-        embed.setImage(almanax.Event_Image)
+        embed.addField(`📅 Tu es par ailleur né lors de: **${almanax.EventName}**`, almanax.EventDescription)
+        embed.setImage(almanax.EventImage)
     }
     message.channel.send(embed);
 }

@@ -7,13 +7,16 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node ./src/",
-    "dev": "nodemon ./src/index.ts"
+    "dev": "nodemon ./src/index.ts",
+    "cron": "ts-node ./src/index.ts ./utils/cron.ts"
   },
   "dependencies": {
     "@types/mongodb": "^3.5.25",
     "@types/mongoose": "^5.7.31",
     "@types/node": "^14.0.23",
+    "@types/typescript": "^2.0.0",
     "async-request": "^1.2.0",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^12.3.1",
     "format": "^0.2.2",
@@ -21,6 +24,8 @@
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.28",
     "mongoose": "^5.9.24",
+    "node-fetch": "^2.6.1",
+    "node-html-parser": "^2.1.0",
     "nodemon": "^2.0.4",
     "pm2": "^4.1.2",
     "typescript": "^3.9.6"
