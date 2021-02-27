@@ -47,15 +47,15 @@ const parseData = (date: string, items: any[], body: any) => {
     const category: number = item?.type || 9;
     return {
         MerydeName: meryde_description.filter(node => node.nodeType === 1)[0].childNodes[0].rawText.trim(),
-        MerydeDescription: (meryde_description.filter(node => node.nodeType === 3)[1] as any).rawText.replace(/\s+(\W)/g, "$1").trim(),
+        MerydeDescription: (meryde_description.filter(node => node.nodeType === 3)[1] as any).rawText.replace(/\s+((?!é|à|\(|ç)\W)/g, "$1").trim(),
         MerydeImage: (meryde_image.filter(node => node.nodeType === 1)[0] as any).rawAttrs.split('"')[1],
-        BonusDescription: content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => ` ${elem.rawText} `).join(' ').replace(/\s+(\W)/g, "$1").trim(),
+        BonusDescription: content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => ` ${elem.rawText} `).join(' ').replace(/\s+((?!é|à|\()\W)/g, "$1").trim(),
         BonusType: content[2].rawText.split(':')[1].trim(),
         OfferingName: name,
         OfferingQuantity: quantity,
         OfferingImage: `${imageURL}/${item?.icon}.png`,
         OfferingURL: `${encyclopedia}/${superTypes[category]}/${item?.id}-${name.split(' ').join('-')}`,
-        EventDescription: (event) ? root.querySelector('#almanax_event_desc').childNodes.slice(-1)[0].rawText.trim() : undefined,
+        EventDescription: (event) ? root.querySelector('#almanax_event_desc').childNodes.slice(-1)[0].rawText.replace(/\s+((?!é|à|\()\W)/g, "$1").trim() : undefined,
         EventImage: (event) ? (root.querySelector('#almanax_event_image').childNodes[1] as any).rawAttrs.split('"')[1] : undefined,
         EventName: (event) ? root.querySelector('#almanax_event_desc').childNodes[1].rawText.trim() : undefined,
         ZodiacName: zodiac[1].childNodes[0].rawText,
@@ -73,6 +73,7 @@ const getAlmanaxs = async (items: any[]) => {
             const date: string = `2021-${formatNumber(month)}-${formatNumber(day)}`;
             const url: string = `${uri}/${date}${suffix}`;
             const response: AxiosResponse<any> = await axios.get(url);
+            console.log(`${date}: ${response.status}`);
             if (response.status === 200) {
                 result[date] = parseData(date, items, response.data);
             } else
