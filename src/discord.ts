@@ -73,7 +73,7 @@ bot.on('message', async (message: Message): Promise<void> => {
             "lang": commands.lang, "guild": commands.guild, "whois": commands.whois,
             "subscribe": commands.subscribe, "unsubscribe": commands.unsubscribe,
             "alarm": commands.subscribe, "remind": commands.subscribe,
-            "info": commands.info, '': commands.help
+            "show": commands.show, "info": commands.info, '': commands.help
         };
         try {
             functions[sentence[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence, config);
