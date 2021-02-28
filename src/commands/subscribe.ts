@@ -15,12 +15,12 @@ export const subscribe = async (message: Message, line: string[], config: any, f
         return message.channel.send(sentences[config.lang].ERROR_INCORRECT_ITEM);
     const list: any[] = result.map((offering: any) => ({
         date: offering.Date,
-        name: offering.Offrande_Name
+        name: offering.OfferingName
     }));
     const user: any = await User.findOne({ identifier: message.author.id });
     if (user) {
         if (user.subscriptions.filter(elem => (
-            argument === elem.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+            argument.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "") === elem.name?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
         )).length) {
             line.unshift(config.prefix)
             return unsubscribe(message, line, config, true);
@@ -32,7 +32,7 @@ export const subscribe = async (message: Message, line: string[], config: any, f
             ? format(sentences[config.lang].SUCCESS_NOTIFICATION_FORWARDED, `${argument}`)
             : format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, `${argument}`));
     }
-    const new_user = await User.create({
+    await User.create({
         identifier: message.author.id,
         server_id: config.server,
         lang: config.lang,
@@ -51,25 +51,24 @@ export const unsubscribe = async (message: Message, line: string[], config: any,
         return message.channel.send(sentences[config.lang].ERROR_INCORRECT_ITEM);
     const list: any[] = result.map((offering: any) => ({
         date: offering.Date,
-        name: offering.Offrande_Name
+        name: offering.OfferingName
     }));
     const user: any = await User.findOne({ identifier: message.author.id });
-    console.log("toto");
     if (user) {
         if (!user.subscriptions.filter(elem => (
-            argument === elem.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+            argument === elem.name?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
         )).length) {
             line.unshift(config.prefix)
             return subscribe(message, line, config, true);
         }
         await User.updateOne({ identifier: message.author.id }, {
-            subscriptions: [ ...user.subscriptions, ...list ]
+            subscriptions: user.subscriptions.filter((subscription) => subscription.name !== list[0].name)
         });
         return message.channel.send((forwarded)
             ? format(sentences[config.lang].SUCCESS_NOTIFICATION_DISABLE_FORWARDED, `${argument}`)
             : format(sentences[config.lang].SUCCESS_NOTIFICATION_UNSET, `${argument}`));
     }
-    const new_user = await User.create({
+    await User.create({
         identifier: message.author.id,
         server_id: config.server,
         lang: config.lang,
