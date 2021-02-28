@@ -2,8 +2,8 @@
   Cron file called each day at 00h00 to display almanax of day in each discord guild with auto mode enabled
 */
 import { Client, TextChannel, MessageEmbed } from 'discord.js';
-import { getDate } from "./utils";
-import { createEmbed } from "./embed";
+import { getDate } from "../utils/utils";
+import { createEmbed } from "../utils/embed";
 import * as settings from "../../resources/config.json";
 import * as moment from 'moment-timezone';
 import * as mongoose from 'mongoose';
