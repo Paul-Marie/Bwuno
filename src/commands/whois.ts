@@ -127,7 +127,8 @@ export const whois = async (message: Message, line: string[], config: any): Prom
         } catch (err) {
             message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2));
         }
-    }
+    } else
+        message.channel.send(format(sentences[config.lang].ERROR_FORBIDEN));
 }
 
 // Parse all page informations and return an epured object
