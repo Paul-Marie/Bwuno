@@ -21,7 +21,7 @@ export default async () => {
                     lang: 0,
                     server_id: 2,
                     auto_mode: false,
-                    prefix: config.bruno.default_prefix,
+                    prefix: config.bwuno.default_prefix,
                 };
                 server_list.push(server);
             });

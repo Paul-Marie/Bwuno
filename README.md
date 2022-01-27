@@ -27,7 +27,7 @@ Bwuno proposes de nombreuses commandes, mais voici les plus importantes:
 
 *   🎯 **almanax**: Permet de recuperer les informations de l'almanax en fonction d'une date ou d'une offrande
 *   🔍 **whois**: Affiche les informations d'un joueur depuis le site officiel de dofus-touch
-*   💰 **prefix**: Change le prefix de Bwuno pour ne plus avoir à utilisez `!bruno <command> [argument]`
+*   💰 **prefix**: Change le prefix de Bwuno pour ne plus avoir à utilisez `!bwuno <command> [argument]`
 *   🤖 **auto**: active le mode automatique et poster les almanax du jour à minuit sur ce serveur
 *   💊 **type**: Liste toutes les dates d'almanax avec le bonus désiré (Economie d'ingrédient, bonus xp, etc...)
 
@@ -59,13 +59,13 @@ Si vous souhaitez simplement l'utiliser sur ton serveur discord sans avoir à ge
 git clone https://github.com/Paul-Marie/Bwuno
 cd Bwuno/
 ```
-Maintenant ouvrez le fichier `./resources/config.json` et remplissez les champs vide, tels que la partie `discord.token` ou vous devez mettre votre token de bot discord, puis ajoutez les images associez à votre futur bot dans les champs vide du champs `bruno`.
+Maintenant ouvrez le fichier `./resources/config.json` et remplissez les champs vide, tels que la partie `discord.token` ou vous devez mettre votre token de bot discord, puis ajoutez les images associez à votre futur bot dans les champs vide du champs `bwuno`.
 
 Assurez vous de posseder une version de [Node.JS](https://nodejs.org/fr/download/) suppérieur à 10,
 Puis lancez votre bot avec [yarn](https://classic.yarnpkg.com/fr/docs/install/#debian-stable) ou [npm](https://nodejs.org/fr/download/) (au choix)
 ```sh
 yarn;				# Sert à installer les paquets nécéssaire
-yarn start ./utils/makeDB.ts;	# Creer la base de données en locale
+yarn start makeDB;	# Creer la base de données en locale
 yarn start;			# Lance le bot sur votre machine
 ```
 Je vous recommande personellement d'utiliser [PM2](https://pm2.keymetrics.io/docs/usage/quick-start/) ou [screen](https://www.gnu.org/software/screen/screen.html) pour garder votre bot actif tout le temps.

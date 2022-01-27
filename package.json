@@ -1,8 +1,8 @@
 {
-  "name": "Bruno",
+  "name": "Bwuno",
   "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:Paul-Marie/Bruno.git",
+  "main": "src/index.ts",
+  "repository": "git@github.com:Paul-Marie/Bwuno.git",
   "author": "Paul\\0 <paul-marie.bettinelli@epitech.eu>",
   "license": "MIT",
   "scripts": {

@@ -143,7 +143,7 @@ export const createErrorEmbed = async (lang: number, link: string, mode: number)
         .setColor('0xFF0000')
 	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} ${sentences[lang]["ERROR_NOT_FOUND"]}`)
 	    .setDescription(format(sentences[lang].ERROR_CONTENT_NOT_FOUND, content[lang][mode], content[lang][mode], link))
-	    .setImage(settings.bruno.not_found_url)
+	    .setImage(settings.bwuno.not_found_url)
         .setTimestamp()
-	    .setFooter(sentences[lang].ERROR_LOST, settings.bruno.thumbnail_author);
+	    .setFooter(sentences[lang].ERROR_LOST, settings.bwuno.thumbnail_author);
 }

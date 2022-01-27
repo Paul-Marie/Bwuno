@@ -38,7 +38,7 @@ bot.on("guildCreate", async (guild: Guild): Promise<void> => {
             .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(elem)));
     await Server.create({ 
         identifier: guild.id, name: guild.name, lang: 0, server_id: 2,
-        auto_mode: false, prefix: settings.bruno.default_prefix
+        auto_mode: false, prefix: settings.bwuno.default_prefix
     });
     try {
         (channel as TextChannel).send(`Salut ! Moi c'est Bwuno, je suis un robot ayant parcouru l'intégralité du Krosomoz dans la spatio-temporalité de Dofus-Touch. Je suis en mesure de répondre à n'importe laquelle de tes questions sur l'almanax ! Tu peux me demander quand auront lieux les almanax economie d'ingrédient ou à quelle date l'almanax "Plume de Tofu" aura lieu par exemple.\nHésite surtout pas à changer mon préfix, et que dirais tu d'un \`!bwuno help\` pour commencer?`);
