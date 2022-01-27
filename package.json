@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node ./src/",
-    "dev": "nodemon ./src/index.ts"
+    "dev": "nodemon ./src/index.ts",
+    "cron": "ts-node ./src/index.ts ./cron.ts"
   },
   "dependencies": {
     "@types/mongodb": "^3.5.25",
