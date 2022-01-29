@@ -78,7 +78,7 @@ export const getDate = (requested_date: string) => {
     return accepted_format.map((format: string) => {
         const date: moment.Moment = moment(requested_date, format, 'fr', true);
         if (date.isValid())
-            return year[date.format("2021-MM-DD")];
+            return year[date.format("2022-MM-DD")];
     }).filter((item: any) => {
         return item !== undefined;
     });

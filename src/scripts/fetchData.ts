@@ -70,7 +70,7 @@ const getAlmanaxs = async (items: any[]) => {
     await Promise.all([...Array(12)].map(async (_, month) => (
         await Promise.all([...Array(dates[month])].map(async (_, day) => {
             const formatNumber = (nbr: number) => `${((nbr + 1) < 10) ? '0' + (nbr + 1) : nbr + 1}`;
-            const date: string = `2021-${formatNumber(month)}-${formatNumber(day)}`;
+            const date: string = `2022-${formatNumber(month)}-${formatNumber(day)}`;
             const url: string = `${uri}/${date}${suffix}`;
             const response: AxiosResponse<any> = await axios.get(url);
             console.log(`${date}: ${response.status}`);

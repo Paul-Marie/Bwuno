@@ -9,7 +9,7 @@ import * as moment from 'moment';
 // Send all almanax's informations Embed from a date
 export const almanax = async (message: Message, line: string[], config: any): Promise<Message> => {
     if (line.length < 2)
-        return message.channel.send(await createEmbed(year[moment().format("2021-MM-DD")], config.server));
+        return message.channel.send(await createEmbed(year[moment().format("2022-MM-DD")], config.server));
     line.shift()
     const argument: string = formatDate(line).toLowerCase();
     const almanax: any = getDate(argument)[0];
