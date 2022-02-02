@@ -12,7 +12,7 @@ import Server from "../models/server";
 const bot: Client = new Client();
 
 export default async (): Promise<void> => {
-    bot.on('ready', async () => {
+  bot.on('ready', async () => {
 		const date: moment.Moment = moment().tz("Europe/Paris");
 		const almanax: any = getDate(date.format("DD/MM"))[0];
 		return Server.find({}, async (err: any, servers: mongoose.Document) => {
