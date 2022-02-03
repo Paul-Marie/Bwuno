@@ -36,9 +36,8 @@ bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     if (server)
       return;
     const channel: GuildChannel = guild.channels?.cache?.find((chan: GuildChannel) =>
-      ["general", "bienvenue", "acceuil", "bavardage", "hall"].some(elem => chan.name
-        .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(elem)));
-    await Server.create({ 
+      ["general", "bienvenue", "acceuil", "bavardage", "hall"].some(elem => chan.name.epur().includes(elem)));
+    await Server.create({
       identifier: guild.id, name: guild.name, lang: 0, server_id: 2,
       auto_mode: false, prefix: settings.bwuno.default_prefix
     });
@@ -50,7 +49,7 @@ bot.on("guildCreate", async (guild: Guild): Promise<void> => {
 
 // Called when Bwuno is kick or ban of a discord' server
 bot.on("guildDelete", async (guild: Guild): Promise<void> => {
-    await Server.findOneAndDelete({ identifier: guild.id });
+  await Server.findOneAndDelete({ identifier: guild.id });
 });
 
 // Called each time a message is posted on a guild where Bwuno belongs to
@@ -64,17 +63,13 @@ bot.on('message', async (message: Message): Promise<void> => {
       Math.floor(Math.random() * 90000) + 10000, config.prefix));
   else if (message.content.toLowerCase().startsWith(config.prefix.toLowerCase())) {
     const author: string = `${message.author.username}#${message.author.discriminator}`;
-    const response: string = message.content.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-      .replace(config.prefix.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""), '').trim();
+    const response: string = message.content.epur().replace(config.prefix.epur(), '').trim();
     const sentence: string[] = response.split(" ");
     // TODO: improve logging
     console.log(`${author}: ${message.content}`);
-    // TODO: delete extra commands
-    const functions: any = {
-      ...commands, "alarm": commands.subscribe, "remind": commands.subscribe, '': commands.help
-    };
+    const functions: any = { ...commands, '': commands.help };
     try {
-      functions[sentence[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")](message, sentence, config);
+      functions[sentence[0].epur()](message, sentence, config);
     } catch (err) {
       message.channel.send(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
     }
