@@ -61,7 +61,7 @@ export const unsubscribe = async (message: Message, line: string[], config: any,
       subscriptions: user.subscriptions.filter((subscription) => subscription.name !== list[0].name)
     });
     return message.channel.send((forwarded)
-      ? format(sentences[config.lang].SUCCESS_NOTIFICATION_DISABLE_FORWARDED, `${argument}`)
+      ? format(sentences[config.lang].SUCCESS_NOTIFICATION_DISABLE, `${argument}`)
       : format(sentences[config.lang].SUCCESS_NOTIFICATION_UNSET, `${argument}`));
   }
   await User.create({
