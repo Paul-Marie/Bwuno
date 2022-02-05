@@ -13,7 +13,7 @@ export const createEmbed = async (almanax: any, id: number) => {
     const remaining_days: number = getRemainingDay(almanax.Date);
     const average_price: string = await getPrice(almanax.OfferingURL.substring(62).split('-')[0], id);
     const embed: MessageEmbed = new MessageEmbed()
-        .setColor('0x4E4EC8')
+        .setColor('#4E4EC8')
         .setTitle(`**Almanax du ${moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM")}**`)
         .setURL(`https://www.krosmoz.com/fr/almanax/${almanax.Date}?game=dofustouch`)
         .setThumbnail(almanax.OfferingImage)
@@ -41,7 +41,7 @@ export const createFutureEmbed = (required_almanax: number) => {
      if (required_almanax <= 0)
         required_almanax = 1;
     const embed: MessageEmbed = new MessageEmbed()
-        .setColor('0x4E4EC8')
+        .setColor('#4E4EC8')
         .setTitle(`Almanax du **${current_date.format("DD/MM")}** au **${moment().add(required_almanax, 'days').format("DD/MM")}**`)
     for (let i = 0; i < required_almanax; i++) {
         const date: moment.Moment = current_date.add(1, 'days');
@@ -65,7 +65,7 @@ export const createGuildEmbed = async (guild_info: any, lang: number): Promise<M
         return `${symbol} [${element.time}] **${element.name || ' '}** ${adjective} ${element.action}`;
     }).join('\n');
     return new MessageEmbed()
-        .setColor('0x4E4EC8')
+        .setColor('#4E4EC8')
         .setTitle(guild_info.guild_name)
         .setURL(guild_info.link)
         .setThumbnail(guild_info.icon)
@@ -108,7 +108,7 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
         bot.emojis.cache.find(emoji => emoji.id === "754836911306309792").toString(), data.koli) : '';
     const element: string = (data.characteristics_element.length) ? getElement(data.characteristics_element, data.level) : '';
     const embed: MessageEmbed = new MessageEmbed()
-        .setColor('0x4E4EC8')
+        .setColor('#4E4EC8')
         .setTitle(data.name)
         .setURL(data.link)
         .setThumbnail(data.guild_emblem.replace(/dofus/g, 'dofustouch'))
@@ -140,7 +140,7 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
 export const createErrorEmbed = async (lang: number, link: string, mode: number): Promise<MessageEmbed> => {
     const content: any = [ ["guilde", "alliance", "personne"], ["guild", "alliance", "player"] ];
     return new MessageEmbed()
-        .setColor('0xFF0000')
+        .setColor('#FF0000')
 	    .setTitle(`${content[lang][mode].charAt(0).toUpperCase()}${content[lang][mode].slice(1)} ${sentences[lang]["ERROR_NOT_FOUND"]}`)
 	    .setDescription(format(sentences[lang].ERROR_CONTENT_NOT_FOUND, content[lang][mode], content[lang][mode], link))
 	    .setImage(settings.bwuno.not_found_url)

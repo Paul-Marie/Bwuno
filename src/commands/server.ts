@@ -11,7 +11,7 @@ const tmp2: any = { "Oshimo": 1, "Terra Cogita": 2, "Herdegrize": 3 };
 export const server = async (message: Message, line: string[], config: any): Promise<Message> => {
   if (line.length <= 1)
     return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}server ['Oshimo'|'Terra Cogita'|'Herdegrize']`));
-  if (!message.member.hasPermission(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
+  if (!message.member.permissions.has(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
     return message.channel.send(sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS);
   const argument: string = line[1].epur();
   const server: string = tmp[argument[0]];

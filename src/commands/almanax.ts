@@ -9,7 +9,7 @@ import * as moment from 'moment';
 // Send all almanax's informations Embed from a date
 export const almanax = async (message: Message, line: string[], config: any): Promise<Message> => {
   if (line.length < 2)
-    return message.channel.send(await createEmbed(year[moment().format("2022-MM-DD")], config.server));
+    return message.channel.send({ embeds: [await createEmbed(year[moment().format("2022-MM-DD")], config.server)] });
   line.shift()
   const argument: string = formatDate(line).toLowerCase();
   const almanax: any = getDate(argument)[0];
@@ -18,14 +18,14 @@ export const almanax = async (message: Message, line: string[], config: any): Pr
     if (param.startsWith('+')) {
       const required_almanax: number = Number(param.slice(1, param.length));
       const embed: MessageEmbed = createFutureEmbed(required_almanax);
-      message.channel.send(embed);
+      message.channel.send({ embeds: [embed] });
     } else {
       line.unshift(config.prefix)
       item(message, line, config);
     }
   } else {
     const embed: MessageEmbed = await createEmbed(almanax, config.server);
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   }
 }
 
@@ -38,6 +38,6 @@ export const item = async (message: Message, line: string[], config: any): Promi
     return message.channel.send(sentences[config.lang].ERROR_INCORRECT_DATE_OR_ITEM);
   for (const almanax of result) {
     const embed: MessageEmbed = await createEmbed(almanax, config.server_id);
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   }
 }

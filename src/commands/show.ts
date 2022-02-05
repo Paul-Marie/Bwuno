@@ -16,7 +16,7 @@ export const show = async (message: Message, line: void, config: any): Promise<M
       const toto: number = moment(almanax.date).diff(moment(), 'days');
       const diff: number = (toto > 0) ? toto : moment(almanax.date).add(2, 'years').diff(moment([date.getFullYear() + 1, date.getMonth(), date.getDate()]), 'days');
       return `**${moment(almanax.date, "YYYY-MM-DD", 'fr').format("DD MMMM")}** (${diff}): ${almanax.name}`
-    }));
+    }).join('\n'));
   } else
     return await message.channel.send(format(sentences[config.lang].ERROR_NOTIFICATION_SHOW));
 }

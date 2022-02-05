@@ -58,12 +58,12 @@ export const guild = async (message: Message, line: string[], config: any): Prom
             };
           }
         }).slice(0, 15);
-        message.channel.send(await createGuildEmbed(data, config.lang));
+        message.channel.send({ embeds: [await createGuildEmbed(data, config.lang)] });
       } else
-        message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0));
+        message.channel.send({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0)] });
     } catch (err) {
       console.log(err);
-      message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0));
+      message.channel.send({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0)] });
     }
   } else
     message.channel.send(format(sentences[config.lang].ERROR_FORBIDEN));

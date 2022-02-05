@@ -15,6 +15,6 @@ export const item = async (message: Message, line: string[], config: any): Promi
     return message.channel.send("Malgré mes recherches, je n'ai pas trouvé cet item dans la liste des offrandes... Peut etre l'as tu mal orthographié? (Vérifie l'orthographe sur l'encyclopédie du site officiel)")
   for (const almanax of result) {
     const embed: MessageEmbed = await createEmbed(almanax, config.server_id);
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   }
 }

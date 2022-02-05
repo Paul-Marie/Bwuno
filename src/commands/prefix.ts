@@ -8,7 +8,7 @@ export const prefix = async (message: Message, line: string[], config: any): Pro
   if (line.length !== 2)
     return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}prefix [new_prefix]`));
   let argument: string = line[1].epur();
-  if (!message.member.hasPermission(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
+  if (!message.member.permissions.has(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
     message.channel.send(sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS);
   else if (config.prefix === argument)
     message.channel.send(sentences[config.lang].ERROR_PREFIX_ALREADY);

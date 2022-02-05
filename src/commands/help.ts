@@ -20,5 +20,5 @@ export const help = (message: Message, line: void, config: any): void => {
     .addField(`\`${config.prefix}guild [name]\``, sentences[config.lang].INFO_HELP_GUILD)
     .addField(`\`${config.prefix}whois [pseudo]\``, sentences[config.lang].INFO_HELP_WHOIS)
     .addField(`\`${config.prefix}zodiac [date]\``, sentences[config.lang].INFO_HELP_ZODIAC)
-  message.channel.send(embed);
+  message.channel.send({ embeds: [embed] });
 };

@@ -121,11 +121,11 @@ export const whois = async (message: Message, line: string[], config: any): Prom
       const answer: any = await request(link);
       if (answer.statusCode === 200) {
         const data = await formateData(answer, base_url, link, config.lang);
-        message.channel.send(await createPlayerEmbed(data, config.lang));
+        message.channel.send({ embeds: [await createPlayerEmbed(data, config.lang)] });
       } else
-        message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2));
+        message.channel.send({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] });
     } catch (err) {
-      message.channel.send(await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2));
+      message.channel.send({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] });
     }
   } else
     message.channel.send(format(sentences[config.lang].ERROR_FORBIDEN));

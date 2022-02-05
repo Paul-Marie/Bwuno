@@ -12,10 +12,10 @@ export const list = (message: Message, line: void, config: any): void => {
   for (const title of Object.keys(info.list_message.miscellaneous))
     type_list[2] += `🔸 ${title}\n`;
   const embed: MessageEmbed = new MessageEmbed()
-    .setColor("0x4E4EC8")
+    .setColor("#4E4EC8")
     .setTitle(sentences[config.lang].INFO_LIST_TITLE)
     .addField(sentences[config.lang].INFO_LIST_XP_FIELD, type_list[0])
     .addField(sentences[config.lang].INFO_LIST_JOB_FIELD, type_list[1])
     .addField(sentences[config.lang].INFO_LIST_MISCELLANEOUS_FIELD, type_list[2])
-  message.channel.send({ embed });
+  message.channel.send({ embeds: [embed] });
 }

@@ -14,5 +14,5 @@ export const info = (message: Message, line: void, config: any): void => {
     .addField("Discord:", `[Discord](${settings.dt_price.invite_url})`)
     .addField(sentences[config.lang].INFO_ABOUT_INVIT, `[Invitation](${settings.bwuno.invite_link})`, true)
     .setImage("https://i.imgur.com/mcpPHoh.png")
-  message.channel.send(embed);
+  message.channel.send({ embeds: [embed] });
 };

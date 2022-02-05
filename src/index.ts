@@ -5,12 +5,7 @@ import { bot } from "./discord";
 // Start MongoDB's database and import a file if launched with a third argument
 (async () => {
   try {
-    await mongoose.connect(config.mongo.url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true
-    });
+    await mongoose.connect(config.mongo.url);
   } catch (err) {
     console.error(err);
     process.exit(1);
@@ -21,7 +16,7 @@ import { bot } from "./discord";
       let script: any = await import(`./scripts/${process.argv[2]}`)
       script.default();
     } else
-      bot.login(config.discord.token);
+      await bot.login(config.discord.token);
   } catch (err) {
     console.error(err)
     process.exit(1);
