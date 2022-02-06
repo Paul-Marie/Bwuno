@@ -12,11 +12,11 @@ import * as services from "./services/";
 import * as commands from "./commands/";
 import Server from "./models/server";
 
-// declare module "discord.js" {
-  //   export interface Client {
-    //       commands: Collection<unknown, any>
-    //   }
-    // }
+declare module "discord.js" {
+    export interface Client {
+          commands: Collection<unknown, any>
+      }
+    }
     
 const rest = new REST({ version: '9' }).setToken(settings.discord.token);
 export const bot: Client = new Client({
@@ -27,7 +27,7 @@ export const bot: Client = new Client({
   ]
 });
 
-//bot.commands = new Collection();
+bot.commands = new Collection();
 
 // Called when Bwuno is online
 bot.on("ready", async (): Promise<void> => {
@@ -35,8 +35,11 @@ bot.on("ready", async (): Promise<void> => {
     console.log("Actuellement connécté sur les serveurs:");
     bot.guilds.cache.forEach((guild: Guild) => console.log(` - ${guild.name}`));
     await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
+    //Object.keys(commands)?.forEach((name: string) => bot.commands.set(name, commands[name]))
     const commandsList: any[] = Object.keys(commands)?.map((name: string) => commands[name]);
-    await rest.put(Routes.applicationGuildCommands(bot.user.id, "746757087014551563"), { body: commandsList });
+    // TODO: use it in order to push traducted commands on international servers
+    //await rest.put(Routes.applicationGuildCommands(bot.user.id, "746757087014551563"), { body: commandsList });
+    await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList });
     console.log(`${commandsList.length} commandes ont été importé.`);
   } catch (error) {
     console.log(error);
@@ -99,6 +102,7 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
 // Called each time a message is posted on a guild where Bwuno belongs to
 bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
   console.log("toto 1");
+  //console.log(interaction);
   //const command = bot.commands.get((interaction as any)?.commandName);
   if (!interaction.isCommand())
     return;
