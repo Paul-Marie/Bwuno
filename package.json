@@ -11,11 +11,12 @@
     "cron": "ts-node ./src/index.ts ./cron.ts"
   },
   "dependencies": {
-    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
     "@types/node": "^17.0.15",
     "async-request": "^1.2.0",
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
+    "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
     "format": "^0.2.2",
     "jssoup": "^0.0.15",

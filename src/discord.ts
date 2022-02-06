@@ -2,24 +2,51 @@
   This file contain all the discord logic.
 */
 import { format } from 'format';
-import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents, Interaction } from 'discord.js';
+//import { readdirSync } from 'fs';
+import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents, Interaction, Collection } from 'discord.js';
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v9';
 import * as sentences from "../resources/language.json";
 import * as settings from "../resources/config.json";
-import * as commands from "./services/";
+import * as services from "./services/";
+import * as commands from "./commands/";
 import Server from "./models/server";
 
-export const bot: Client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
+// declare module "discord.js" {
+  //   export interface Client {
+    //       commands: Collection<unknown, any>
+    //   }
+    // }
+    
+const rest = new REST({ version: '9' }).setToken(settings.discord.token);
+export const bot: Client = new Client({
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.DIRECT_MESSAGES
+  ]
+});
+
+//bot.commands = new Collection();
 
 // Called when Bwuno is online
 bot.on("ready", async (): Promise<void> => {
-  console.log("Actuellement connécté sur les serveurs:");
   try {
+    console.log("Actuellement connécté sur les serveurs:");
     bot.guilds.cache.forEach((guild: Guild) => console.log(` - ${guild.name}`));
     await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
-  } catch {
+    const commandsList: any[] = Object.keys(commands)?.map((name: string) => commands[name]);
+    await rest.put(Routes.applicationGuildCommands(bot.user.id, "746757087014551563"), { body: commandsList });
+    console.log(`${commandsList.length} commandes ont été importé.`);
+  } catch (error) {
+    console.log(error);
     process.exit(1);
   }
 });
+
+bot.on("disconnect", ({ reason, code }) => {
+  console.log(`Disconnected (${code}): ${reason}`)
+})
 
 // Called when Bwuno join a new discord' server
 bot.on("guildCreate", async (guild: Guild): Promise<void> => {
@@ -60,7 +87,7 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
     const sentence: string[] = response.split(" ");
     // TODO: improve logging
     console.log(`${author}: ${message.content}`);
-    const functions: any = { ...commands, '': commands.help };
+    const functions: any = { ...services, '': services.help };
     try {
       functions[sentence[0].epur()](message, sentence, config);
     } catch (err) {
@@ -71,7 +98,8 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
 
 // Called each time a message is posted on a guild where Bwuno belongs to
 bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
-  console.log("toto 1")
+  console.log("toto 1");
+  //const command = bot.commands.get((interaction as any)?.commandName);
   if (!interaction.isCommand())
     return;
 
@@ -81,6 +109,9 @@ bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
 		await interaction.reply('Pong!');
 	} else if (commandName === 'beep') {
 		await interaction.reply('Boop!');
+	} else if (commandName === 'help') {
+		await interaction.reply('helped!');
 	}
+  //await command.execute(interaction);
   console.log("tata 2")
 });
