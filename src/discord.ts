@@ -2,10 +2,10 @@
   This file contain all the discord logic.
 */
 import { format } from 'format';
-import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents } from 'discord.js';
+import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents, Interaction } from 'discord.js';
 import * as sentences from "../resources/language.json";
 import * as settings from "../resources/config.json";
-import * as commands from "./commands/";
+import * as commands from "./services/";
 import Server from "./models/server";
 
 export const bot: Client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
@@ -67,4 +67,20 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
       await message.channel.send(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
     }
   }
+});
+
+// Called each time a message is posted on a guild where Bwuno belongs to
+bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
+  console.log("toto 1")
+  if (!interaction.isCommand())
+    return;
+
+	const { commandName } = interaction;
+
+	if (commandName === 'ping') {
+		await interaction.reply('Pong!');
+	} else if (commandName === 'beep') {
+		await interaction.reply('Boop!');
+	}
+  console.log("tata 2")
 });
