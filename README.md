@@ -2,7 +2,7 @@
 
 # Bwuno
 
-[![](https://img.shields.io/badge/Ajouter-Bwuno-0199FE.svg?style=flat)](https://discord.com/oauth2/authorize?client_id=642935463048642570&scope=bot&permissions=469990567)
+[![](https://img.shields.io/badge/Ajouter-Bwuno-0199FE.svg?style=flat)](https://discord.com/api/oauth2/authorize?client_id=642935463048642570&permissions=347200&scope=applications.commands%20bot)
 [![](https://img.shields.io/discord/556152877488406528.svg?logo=discord&colorB=7289DA)](https://discord.com/invite/NvruPar)
 [![](https://discordbots.org/api/widget/status/642935463048642570.svg)](https://discordbots.org/bot/642935463048642570)
 [![](https://img.shields.io/badge/discord.js-v12.3.1--dev-blue.svg?logo=npm)](https://github.com/discordjs)
@@ -53,7 +53,7 @@ Les quelques rares commande que Bwuno et Kaelly-Touch ont en commun sont plus **
 ## Installation
 
 ⚠️ Cette partie est réserver aux développeur ou personnes souhaitant lancez Bwuno depuis leur machine,
-Si vous souhaitez simplement l'utiliser sur ton serveur discord sans avoir à gerer l'hebergement et tout, [clique ici](https://discord.com/oauth2/authorize?client_id=642935463048642570&scope=bot&permissions=469990567)
+Si vous souhaitez simplement l'utiliser sur ton serveur discord sans avoir à gerer l'hebergement et tout, [clique ici](https://discord.com/api/oauth2/authorize?client_id=642935463048642570&permissions=347200&scope=applications.commands%20bot)
 
 ```sh
 git clone https://github.com/Paul-Marie/Bwuno
