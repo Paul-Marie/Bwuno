@@ -1,9 +1,9 @@
 import * as sentences            from "../../resources/language.json";
 import * as info                 from "../../resources/info";
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, MessageOptions } from 'discord.js';
 
 // Display list of all almanax's bonuses type
-export const list = (message: Message, line: void, config: any): void => {
+export const list = (message: Message, line: void, config: any): MessageOptions => {
   let type_list: string[] = ['', '', ''];
   for (const title of Object.keys(info.list_message.xp))
     type_list[0] += `🔹 ${title}\n`;
@@ -17,5 +17,5 @@ export const list = (message: Message, line: void, config: any): void => {
     .addField(sentences[config.lang].INFO_LIST_XP_FIELD, type_list[0])
     .addField(sentences[config.lang].INFO_LIST_JOB_FIELD, type_list[1])
     .addField(sentences[config.lang].INFO_LIST_MISCELLANEOUS_FIELD, type_list[2])
-  message.channel.send({ embeds: [embed] });
+  return { embeds: [embed] };
 }

@@ -92,7 +92,7 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
     console.log(`${author}: ${message.content}`);
     const functions: any = { ...services, '': services.help };
     try {
-      functions[sentence[0].epur()](message, sentence, config);
+      await message.channel.send(await functions[sentence[0].epur()](message, sentence, config));
     } catch (err) {
       await message.channel.send(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
     }

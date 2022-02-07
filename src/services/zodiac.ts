@@ -1,24 +1,25 @@
 import { getDate, formatDate   } from "../utils/utils";
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, MessageOptions } from 'discord.js';
 import { format                } from 'format';
 import * as zodiac_data          from "../../resources/zodiac.json";
 import * as sentences            from "../../resources/language.json";
 import * as moment               from 'moment';
 
 // Return your doziac' symbol from a date
-export const zodiac = (message: Message, line: string[], config: any): Promise<Message> => {
+export const zodiac = (message: Message, line: string[], config: any): String | MessageOptions => {
   if (line.length < 2)
-    return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}zodiac [date]`));
+    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}zodiac [date]`);
   line.shift();
   const argument: string = formatDate(line).toLowerCase();
   const almanax:     any = getDate(argument)[0];
   if (!almanax)
-    return message.channel.send(sentences[config.lang].ERROR_INCORRECT_DATE);
+    return sentences[config.lang].ERROR_INCORRECT_DATE;
   const astro_sign:  any = {
     "Le Bouftou": "♈",    "La Bworkette": "♑", "Le Centoror": "♐",   "Le Chacha": "♌",
     "Le Crustorail": "♋", "Les Dopeuls": "♊",  "Le Dragocampe": "♍", "Le Flaqueux": "♒",
     "Le Kilibriss": "♎",  "Le Minotoror": "♉", "Les Pichons": "♓",   "Le Scorbute": "♏"
   };
+  // TODO: trad following hardcodded strings:
   const embed: MessageEmbed = new MessageEmbed()
     .setColor('#4E4EC8')
     .setTitle(`**Zodiac du ${moment(almanax.Date.slice(5), "MM-DD", 'fr', true).format("DD MMMM")}**`)
@@ -29,5 +30,5 @@ export const zodiac = (message: Message, line: string[], config: any): Promise<M
     embed.addField(`📅 Tu es par ailleur né lors de: **${almanax.EventName}**`, almanax.EventDescription)
     embed.setImage(almanax.EventImage)
   }
-  message.channel.send({ embeds: [embed] });
+  return { embeds: [embed] };
 }

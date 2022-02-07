@@ -1,10 +1,10 @@
 import * as sentences from "../../resources/language.json";
 import * as settings  from "../../resources/config.json";
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, MessageOptions } from 'discord.js';
 import { format                } from 'format';
 
 // Return an Embed object containing all Bwuno's informations
-export const info = (message: Message, line: void, config: any): void => {
+export const info = (message: Message, line: void, config: any): MessageOptions => {
   const embed: MessageEmbed = new MessageEmbed()
     .setColor(0x4E4EC8)
     .setDescription(format(sentences[config.lang].INFO_ABOUT_DESCRIPTION,
@@ -14,5 +14,5 @@ export const info = (message: Message, line: void, config: any): void => {
     .addField("Discord:", `[Discord](${settings.dt_price.invite_url})`)
     .addField(sentences[config.lang].INFO_ABOUT_INVIT, `[Invitation](${settings.bwuno.invite_link})`, true)
     .setImage("https://i.imgur.com/mcpPHoh.png")
-  message.channel.send({ embeds: [embed] });
+  return { embeds: [embed] };
 };

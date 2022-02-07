@@ -4,25 +4,26 @@ import { Message    } from 'discord.js';
 import { format     } from 'format';
 
 // Activate or desactivate `auto_mode` for a discord' server
-export const auto = async (message: Message, line: string[], config: any): Promise<Message> => {
+export const auto = async (message: Message, line: string[], config: any): Promise<string> => {
   if (line.length > 2)
-    return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}auto ['on'|'off']`));
+    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}auto ['on'|'off']`);
   const argument: string = (line[1] || '').epur();
+  // TODO: check discord v13.6's permissions handling
   if (!message.member.permissions.has(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
-    return message.channel.send(sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS);
+    return sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS;
   let activate: Boolean;
   if (argument === '')
     activate = !config.auto_mode;
   if (["on", "true", "1", "start"].some(elem => argument.includes(elem)) || activate) {
     if (config.auto_mode)
-      return message.channel.send(format(sentences[config.lang].ERROR_AUTO_ALREADY_ACTIVATED, `<#${message.channel.id}>`));
+      return format(sentences[config.lang].ERROR_AUTO_ALREADY_ACTIVATED, `<#${message.channel.id}>`);
     await Server.findOneAndUpdate({ identifier: config.identifier }, { auto_mode: true, auto_channel: message.channel.id });
-    message.channel.send(sentences[config.lang].SUCCESS_AUTO_ACTIVATED);
+    return sentences[config.lang].SUCCESS_AUTO_ACTIVATED;
   } else if (["off", "false", "0", "stop"].some(elem => argument.includes(elem)) || !activate) {
     if (!config.auto_mode)
-      return message.channel.send(sentences[config.lang].ERROR_AUTO_NOT_ACTIVATED);
+      return sentences[config.lang].ERROR_AUTO_NOT_ACTIVATED;
     await Server.findOneAndUpdate({ identifier: config.identifier }, { auto_mode: false, auto_channel: undefined });
-    message.channel.send(sentences[config.lang].SUCCESS_AUTO_DESACTIVATED);
+    return sentences[config.lang].SUCCESS_AUTO_DESACTIVATED;
   } else
-    message.channel.send(sentences[config.lang].ERROR_AUTO_UNKNOWN_ARGUMENT);
+    return sentences[config.lang].ERROR_AUTO_UNKNOWN_ARGUMENT;
 }

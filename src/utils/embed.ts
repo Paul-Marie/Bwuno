@@ -9,7 +9,7 @@ import * as moment from 'moment';
 moment.locale('fr');
 
 // Create an embed with all almanax of day's informations
-export const createEmbed = async (almanax: any, id: number) => {
+export const createEmbed = async (almanax: any, id: number): Promise<MessageEmbed> => {
     const remaining_days: number = getRemainingDay(almanax.Date);
     const average_price: string = await getPrice(almanax.OfferingURL.substring(62).split('-')[0], id);
     const embed: MessageEmbed = new MessageEmbed()
@@ -34,7 +34,7 @@ export const createEmbed = async (almanax: any, id: number) => {
 }
 
 // Return an embed where all field are almanax from tomorrow to the next 25 days
-export const createFutureEmbed = (required_almanax: number) => {
+export const createFutureEmbed = (required_almanax: number): MessageEmbed => {
     const current_date: moment.Moment = moment();
     if (required_almanax > settings.discord.embed_limit)
         required_almanax = settings.discord.embed_limit;
