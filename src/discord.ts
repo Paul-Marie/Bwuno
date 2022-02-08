@@ -101,21 +101,14 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
 
 // Called each time a message is posted on a guild where Bwuno belongs to
 bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
-  console.log("toto 1");
-  //console.log(interaction);
-  //const command = bot.commands.get((interaction as any)?.commandName);
+  console.log(interaction);
   if (!interaction.isCommand())
     return;
-
-	const { commandName } = interaction;
-
-	if (commandName === 'ping') {
-		await interaction.reply('Pong!');
-	} else if (commandName === 'beep') {
-		await interaction.reply('Boop!');
-	} else if (commandName === 'help') {
-		await interaction.reply('helped!');
-	}
-  //await command.execute(interaction);
-  console.log("tata 2")
+  const config: any = await Server.findOne({ identifier: interaction.guild.id });
+  try {
+    await interaction.reply(await services[interaction.commandName.epur()](undefined, interaction, config));
+  } catch (err) {
+    console.trace(err);
+    await interaction.reply(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, interaction.commandName, `/help`));
+  }
 });
