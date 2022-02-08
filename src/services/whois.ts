@@ -3,7 +3,7 @@ import * as settings  from "../../resources/config.json";
 //import fetch from 'node-fetch';
 import axios, { AxiosResponse                } from 'axios';
 import { createPlayerEmbed, createErrorEmbed } from "../utils/embed";
-import { Message    } from 'discord.js';
+import { MessageOptions } from 'discord.js';
 import { format     } from 'format';
 import JSSoup         from 'jssoup';
 import * as request   from 'async-request';
@@ -18,9 +18,9 @@ const server_id: any = { "o": 403, "t": 404, "h": 405 };
 
 // TODO To optimize / rework entirely
 // Display all player informations
-export const whois = async (message: Message, line: string[], config: any): Promise<Message> => {
+export const whois = async (line: string[], config: any): Promise<String | MessageOptions> => {
   if (line.length < 2)
-    return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}whois [pseudo]`));
+    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}whois [pseudo]`);
   line.shift();
   const argument: string = line[0].toLowerCase();
   const server: string = server_id[line[1]?.toLowerCase()[0]] || config.server_id + 402;
@@ -121,14 +121,14 @@ export const whois = async (message: Message, line: string[], config: any): Prom
       const answer: any = await request(link);
       if (answer.statusCode === 200) {
         const data = await formateData(answer, base_url, link, config.lang);
-        message.channel.send({ embeds: [await createPlayerEmbed(data, config.lang)] });
+        return { embeds: [await createPlayerEmbed(data, config.lang)] };
       } else
-        message.channel.send({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] });
+        return { embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] };
     } catch (err) {
-      message.channel.send({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] });
+      return { embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] };
     }
   } else
-    message.channel.send(format(sentences[config.lang].ERROR_FORBIDEN));
+    return format(sentences[config.lang].ERROR_FORBIDEN);
 }
 
 // Parse all page informations and return an epured object
@@ -230,9 +230,9 @@ const getGuildRole = async (link: string, name: string, lang: number, page: numb
       grade: element.contents[3].contents[0]._text
     }
   }).filter((elem: any) => elem.name === name)[0];
-  if (!guild_role)
-    return await getGuildRole(link, name, lang, page + 1);
-  return guild_role.grade;
+  return (!guild_role)
+    ? await getGuildRole(link, name, lang, page + 1)
+    : guild_role.grade;
 }
 
 // Parse each player's page until find the required player and return his page
@@ -241,11 +241,11 @@ const getPlayerPage = async (link: string, name: string, page: number = 1): Prom
   const list: JSSoup = new JSSoup(answer.body);
   const content = list.findAll('tr');
   content.shift();
-  const filtered_result = await content.filter((result: any) => {
-    return result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+  const filtered_result = await content.filter((result: any) => (
+    result.contents[1].nextElement.nextElement._text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
       == name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-  });
-  if (!filtered_result.length && page < 10)
-    return await getPlayerPage(link, name, page + 1);
-  return `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
+  ));
+  return (!filtered_result.length && page < 10)
+    ? await getPlayerPage(link, name, page + 1)
+    : `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
 }

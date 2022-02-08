@@ -1,11 +1,11 @@
 import * as sentences from "../../resources/language.json";
-import * as moment from 'moment';
-import { Message } from 'discord.js';
-import { format } from 'format';
-import User from "../models/user";
+import * as moment    from 'moment';
+import { format     } from 'format';
+import { Message    } from "discord.js";
+import User           from "../models/user";
 
 // Allow you to subscribe to discord' notifications
-export const show = async (message: Message, line: void, config: any): Promise<String> => {
+export const show = async (line: void, config: any, message: Message): Promise<String> => {
   const user: any = await User.findOne({ identifier: message.author.id });
   if (user?.subscriptions.length) {
     const list: any[] = user.subscriptions.sort((almanax1, almanax2) => (

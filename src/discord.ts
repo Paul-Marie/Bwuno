@@ -92,7 +92,7 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
     console.log(`${author}: ${message.content}`);
     const functions: any = { ...services, '': services.help };
     try {
-      await message.channel.send(await functions[sentence[0].epur()](message, sentence, config));
+      await message.channel.send(await functions[sentence[0].epur()](sentence, config, message));
     } catch (err) {
       await message.channel.send(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
     }
@@ -106,7 +106,7 @@ bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
     return;
   const config: any = await Server.findOne({ identifier: interaction.guild.id });
   try {
-    await interaction.reply(await services[interaction.commandName.epur()](undefined, interaction, config));
+    await interaction.reply(await services[interaction.commandName.epur()](interaction, config, interaction));
   } catch (err) {
     console.trace(err);
     await interaction.reply(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, interaction.commandName, `/help`));

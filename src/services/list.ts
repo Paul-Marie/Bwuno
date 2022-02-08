@@ -1,9 +1,9 @@
-import * as sentences            from "../../resources/language.json";
-import * as info                 from "../../resources/info";
-import { Message, MessageEmbed, MessageOptions } from 'discord.js';
+import * as sentences                   from "../../resources/language.json";
+import * as info                        from "../../resources/info";
+import { MessageEmbed, MessageOptions } from 'discord.js';
 
 // Display list of all almanax's bonuses type
-export const list = (message: Message, line: void, config: any): MessageOptions => {
+export const list = (line: void, config: any): MessageOptions => {
   let type_list: string[] = ['', '', ''];
   for (const title of Object.keys(info.list_message.xp))
     type_list[0] += `🔹 ${title}\n`;

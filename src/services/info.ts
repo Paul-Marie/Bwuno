@@ -1,10 +1,10 @@
-import * as sentences from "../../resources/language.json";
-import * as settings  from "../../resources/config.json";
-import { Message, MessageEmbed, MessageOptions } from 'discord.js';
-import { format                } from 'format';
+import * as sentences                   from "../../resources/language.json";
+import * as settings                    from "../../resources/config.json";
+import { MessageEmbed, MessageOptions } from 'discord.js';
+import { format                       } from 'format';
 
 // Return an Embed object containing all Bwuno's informations
-export const info = (message: Message, line: void, config: any): MessageOptions => {
+export const info = (line: void, config: any): MessageOptions => {
   const embed: MessageEmbed = new MessageEmbed()
     .setColor(0x4E4EC8)
     .setDescription(format(sentences[config.lang].INFO_ABOUT_DESCRIPTION,

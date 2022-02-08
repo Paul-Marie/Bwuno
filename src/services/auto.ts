@@ -4,7 +4,7 @@ import { Message    } from 'discord.js';
 import { format     } from 'format';
 
 // Activate or desactivate `auto_mode` for a discord' server
-export const auto = async (message: Message, line: string[], config: any): Promise<string> => {
+export const auto = async (line: string[], config: any, message: Message): Promise<string> => {
   if (line.length > 2)
     return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}auto ['on'|'off']`);
   const argument: string = (line[1] || '').epur();
