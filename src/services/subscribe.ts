@@ -5,14 +5,14 @@ import { Message    } from 'discord.js';
 import { format     } from 'format';
 
 // Allow you to subscribe to discord' notifications
-export const subscribe = async (message: Message, line: string[], config: any, forwarded: boolean = false): Promise<Message> => {
+export const subscribe = async (message: Message, line: string[], config: any, forwarded: boolean = false): Promise<String> => {
   if (line.length <= 1)
-    return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}subscribe [item]`));
+    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}subscribe [item]`);
   line.shift();
   const argument: string = line.join(' ');
   const result:    any[] = getList(argument);
   if (!result.length)
-    return message.channel.send(sentences[config.lang].ERROR_INCORRECT_ITEM);
+    return sentences[config.lang].ERROR_INCORRECT_ITEM;
   const list:      any[] = result.map((offering: any) => ({
     date: offering.Date,
     name: offering.OfferingName
@@ -21,14 +21,14 @@ export const subscribe = async (message: Message, line: string[], config: any, f
   if (user) {
     if (user.subscriptions.filter(elem => argument.epur() === elem.name?.epur()).length) {
       line.unshift(config.prefix)
-      return unsubscribe(message, line, config, true);
+      return await unsubscribe(message, line, config, true);
     }
     await User.updateOne({ identifier: message.author.id }, {
       subscriptions: [...user.subscriptions, ...list]
     });
-    return message.channel.send((forwarded)
+    return (forwarded)
       ? format(sentences[config.lang].SUCCESS_NOTIFICATION_FORWARDED, `${argument}`)
-      : format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, `${argument}`));
+      : format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, `${argument}`);
   }
   await User.create({
     identifier:    message.author.id,
@@ -36,17 +36,17 @@ export const subscribe = async (message: Message, line: string[], config: any, f
     lang:          config.lang,
     subscriptions: list
   });
-  return message.channel.send(format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, `${argument}`));
+  return format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, `${argument}`);
 }
 
-export const unsubscribe = async (message: Message, line: string[], config: any, forwarded: boolean = false): Promise<Message> => {
+export const unsubscribe = async (message: Message, line: string[], config: any, forwarded: boolean = false): Promise<String> => {
   if (line.length <= 1)
-    return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}unsubscribe [item]`));
+    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}unsubscribe [item]`);
   line.shift();
   const argument: string = line.join(' ');
   const result:    any[] = getList(argument);
   if (!result.length)
-    return message.channel.send(sentences[config.lang].ERROR_INCORRECT_ITEM);
+    return sentences[config.lang].ERROR_INCORRECT_ITEM;
   const list:      any[] = result.map((offering: any) => ({
     date: offering.Date,
     name: offering.OfferingName
@@ -55,14 +55,14 @@ export const unsubscribe = async (message: Message, line: string[], config: any,
   if (user) {
     if (!user.subscriptions.filter(elem => argument === elem.name?.epur()).length) {
       line.unshift(config.prefix)
-      return subscribe(message, line, config, true);
+      return await subscribe(message, line, config, true);
     }
     await User.updateOne({ identifier: message.author.id }, {
       subscriptions: user.subscriptions.filter((subscription) => subscription.name !== list[0].name)
     });
-    return message.channel.send((forwarded)
+    return (forwarded)
       ? format(sentences[config.lang].SUCCESS_NOTIFICATION_DISABLE_FORWARDED, `${argument}`)
-      : format(sentences[config.lang].SUCCESS_NOTIFICATION_UNSET, `${argument}`));
+      : format(sentences[config.lang].SUCCESS_NOTIFICATION_UNSET, `${argument}`);
   }
   await User.create({
     identifier:     message.author.id,
@@ -70,5 +70,5 @@ export const unsubscribe = async (message: Message, line: string[], config: any,
     lang:           config.lang,
     subscriptions:  list
   });
-  return message.channel.send(format(sentences[config.lang].SUCCESS_NOTIFICATION_UNSET, `${argument}`));
+  return format(sentences[config.lang].SUCCESS_NOTIFICATION_UNSET, `${argument}`);
 }

@@ -1,15 +1,15 @@
 import * as sentences from "../../resources/language.json";
 import * as settings from "../../resources/config.json";
 import { createGuildEmbed, createErrorEmbed } from "../utils/embed";
-import { Message } from 'discord.js';
+import { Message, MessageOptions } from 'discord.js';
 import { format } from 'format';
 import JSSoup from 'jssoup';
 import * as request from 'async-request';
 
 // Send an Embed containing all guild's information
-export const guild = async (message: Message, line: string[], config: any): Promise<Message> => {
+export const guild = async (message: Message, line: string[], config: any): Promise<string | MessageOptions> => {
   if (line.length < 2)
-    return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}guild [name]`));
+    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}guild [name]`);
   line.shift();
   const argument:     string = line.join('+').toLowerCase();
   const base_url:     string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.guild_url[config.lang]}`;
@@ -17,6 +17,7 @@ export const guild = async (message: Message, line: string[], config: any): Prom
   const response:        any = await request(`${base_url}${query_string}`);
   if (response.statusCode === 200) {
     try {
+      // TODO: get rid of the try/catch forest with ? operator
       const search: JSSoup = new JSSoup(response.body);
       const link:   string = `${settings.encyclopedia.base_url}${search.find('td').nextElement.attrs.href}`;
       const answer:    any = await request(link);
@@ -58,13 +59,13 @@ export const guild = async (message: Message, line: string[], config: any): Prom
             };
           }
         }).slice(0, 15);
-        message.channel.send({ embeds: [await createGuildEmbed(data, config.lang)] });
+        return { embeds: [await createGuildEmbed(data, config.lang)] };
       } else
-        message.channel.send({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0)] });
+        return { embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0)] };
     } catch (err) {
       console.log(err);
-      message.channel.send({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0)] });
+      return { embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0)] };
     }
   } else
-    message.channel.send(format(sentences[config.lang].ERROR_FORBIDEN));
+    return format(sentences[config.lang].ERROR_FORBIDEN);
 }

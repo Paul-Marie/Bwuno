@@ -6,9 +6,9 @@ import { Message } from 'discord.js';
 import { format } from 'format';
 
 // Send a succession of message containing all almanax's date with the required type
-export const type = (message: Message, line: string[], config: any): Promise<Message> => {
+export const type = (message: Message, line: string[], config: any): String => {
   if (line.length < 2)
-    return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}type [type]`));
+    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}type [type]`);
   const argument: string = line[1].epur();
   const almanax_list: any = Object.keys(type_message).map(key => (
     key.epur() === argument && getAlmanax(type_message[key])
@@ -25,7 +25,7 @@ export const type = (message: Message, line: string[], config: any): Promise<Mes
         result = element;
       }
     }
-    message.channel.send(result);
+    return result;
   } else
-    message.channel.send(format(sentences[config.lang].ERROR_TYPE_WRONG_ARGUMENT, `${config.prefix}list`));
+    return format(sentences[config.lang].ERROR_TYPE_WRONG_ARGUMENT, `${config.prefix}list`);
 }

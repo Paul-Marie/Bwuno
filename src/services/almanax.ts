@@ -2,14 +2,14 @@ import * as sentences from "../../resources/language.json";
 import * as year from "../../resources/year.json";
 import { getDate, formatDate, getList } from "../utils/utils";
 import { createEmbed, createFutureEmbed } from "../utils/embed";
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, MessageOptions } from 'discord.js';
 import * as moment from 'moment';
 
-// TODO make possible to use `{prefix}almanax` and get today's almanax
+// TODO: make possible to use `{prefix}almanax` and get today's almanax
 // Send all almanax's informations Embed from a date
-export const almanax = async (message: Message, line: string[], config: any): Promise<Message> => {
+export const almanax = async (message: Message, line: string[], config: any): Promise<string | MessageOptions> => {
   if (line.length < 2)
-    return message.channel.send({ embeds: [await createEmbed(year[moment().format("2022-MM-DD")], config.server)] });
+    return { embeds: [await createEmbed(year[moment().format("2022-MM-DD")], config.server)] };
   line.shift()
   const argument: string = formatDate(line).toLowerCase();
   const almanax: any = getDate(argument)[0];
@@ -21,23 +21,20 @@ export const almanax = async (message: Message, line: string[], config: any): Pr
       message.channel.send({ embeds: [embed] });
     } else {
       line.unshift(config.prefix)
-      item(message, line, config);
+      return await item(message, line, config);
     }
   } else {
     const embed: MessageEmbed = await createEmbed(almanax, config.server);
-    message.channel.send({ embeds: [embed] });
+    return { embeds: [embed] };
   }
 }
 
 // Send all almanax's informations Embed from an item's name
-export const item = async (message: Message, line: string[], config: any): Promise<Message> => {
+export const item = async (message: Message, line: string[], config: any): Promise<MessageOptions> => {
   line.shift();
   const argument: string = line.join(' ').epur();
   const result: any[] = getList(argument);
-  if (!result[0])
-    return message.channel.send(sentences[config.lang].ERROR_INCORRECT_DATE_OR_ITEM);
-  for (const almanax of result) {
-    const embed: MessageEmbed = await createEmbed(almanax, config.server_id);
-    message.channel.send({ embeds: [embed] });
-  }
+  return !result[0]
+    ? sentences[config.lang].ERROR_INCORRECT_DATE_OR_ITEM
+    : { embeds: await Promise.all(result.map(async (almanax: any) => await createEmbed(almanax, config.server_id))) };
 }

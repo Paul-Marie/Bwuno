@@ -12,19 +12,19 @@ const lang_available: any = {
 }
 
 // Change Bwuno's language
-export const lang = async (message: Message, line: string[], config: any): Promise<Message> => {
+export const lang = async (message: Message, line: string[], config: any): Promise<String> => {
   if (line.length !== 2)
-    return message.channel.send(format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}lang ['fr'|'en'|'es'|'de']`));
+    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}lang ['fr'|'en'|'es'|'de']`);
   let argument: string = line[1].epur();
   if (!message.member.permissions.has(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
-    return message.channel.send(sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS);
+    return sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS;
   if (lang_available[argument] === undefined)
-    return message.channel.send(sentences[config.lang].ERROR_UNSUPORTED_LANGUAGE);
+    return sentences[config.lang].ERROR_UNSUPORTED_LANGUAGE;
   const tmp: number = lang_available[argument];
   if (config.lang === tmp)
-    message.channel.send(sentences[config.lang].ERROR_ALREADY_CURRENT_LANGUAGE);
+    return sentences[config.lang].ERROR_ALREADY_CURRENT_LANGUAGE;
   else {
     const neo_lang: any = await Server.findOneAndUpdate({ identifier: config.identifier }, { lang: tmp }, { new: true });
-    message.channel.send(format(sentences[neo_lang.lang].SUCCESS_LANGUAGE_CHANGED, formal_lang[tmp]));
+    return format(sentences[neo_lang.lang].SUCCESS_LANGUAGE_CHANGED, formal_lang[tmp]);
   }
 }
