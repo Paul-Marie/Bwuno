@@ -3,7 +3,7 @@
 */
 import { format } from 'format';
 //import { readdirSync } from 'fs';
-import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents, Interaction, Collection } from 'discord.js';
+import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents, Interaction, Collection, CommandInteraction, ClientEvents } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import * as sentences from "../resources/language.json";
@@ -32,15 +32,18 @@ bot.commands = new Collection();
 // Called when Bwuno is online
 bot.on("ready", async (): Promise<void> => {
   try {
-    console.log("Actuellement connécté sur les serveurs:");
-    bot.guilds.cache.forEach((guild: Guild) => console.log(` - ${guild.name}`));
-    await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
-    //Object.keys(commands)?.forEach((name: string) => bot.commands.set(name, commands[name]))
     const commandsList: any[] = Object.keys(commands)?.map((name: string) => commands[name]);
-    // TODO: use it in order to push traducted commands on international servers
-    //await rest.put(Routes.applicationGuildCommands(bot.user.id, "746757087014551563"), { body: commandsList });
-    await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList });
-    console.log(`${commandsList.length} commandes ont été importé.`);
+    console.log(`Curently connected on (${bot.guilds.cache.size}) servers:`);
+    await Promise.all(bot.guilds.cache.map(async (guild: Guild) => {
+      try {
+        await rest.put(Routes.applicationGuildCommands(bot.user.id, guild.id), { body: commandsList });
+        console.log(` - ${guild.name} ✔️`);
+      } catch (error) {
+        console.log(` - ${guild.name} ❌`);
+      }
+    }));
+    console.log(`${commandsList.length} imported command${commandsList.length ? 's' : ''}.`);
+    await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
   } catch (error) {
     console.log(error);
     process.exit(1);
@@ -101,7 +104,7 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
 
 // Called each time a message is posted on a guild where Bwuno belongs to
 bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
-  console.log(interaction);
+  console.dir(interaction, { depth: null });
   if (!interaction.isCommand())
     return;
   const config: any = await Server.findOne({ identifier: interaction.guild.id });

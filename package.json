@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "repository": "git@github.com:Paul-Marie/Bwuno.git",
   "author": "Paul\\0 <paul-marie.bettinelli@epitech.eu>",
-  "license": "WTFPLV2",
+  "license": "Unlicense",
   "scripts": {
     "start": "ts-node ./src/",
     "dev": "nodemon ./src/index.ts",
