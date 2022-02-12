@@ -17,6 +17,7 @@
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "discord-api-types": "^0.26.1",
+    "discord-slash-commands-client": "^1.2.2",
     "discord.js": "^13.6.0",
     "format": "^0.2.2",
     "jssoup": "^0.0.15",
