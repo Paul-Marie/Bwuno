@@ -13,17 +13,19 @@ import * as commands from "./commands/";
 import Server from "./models/server";
 
 declare module "discord.js" {
-    export interface Client {
-          commands: Collection<unknown, any>
-      }
-    }
+  export interface Client {
+    commands: Collection<unknown, any>
+  }
+}
     
 const rest = new REST({ version: '9' }).setToken(settings.discord.token);
 export const bot: Client = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.DIRECT_MESSAGES
+    Intents.FLAGS.DIRECT_MESSAGES,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS
   ]
 });
 
@@ -61,7 +63,7 @@ bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     if (server)
       return;
     const channel: GuildBasedChannel = guild.channels?.cache?.find((chan: GuildBasedChannel) =>
-      ["general", "bienvenue", "acceuil", "bavardage", "hall"].some(elem => chan.name.epur().includes(elem)));
+      ["general", "bienvenue", "acceuil", "bavardage", "hall"].some((elem: string) => chan.name.epur().includes(elem)));
     await Server.create({
       identifier: guild.id, name: guild.name, lang: 0, server_id: 2,
       auto_mode: false, prefix: settings.bwuno.default_prefix
