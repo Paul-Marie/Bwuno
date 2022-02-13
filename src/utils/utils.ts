@@ -11,9 +11,19 @@ declare global {
   }
 }
 
+declare global {
+  interface Object {
+    isCommand(): boolean;
+  }
+}
+
 // Declare the `epur()` method on String
 String.prototype.epur = function () {
   return this?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+};
+
+Object.prototype.isCommand = function () {
+  return false;
 };
 
 // TODO to replace by triche regexp

@@ -4,14 +4,20 @@ export const almanax = {
   options: [{
     name: "date",
     description: "La date de l'almanax souhaité",
-    // Type of input from user: https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoptiontype
     type: 3,
     required: false,
   }, {
     name: "item",
-    description: "item de l'offrande des almanax souhaité",
+    description: "Item de l'offrande des almanax souhaité",
     type: 3,
     required: false
-  }
-  ]
+  }, {
+    // TODO: Replace the `plus` by `+` when Discord API will accept it
+    name: "plus",
+    description: "Nombre des prochains almanax à afficher",
+    type: 4,
+    "min_value": 1,
+    "max_value": 25,
+    required: false
+  }]
 };

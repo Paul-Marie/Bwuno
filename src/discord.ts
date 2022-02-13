@@ -31,75 +31,15 @@ export const bot: Client = new Client({
 
 bot.commands = new Collection();
 
-import { ApplicationCommand, Client as toto } from "discord-slash-commands-client";
-
 // Called when Bwuno is online
 bot.on("ready", async (): Promise<void> => {
-  try {
-    const commandsList: any[] = Object.keys(commands)?.map((name: string) => commands[name]);
-    console.log(`Curently connected on (${bot.guilds.cache.size}) servers:`);
-    const tata: toto = new toto(settings.discord.token, bot.user.id);
-    // await Promise.all(bot.guilds.cache.map(async (guild: Guild) => {
-    //   console.log(`name: ${guild.name} id: ${guild.id}`);
-    //   try {
-    //     const titi: any = await tata.getCommands({ guildID: guild.id });//.then(console.log).catch(console.error);
-    //     await new Promise(resolve => setTimeout(resolve, 3000));
-    //     await Promise.all(titi.map(async (tete: ApplicationCommand) => await tata.deleteCommand(tete.id, guild.id)))
-    //     await new Promise(resolve => setTimeout(resolve, 3000));
-    //     console.log(`✔️ ${guild.name}`);
-    //   } catch (error) {
-    //     console.error(`❌ ${guild.name} ${error}`);
-    //   }
-    // }));
-    // return
-    for (const guild of bot.guilds.cache) {
-      try {
-        const titi: any = await rest.get(Routes.applicationGuildCommands(bot.user.id, guild[1].id));
-        console.log(`✔️ ${guild[1].name} ${titi?.length}`);
-        for (const tyty of titi) {
-          try {
-            //const tktk: any = await rest.delete(Routes.applicationGuildCommands(bot.user.id, guild[1].id));
-            const tktkt = await tata.deleteCommand(tyty.id, guild[1].id)
-            console.log(`\t✔️ ${tyty.name}`);
-          } catch (errors) {
-            console.error(`\t❌ ${guild[1].name} ${errors}`);
-          }
-        }
-      } catch (error) {
-        console.error(`❌ ${guild[1].name} ${error}`);
-      } finally {
-        await new Promise(resolve => setTimeout(resolve, 3000));
-      }
-    }
-    return;
-    await Promise.all(bot.guilds.cache.map(async (guild: Guild) => {
-      console.log(guild.name);
-      const data: any = await rest.get(Routes.applicationGuildCommands(bot.user.id, guild.id))
-      console.log(data);
-      return data;
-      // const promises = [];
-      // for (const command of data) {
-      //   console.log("======");
-      //   const deleteUrl: any = `${Routes.applicationGuildCommands(bot.user.id, guild.id)}/${command.id}`;
-      //   console.log(deleteUrl);
-      //   await rest.delete(deleteUrl);
-      // }
-      //return Promise.all(promises);
-    }));
-    // await Promise.all(bot.guilds.cache.map(async (guild: Guild) => {
-    //   try {
-    //     await rest.put(Routes.applicationGuildCommands(bot.user.id, guild.id), { body: commandsList });
-    //     console.log(` - ${guild.name} ✔️`);
-    //   } catch (error) {
-    //     console.log(` - ${guild.name} ❌`);
-    //   }
-    // }));
-    console.log(`${commandsList.length} imported command${commandsList.length ? 's' : ''}.`);
-    await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
+  const commandsList: any[] = Object.keys(commands)?.map((name: string) => commands[name]);
+  console.log(`Curently connected on (${bot.guilds.cache.size}) servers:`);
+  // TODO: Map over
+  await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList });
+  // TODO: Print the result value of the PUT's length instead of commandsList's length
+  console.log(`${commandsList.length} imported command${commandsList.length ? 's' : ''}.`);
+  await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
 });
 
 bot.on("disconnect", ({ reason, code }) => {
@@ -156,9 +96,10 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
 
 // Called each time a message is posted on a guild where Bwuno belongs to
 bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
-  console.dir(interaction, { depth: null });
   if (!interaction.isCommand())
     return;
+  const { username, discriminator } = interaction.user;
+  console.log(`${username}#${discriminator}: /${interaction.commandName}`);
   const config: any = await Server.findOne({ identifier: interaction.guild.id });
   try {
     await interaction.reply(await services[interaction.commandName.epur()](interaction, config, interaction));
