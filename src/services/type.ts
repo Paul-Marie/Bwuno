@@ -6,7 +6,7 @@ import { Message } from 'discord.js';
 import { format } from 'format';
 
 // Send a succession of message containing all almanax's date with the required type
-export const type = (message: Message, line: string[], config: any): String => {
+export const type = (line: string[], config: any, message: Message): String => {
   if (line.length < 2)
     return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}type [type]`);
   const argument: string = line[1].epur();

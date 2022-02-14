@@ -3,7 +3,7 @@
 */
 import { format } from 'format';
 //import { readdirSync } from 'fs';
-import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents, Interaction, Collection } from 'discord.js';
+import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents, Interaction, Collection, CommandInteraction, ClientEvents } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import * as sentences from "../resources/language.json";
@@ -13,17 +13,19 @@ import * as commands from "./commands/";
 import Server from "./models/server";
 
 declare module "discord.js" {
-    export interface Client {
-          commands: Collection<unknown, any>
-      }
-    }
+  export interface Client {
+    commands: Collection<unknown, any>
+  }
+}
     
 const rest = new REST({ version: '9' }).setToken(settings.discord.token);
 export const bot: Client = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.DIRECT_MESSAGES
+    Intents.FLAGS.DIRECT_MESSAGES,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS
   ]
 });
 
@@ -31,20 +33,13 @@ bot.commands = new Collection();
 
 // Called when Bwuno is online
 bot.on("ready", async (): Promise<void> => {
-  try {
-    console.log("Actuellement connécté sur les serveurs:");
-    bot.guilds.cache.forEach((guild: Guild) => console.log(` - ${guild.name}`));
-    await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
-    //Object.keys(commands)?.forEach((name: string) => bot.commands.set(name, commands[name]))
-    const commandsList: any[] = Object.keys(commands)?.map((name: string) => commands[name]);
-    // TODO: use it in order to push traducted commands on international servers
-    //await rest.put(Routes.applicationGuildCommands(bot.user.id, "746757087014551563"), { body: commandsList });
-    await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList });
-    console.log(`${commandsList.length} commandes ont été importé.`);
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
+  const commandsList: any[] = Object.keys(commands)?.map((name: string) => commands[name]);
+  console.log(`Curently connected on (${bot.guilds.cache.size}) servers:`);
+  // TODO: Map over
+  await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList });
+  // TODO: Print the result value of the PUT's length instead of commandsList's length
+  console.log(`${commandsList.length} imported command${commandsList.length ? 's' : ''}.`);
+  await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
 });
 
 bot.on("disconnect", ({ reason, code }) => {
@@ -58,7 +53,7 @@ bot.on("guildCreate", async (guild: Guild): Promise<void> => {
     if (server)
       return;
     const channel: GuildBasedChannel = guild.channels?.cache?.find((chan: GuildBasedChannel) =>
-      ["general", "bienvenue", "acceuil", "bavardage", "hall"].some(elem => chan.name.epur().includes(elem)));
+      ["general", "bienvenue", "acceuil", "bavardage", "hall"].some((elem: string) => chan.name.epur().includes(elem)));
     await Server.create({
       identifier: guild.id, name: guild.name, lang: 0, server_id: 2,
       auto_mode: false, prefix: settings.bwuno.default_prefix
@@ -92,7 +87,7 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
     console.log(`${author}: ${message.content}`);
     const functions: any = { ...services, '': services.help };
     try {
-      await message.channel.send(await functions[sentence[0].epur()](message, sentence, config));
+      await message.channel.send(await functions[sentence[0].epur()](sentence, config, message));
     } catch (err) {
       await message.channel.send(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
     }
@@ -101,12 +96,13 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
 
 // Called each time a message is posted on a guild where Bwuno belongs to
 bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
-  console.log(interaction);
   if (!interaction.isCommand())
     return;
+  const { username, discriminator } = interaction.user;
+  console.log(`${username}#${discriminator}: /${interaction.commandName}`);
   const config: any = await Server.findOne({ identifier: interaction.guild.id });
   try {
-    await interaction.reply(await services[interaction.commandName.epur()](undefined, interaction, config));
+    await interaction.reply(await services[interaction.commandName.epur()](interaction, config, interaction));
   } catch (err) {
     console.trace(err);
     await interaction.reply(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, interaction.commandName, `/help`));

@@ -4,7 +4,7 @@
 export { help                   } from "./help";
 //export * as ping from "./ping";
 // export { item                   } from "./item";
-// export { almanax                } from "./almanax";
+export { almanax                } from "./almanax";
 // export { zodiac                 } from "./zodiac";
 // export { type                   } from "./type";
 // export { list                   } from "./list";

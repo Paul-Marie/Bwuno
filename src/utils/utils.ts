@@ -1,13 +1,16 @@
-import request from 'async-request';
-import * as year from "../../resources/year.json";
+import * as year     from "../../resources/year.json";
 import * as settings from "../../resources/config.json";
-import * as moment from 'moment';
+import * as moment   from 'moment';
+import      request  from 'async-request';
 
 moment.locale('fr');
 
 declare global {
   interface String {
     epur(): string;
+  }
+  interface Object {
+    isCommand(): boolean;
   }
 }
 
@@ -16,22 +19,26 @@ String.prototype.epur = function () {
   return this?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
 };
 
+Object.prototype.isCommand = function () {
+  return false;
+};
+
 // TODO to replace by triche regexp
-export const formatDate = (sentence: string[]) => {
-  return ((sentence.map((elem: string) => {
-    return elem.split("-").map((item: string) => {
-      return (item.length === 1) ? "0" + item : item;
-    })
-  })).map((elem: string[]) => {
-    return (elem.map((tmp: string) => {
-      return tmp.split("/").map((item: string) => {
-        return (item.length === 1) ? "0" + item : item;
-      }).join(" ");
-    })).join(" ");
-  })).map((elem: string) => {
-    return (elem.length === 1) ? "0" + elem : elem;
-  }).join(" ");
-}
+export const formatDate = (sentence: string[]): string =>
+  ((sentence.map((elem: string) =>
+    elem.split("-").map((item: string) =>
+      `${item.length === 1 ? '0' : ''}${item}`
+    )
+  )).map((elem: string[]) =>
+    (elem.map((tmp: string) =>
+      tmp.split("/").map((item: string) =>
+        `${item.length === 1 ? '0' : ''}${item}`
+      ).join(" ")
+    )).join(" ")
+  )).map((elem: string) =>
+    `${elem.length === 1 ? '0' : ''}${elem}`
+  ).join(" ");
+
 
 const getAverageOfDay = (array: any[], date: string): number => {
   const days: any = array.filter((hour: any) => hour.date.includes(date));
@@ -59,44 +66,36 @@ export const getPrice = async (item_id: number, server_id: number = 2): Promise<
 }
 
 // Return all almanax's date with the requested bonus's type
-export const getAlmanax = (bonus_types: string[]) => {
-  return Object.keys(year).map(key => {
+export const getAlmanax = (bonus_types: string[]): any[] =>
+  Object.keys(year).map((key: string) => {
     if (bonus_types.indexOf(year[key].BonusType) >= 0) {
       const date: moment.Moment = moment(key, "YYYY-MM-DD", 'fr');
       return `**${date.format("DD MMMM")}**: ${year[key].BonusDescription}\n`;
     }
-  }).filter((item: any) => {
-    return item !== undefined;
-  });
-}
+  }).filter(_ => _);
+
 
 // Return all almanax's objects where `item_name` is the offander
-export const getList = (item_name: string) => {
-  return Object.keys(year).map((key: string) => {
+export const getList = (item_name: string): any[] => 
+  Object.keys(year).map((key: string) => {
     const epured: string = year[key].OfferingName.epur();
-    if (epured === item_name)
-      return year[key];
-  }).filter((item: any) => {
-    return item !== undefined;
-  });
-}
+    return epured === item_name && year[key];
+  }).filter(_ => _);
+
 
 // Return all almanax of day from a string
-export const getDate = (requested_date: string) => {
+export const getDate = (requested_date: string): moment.Moment[] => {
   const accepted_format: string[] = [
     "DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
     "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
   return accepted_format.map((format: string) => {
     const date: moment.Moment = moment(requested_date, format, 'fr', true);
-    if (date.isValid())
-      return year[date.format("2022-MM-DD")];
-  }).filter((item: any) => {
-    return item !== undefined;
-  });
+    return date.isValid() && year[date.format("2022-MM-DD")];
+  }).filter(_ => _);
 }
 
 // Return the number of day between today and the requested date
-export const getRemainingDay = (almanax_date: string) => {
+export const getRemainingDay = (almanax_date: string): number => {
   const current_date: Date = new Date();
   const date: moment.Moment = moment([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
   let searched_date: moment.Moment = moment([current_date.getFullYear(), Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);

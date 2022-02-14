@@ -8,7 +8,7 @@ const tmp:  any = { "o": "Oshimo", "t": "Terra Cogita", "h": "Herdegrize" };
 const tmp2: any = { "Oshimo": 1, "Terra Cogita": 2, "Herdegrize": 3 };
 
 // Allow you to change discord' server current Dofus-Touch' Server
-export const server = async (message: Message, line: string[], config: any): Promise<String> => {
+export const server = async (line: string[], config: any, message: Message): Promise<String> => {
   if (line.length <= 1)
     return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}server ['Oshimo'|'Terra Cogita'|'Herdegrize']`);
   if (!message.member.permissions.has(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))

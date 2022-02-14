@@ -5,7 +5,7 @@ import { Message    } from 'discord.js';
 import { format     } from 'format';
 
 // Allow you to subscribe to discord' notifications
-export const subscribe = async (message: Message, line: string[], config: any, forwarded: boolean = false): Promise<String> => {
+export const subscribe = async (line: string[], config: any, message: Message, forwarded: boolean = false): Promise<String> => {
   if (line.length <= 1)
     return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}subscribe [item]`);
   line.shift();
@@ -14,14 +14,13 @@ export const subscribe = async (message: Message, line: string[], config: any, f
   if (!result.length)
     return sentences[config.lang].ERROR_INCORRECT_ITEM;
   const list:      any[] = result.map((offering: any) => ({
-    date: offering.Date,
-    name: offering.OfferingName
+    date: offering.Date, name: offering.OfferingName
   }));
   const user:        any = await User.findOne({ identifier: message.author.id });
   if (user) {
     if (user.subscriptions.filter(elem => argument.epur() === elem.name?.epur()).length) {
-      line.unshift(config.prefix)
-      return await unsubscribe(message, line, config, true);
+      line.unshift(config.prefix);
+      return await unsubscribe(line, config, message, true);
     }
     await User.updateOne({ identifier: message.author.id }, {
       subscriptions: [...user.subscriptions, ...list]
@@ -39,7 +38,7 @@ export const subscribe = async (message: Message, line: string[], config: any, f
   return format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, `${argument}`);
 }
 
-export const unsubscribe = async (message: Message, line: string[], config: any, forwarded: boolean = false): Promise<String> => {
+export const unsubscribe = async (line: string[], config: any, message: Message, forwarded: boolean = false): Promise<String> => {
   if (line.length <= 1)
     return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}unsubscribe [item]`);
   line.shift();
@@ -48,14 +47,13 @@ export const unsubscribe = async (message: Message, line: string[], config: any,
   if (!result.length)
     return sentences[config.lang].ERROR_INCORRECT_ITEM;
   const list:      any[] = result.map((offering: any) => ({
-    date: offering.Date,
-    name: offering.OfferingName
+    date: offering.Date, name: offering.OfferingName
   }));
   const user:       any = await User.findOne({ identifier: message.author.id });
   if (user) {
     if (!user.subscriptions.filter(elem => argument === elem.name?.epur()).length) {
-      line.unshift(config.prefix)
-      return await subscribe(message, line, config, true);
+      line.unshift(config.prefix);
+      return await subscribe(line, config, message, true);
     }
     await User.updateOne({ identifier: message.author.id }, {
       subscriptions: user.subscriptions.filter((subscription) => subscription.name !== list[0].name)

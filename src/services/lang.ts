@@ -1,7 +1,7 @@
-import { Message } from 'discord.js';
-import { format } from 'format';
+import { Message    } from 'discord.js';
+import { format     } from 'format';
 import * as sentences from "../../resources/language.json";
-import Server from "../models/server";
+import Server         from "../models/server";
 
 const formal_lang: any = { 0: "francais", 1: "english", 2: "spain", 3: "deutsh" };
 const lang_available: any = {
@@ -12,7 +12,7 @@ const lang_available: any = {
 }
 
 // Change Bwuno's language
-export const lang = async (message: Message, line: string[], config: any): Promise<String> => {
+export const lang = async (line: string[], config: any, message: Message): Promise<String> => {
   if (line.length !== 2)
     return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}lang ['fr'|'en'|'es'|'de']`);
   let argument: string = line[1].epur();

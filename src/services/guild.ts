@@ -1,13 +1,13 @@
-import * as sentences from "../../resources/language.json";
-import * as settings from "../../resources/config.json";
+import * as sentences                         from "../../resources/language.json";
+import * as settings                          from "../../resources/config.json";
 import { createGuildEmbed, createErrorEmbed } from "../utils/embed";
-import { Message, MessageOptions } from 'discord.js';
-import { format } from 'format';
-import JSSoup from 'jssoup';
-import * as request from 'async-request';
+import { MessageOptions                     } from 'discord.js';
+import { format                             } from 'format';
+import JSSoup                                 from 'jssoup';
+import * as request                           from 'async-request';
 
 // Send an Embed containing all guild's information
-export const guild = async (message: Message, line: string[], config: any): Promise<string | MessageOptions> => {
+export const guild = async (line: string[], config: any): Promise<string | MessageOptions> => {
   if (line.length < 2)
     return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}guild [name]`);
   line.shift();
