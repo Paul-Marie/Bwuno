@@ -83,14 +83,8 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
     const author: string = `${message.author.username}#${message.author.discriminator}`;
     const response: string = message.content.epur().replace(config.prefix.epur(), '').trim();
     const sentence: string[] = response.split(" ");
-    // TODO: improve logging
     console.log(`${author}: ${message.content}`);
-    const functions: any = { ...services, '': services.help };
-    try {
-      await message.channel.send(await functions[sentence[0].epur()](sentence, config, message));
-    } catch (err) {
-      await message.channel.send(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, sentence[0], `${config.prefix}help`));
-    }
+    await message.channel.send(`Les commandes préfixé ne seront bientot plus prisent en charge par Discord, maintenant utilise \`/${sentence[0]}\``);
   }
 });
 
@@ -102,7 +96,7 @@ bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
   console.log(`${username}#${discriminator}: /${interaction.commandName}`);
   const config: any = await Server.findOne({ identifier: interaction.guild.id });
   try {
-    await interaction.reply(await services[interaction.commandName.epur()](interaction, config, interaction));
+    await interaction.reply(await services[interaction.commandName.epur()](interaction, config));
   } catch (err) {
     console.trace(err);
     await interaction.reply(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, interaction.commandName, `/help`));

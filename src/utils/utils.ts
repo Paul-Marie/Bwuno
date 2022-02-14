@@ -84,7 +84,7 @@ export const getList = (item_name: string): any[] =>
 
 
 // Return all almanax of day from a string
-export const getDate = (requested_date: string): moment.Moment[] => {
+export const getDate = (requested_date: string): any[] => {
   const accepted_format: string[] = [
     "DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
     "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
@@ -96,11 +96,13 @@ export const getDate = (requested_date: string): moment.Moment[] => {
 
 // Return the number of day between today and the requested date
 export const getRemainingDay = (almanax_date: string): number => {
-  const current_date: Date = new Date();
-  const date: moment.Moment = moment([current_date.getFullYear(), current_date.getMonth(), current_date.getDate()]);
-  let searched_date: moment.Moment = moment([current_date.getFullYear(), Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
-  if (date > searched_date)
-    searched_date = moment([current_date.getFullYear() + 1, Number(almanax_date.split("-")[1]) - 1, almanax_date.split("-")[2]]);
+  const date: moment.Moment = moment();
+  const searched_date: moment.Moment = moment({
+    y: parseInt(date.format("YYYY")),
+    M: parseInt(almanax_date.split("-")[1]) - 1, 
+    D: parseInt(almanax_date.split("-")[2])
+  });
+  (date > searched_date) && searched_date.add(1, "year");
   const diff: number = date.diff(searched_date, 'days');
   return Math.abs(Math.trunc(diff));
 }
