@@ -1,9 +1,9 @@
-import * as sentences                      from "../../resources/language.json";
-import * as year                           from "../../resources/year.json";
-import { getDate, formatDate, getList    } from "../utils/utils";
-import { createEmbed,  createFutureEmbed } from "../utils/embed";
+import * as sentences                         from "../../resources/language.json";
+import * as year                              from "../../resources/year.json";
+import { getDate, getList                   } from "../utils/utils";
+import { createEmbed,  createFutureEmbed    } from "../utils/embed";
 import { MessageOptions, CommandInteraction } from 'discord.js';
-import * as moment                         from 'moment';
+import * as moment                            from 'moment';
 
 // Send all almanax's informations as Embed from a date
 export const almanax = async (command: CommandInteraction, config: any): Promise<String | MessageOptions> => (
