@@ -10,7 +10,7 @@ export const doziak = (command: CommandInteraction, config: any): String | Messa
   if (!almanax)
     return sentences[config.lang].ERROR_INCORRECT_DATE;
   const astro_sign: object = {
-    "Le Bouftou":    "♈", "La Bworkette": "♑", "Le Centoror":   "♐", "Le Chacha": "♌",
+    "Le Bouftou":    "♈", "La Bworkette": "♑", "Le Centoror":   "♐", "Le Chacha":   "♌",
     "Le Crustorail": "♋", "Les Dopeuls":  "♊", "Le Dragocampe": "♍", "Le Flaqueux": "♒",
     "Le Kilibriss":  "♎", "Le Minotoror": "♉", "Les Pichons":   "♓", "Le Scorbute": "♏"
   };

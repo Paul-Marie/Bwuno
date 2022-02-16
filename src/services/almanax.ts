@@ -13,7 +13,7 @@ export const almanax = async (command: CommandInteraction, config: any): Promise
     plus: async () => ({ embeds: [createFutureEmbed(command.options.getInteger("plus"))] }),
     '':   async () => ({ embeds: [await createEmbed(year[moment().format("2022-MM-DD")], config.server)] })
   }[command.options.data?.[0]?.name ?? '']()
-)
+);
 
 // Send all almanax's informations Embed from an item's name
 export const item = async (command: CommandInteraction, config: any): Promise<String | MessageOptions> => {

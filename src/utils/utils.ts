@@ -66,11 +66,11 @@ export const getPrice = async (item_id: number, server_id: number = 2): Promise<
 }
 
 // Return all almanax's date with the requested bonus's type
-export const getAlmanax = (bonus_types: string[]): any[] =>
+export const getAlmanax = (bonus_types: string[]): string[] =>
   Object.keys(year).map((key: string) => {
     if (bonus_types.indexOf(year[key].BonusType) >= 0) {
       const date: moment.Moment = moment(key, "YYYY-MM-DD", 'fr');
-      return `**${date.format("DD MMMM")}**: ${year[key].BonusDescription}\n`;
+      return `**${date.format("DD MMMM")}**: ${year[key].BonusDescription}`;
     }
   }).filter(_ => _);
 

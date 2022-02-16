@@ -94,7 +94,7 @@ bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
     return;
   const { username, discriminator } = interaction.user;
   console.log(`${username}#${discriminator}: /${interaction.commandName}`);
-  const config: any = await Server.findOne({ identifier: interaction.guild.id });
+  const config: any = await Server.findOne({ identifier: interaction.guild?.id }) ?? { lang: 0, server: 2 };
   try {
     await interaction.reply(await services[interaction.commandName.epur()](interaction, config));
   } catch (err) {
