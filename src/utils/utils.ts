@@ -70,7 +70,7 @@ export const getAlmanax = (bonus_types: string[]): string[] =>
   Object.keys(year).map((key: string) => {
     if (bonus_types.indexOf(year[key].BonusType) >= 0) {
       const date: moment.Moment = moment(key, "YYYY-MM-DD", 'fr');
-      return `**${date.format("DD MMMM")}**: ${year[key].BonusDescription}`;
+      return `__**\`${date.format("DD MMMM")}\`**__: ${year[key].BonusDescription}\n`;
     }
   }).filter(_ => _);
 
