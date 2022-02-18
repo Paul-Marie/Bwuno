@@ -4,7 +4,7 @@ export const type = {
   options: [{
     name:         "bonus",
     description:  "le type de bonus recherché",
-    required:     false,
+    required:     true,
     type:         3,
     choices: [{
       name:       "Alchimiste",
