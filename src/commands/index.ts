@@ -6,7 +6,6 @@ export { help                   } from "./help";
 export { almanax                } from "./almanax";
 export { doziak                 } from "./doziak";
 export { type                   } from "./type";
-// export { list                   } from "./list";
 export { auto                   } from "./auto";
 export { server                 } from "./server";
 // export { lang                   } from "./lang";
