@@ -1,5 +1,4 @@
 export const auto = {
   name: "auto",
-  description: "Affiche la liste des commandes de Bwuno",
-  aliases: ["aide", "aled"]
+  description: "Active ou désactive l'ajout de l'almanax du jour dans un salon à minuit"
 };

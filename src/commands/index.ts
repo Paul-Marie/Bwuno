@@ -14,6 +14,6 @@ export { type                   } from "./type";
 // export { prefix                 } from "./prefix";
 // export { guild                  } from "./guild";
 // export { whois                  } from "./whois";
-// export { info                   } from "./info"
+export { info                   } from "./info";
 // export { show                   } from "./show";
 // export { subscribe, unsubscribe } from "./subscribe";

@@ -4,7 +4,7 @@ import { MessageEmbed, MessageOptions } from 'discord.js';
 import { format                       } from 'format';
 
 // Return an Embed object containing all Bwuno's informations
-export const info = (line: void, config: any): MessageOptions => {
+export const info = (command: void, config: any): MessageOptions => {
   const embed: MessageEmbed = new MessageEmbed()
     .setColor(0x4E4EC8)
     .setDescription(format(sentences[config.lang].INFO_ABOUT_DESCRIPTION,
@@ -13,6 +13,7 @@ export const info = (line: void, config: any): MessageOptions => {
     .addField(sentences[config.lang].INFO_ABOUT_PROJECTS, sentences[config.lang].INFO_ABOUT_PROJECTS_CONTENT, true)
     .addField("Discord:", `[Discord](${settings.dt_price.invite_url})`)
     .addField(sentences[config.lang].INFO_ABOUT_INVIT, `[Invitation](${settings.bwuno.invite_link})`, true)
+    // FIXME: handle image
     .setImage("https://i.imgur.com/mcpPHoh.png")
   return { embeds: [embed] };
 };

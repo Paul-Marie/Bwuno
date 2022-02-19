@@ -32,15 +32,24 @@ bot.on("ready", async (): Promise<void> => {
     (a: Guild, b: Guild) => b.joinedTimestamp - a.joinedTimestamp
   ).reverse().map(({ name }) => console.log(`🔸 ${name}`));
   console.log(`Curently connected on (${bot.guilds.cache.size}) servers:`);
-  await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList });
+  console.log(await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList }));
   // TODO: Print the result value of the PUT's length instead of commandsList's length
   console.log(`${commandsList.length} imported command${commandsList.length ? 's' : ''}.`);
   await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
 });
 
+process.on('SIGINT', async () => {
+  const commandsList: any = await rest.get(Routes.applicationCommands(bot.user.id));
+  await Promise.all(commandsList.map(async (command) => (
+    await rest.delete(Routes.applicationCommand(bot.user.id, command.id))
+  )));
+  process.exit(1);
+});
+
+
 bot.on("disconnect", ({ reason, code }) => {
   console.log(`Disconnected (${code}): ${reason}`)
-})
+});
 
 // Called when Bwuno join a new discord' server
 bot.on("guildCreate", async (guild: Guild): Promise<void> => {
@@ -89,8 +98,8 @@ bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
   if (!interaction.isCommand())
     return;
   const { username, discriminator } = interaction.user;
-  const argument: string = `(${interaction.options?.data?.[0].name}):${interaction.options?.data?.[0].value}`;
-  console.log(`${username}#${discriminator}: /${interaction.commandName} ${argument}`);
+  const argument: string = interaction.options.data.length && `(${interaction.options?.data?.[0]?.name}):${interaction.options?.data?.[0]?.value}`;
+  console.log(`${username}#${discriminator}: /${interaction.commandName} ${argument || ''}`);
   const config: any = await Server.findOne({ identifier: interaction.guild?.id }) ?? { lang: 0, server: 2 };
   try {
     await interaction.reply(await services[interaction.commandName.epur()](interaction, config));
