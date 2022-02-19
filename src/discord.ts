@@ -1,23 +1,19 @@
 /*
   This file contain all the discord logic.
 */
-import { format } from 'format';
-//import { readdirSync } from 'fs';
-import { Client, Message, Guild, GuildBasedChannel, TextChannel, Intents, Interaction, Collection, CommandInteraction, ClientEvents } from 'discord.js';
-import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
-import * as sentences from "../resources/language.json";
-import * as settings from "../resources/config.json";
-import * as services from "./services/";
-import * as commands from "./commands/";
-import Server from "./models/server";
+import { 
+  Client, Message, Interaction,
+  GuildBasedChannel, TextChannel,
+  Intents, Guild      } from 'discord.js';
+import { format       } from 'format';
+import { REST         } from '@discordjs/rest';
+import { Routes       } from 'discord-api-types/v9';
+import * as sentences   from "../resources/language.json";
+import * as settings    from "../resources/config.json";
+import * as services    from "./services/";
+import * as commands    from "./commands/";
+import Server           from "./models/server";
 
-declare module "discord.js" {
-  export interface Client {
-    commands: Collection<unknown, any>
-  }
-}
-    
 const rest = new REST({ version: '9' }).setToken(settings.discord.token);
 export const bot: Client = new Client({
   intents: [
@@ -29,13 +25,13 @@ export const bot: Client = new Client({
   ]
 });
 
-bot.commands = new Collection();
-
 // Called when Bwuno is online
 bot.on("ready", async (): Promise<void> => {
   const commandsList: any[] = Object.keys(commands)?.map((name: string) => commands[name]);
+  bot.guilds.cache.map(({ id, name, joinedTimestamp }) => ({ id, name, joinedTimestamp })).sort(
+    (a: Guild, b: Guild) => b.joinedTimestamp - a.joinedTimestamp
+  ).reverse().map(({ name }) => console.log(`🔸 ${name}`));
   console.log(`Curently connected on (${bot.guilds.cache.size}) servers:`);
-  // TODO: Map over
   await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList });
   // TODO: Print the result value of the PUT's length instead of commandsList's length
   console.log(`${commandsList.length} imported command${commandsList.length ? 's' : ''}.`);
@@ -93,7 +89,8 @@ bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
   if (!interaction.isCommand())
     return;
   const { username, discriminator } = interaction.user;
-  console.log(`${username}#${discriminator}: /${interaction.commandName}`);
+  const argument: string = `(${interaction.options?.data?.[0].name}):${interaction.options?.data?.[0].value}`;
+  console.log(`${username}#${discriminator}: /${interaction.commandName} ${argument}`);
   const config: any = await Server.findOne({ identifier: interaction.guild?.id }) ?? { lang: 0, server: 2 };
   try {
     await interaction.reply(await services[interaction.commandName.epur()](interaction, config));

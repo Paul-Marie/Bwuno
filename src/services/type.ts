@@ -7,6 +7,7 @@ import { list               } from "./list";
 
 // Send a succession of message containing all almanax's date with the required type
 export const type = async (command: CommandInteraction, config: any): Promise<string> => {
+  // FIXME:: handle multi lang
   const almanax_list: string[] = getAlmanax(type_message[command.options.getString("bonus")]);
   //const toto = almanax_list.reduce((a, c) => `${a}${c}\n`, "")
   //.match(new RegExp(`[\\s\\S]{1,${settings.discord.length_limit}}`, 'g'))
