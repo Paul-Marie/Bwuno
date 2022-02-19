@@ -32,20 +32,10 @@ bot.on("ready", async (): Promise<void> => {
     (a: Guild, b: Guild) => b.joinedTimestamp - a.joinedTimestamp
   ).reverse().map(({ name }) => console.log(`🔸 ${name}`));
   console.log(`Curently connected on (${bot.guilds.cache.size}) servers:`);
-  console.log(await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList }));
-  // TODO: Print the result value of the PUT's length instead of commandsList's length
-  console.log(`${commandsList.length} imported command${commandsList.length ? 's' : ''}.`);
+  const importedCmd: any = await rest.put(Routes.applicationCommands(bot.user.id), { body: commandsList });
+  console.log(`${importedCmd.length} imported command${importedCmd.length ? 's' : ''}.`);
   await bot.user.setActivity("le Krosmoz", { type: "WATCHING" });
 });
-
-process.on('SIGINT', async () => {
-  const commandsList: any = await rest.get(Routes.applicationCommands(bot.user.id));
-  await Promise.all(commandsList.map(async (command) => (
-    await rest.delete(Routes.applicationCommand(bot.user.id, command.id))
-  )));
-  process.exit(1);
-});
-
 
 bot.on("disconnect", ({ reason, code }) => {
   console.log(`Disconnected (${code}): ${reason}`)
