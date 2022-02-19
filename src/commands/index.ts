@@ -9,7 +9,7 @@ export { doziak                 } from "./doziak";
 export { type                   } from "./type";
 // export { list                   } from "./list";
 // export { auto                   } from "./auto";
-// export { server                 } from "./server";
+export { server                 } from "./server";
 // export { lang                   } from "./lang";
 // export { prefix                 } from "./prefix";
 // export { guild                  } from "./guild";
