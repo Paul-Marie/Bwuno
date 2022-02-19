@@ -8,7 +8,7 @@ const servers: any = {
   4: "Grandapan", 5: "Dodge",        6: "Brutas"
 };
 
-// Allow you to change discord' server current Dofus-Touch' Server
+// Allow you to change current Dofus-Touch's Server on a Guild
 export const server = async (command: CommandInteraction, config: any): Promise<String> => {
   if (!command.memberPermissions.has(['ADMINISTRATOR']))
     return sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS;

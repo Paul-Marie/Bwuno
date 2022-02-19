@@ -3,7 +3,6 @@ import * as settings          from "../../resources/config.json";
 import { type_message       } from "../utils/types";
 import { getAlmanax         } from "../utils/utils";
 import { CommandInteraction } from 'discord.js';
-import { list               } from "./list";
 
 // Send a succession of message containing all almanax's date with the required type
 export const type = async (command: CommandInteraction, config: any): Promise<string> => {
