@@ -25,21 +25,20 @@ Object.prototype.isCommand = function () {
 
 // FIXME: delete it
 // TODO: to replace by triche regexp
-export const formatDate = (sentence: string[]): string =>
-  ((sentence.map((elem: string) =>
-    elem.split("-").map((item: string) =>
-      `${item.length === 1 ? '0' : ''}${item}`
-    )
-  )).map((elem: string[]) =>
-    (elem.map((tmp: string) =>
-      tmp.split("/").map((item: string) =>
-        `${item.length === 1 ? '0' : ''}${item}`
-      ).join(" ")
-    )).join(" ")
-  )).map((elem: string) =>
-    `${elem.length === 1 ? '0' : ''}${elem}`
-  ).join(" ");
-
+// export const formatDate = (sentence: string[]): string =>
+//   ((sentence.map((elem: string) =>
+//     elem.split("-").map((item: string) =>
+//       `${item.length === 1 ? '0' : ''}${item}`
+//     )
+//   )).map((elem: string[]) =>
+//     (elem.map((tmp: string) =>
+//       tmp.split("/").map((item: string) =>
+//         `${item.length === 1 ? '0' : ''}${item}`
+//       ).join(" ")
+//     )).join(" ")
+//   )).map((elem: string) =>
+//     `${elem.length === 1 ? '0' : ''}${elem}`
+//   ).join(" ");
 
 const getAverageOfDay = (array: any[], date: string): number => {
   const days: any = array.filter((hour: any) => hour.date.includes(date));
@@ -81,8 +80,8 @@ export const getList = (item_name: string): any[] => (
 // Return all almanax of day from a string
 export const getDate = (requested_date: string): any[] => {
   const accepted_format: string[] = [
-    "DD/MM", "DD-MM", "DD MM", "DD MMM", "DD MMMM", "DD/MM/YYYY",
-    "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
+    "DD/MM", "DD-MM", "DD MM", "DD / MM", "DD MMM", "DD MMMM",
+    "DD/MM/YYYY", "DD-MM-YYYY", "DD MM YYYY", "DD MMM YYYY", "DD MMMM YYYY"];
   return accepted_format.map((format: string) => {
     const date: moment.Moment = moment(requested_date, format, 'fr', true);
     return date.isValid() && year[date.format("2022-MM-DD")];
