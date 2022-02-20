@@ -73,13 +73,13 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
   const config: any = await Server.findOne({ identifier: message.guild.id });
   if (message.mentions.has(bot.user) && !message.mentions.everyone)
     await message.channel.send(format(sentences[config.lang].INFO_MENTION,
-      Math.floor(Math.random() * 90000) + 10000, config.prefix));
+      Math.floor(Math.random() * 90000) + 10000, "/help"));
   else if (message.content.toLowerCase().startsWith(config?.prefix?.toLowerCase())) {
-    const author: string = `${message.author.username}#${message.author.discriminator}`;
-    const response: string = message.content.epur().replace(config.prefix.epur(), '').trim();
+    const author:   string   = `${message.author.username}#${message.author.discriminator}`;
+    const response: string   = message.content.epur().replace(config.prefix.epur(), '').trim();
     const sentence: string[] = response.split(" ");
     console.log(`${author}: ${message.content}`);
-    await message.channel.send(`Les commandes préfixé ne seront bientot plus prisent en charge par Discord, maintenant utilise \`/${sentence[0]}\``);
+    await message.channel.send(`Je ne répond plus à ce dialecte, maintenant utilise \`/${sentence[0]}\``);
   }
 });
 
