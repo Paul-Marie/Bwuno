@@ -9,36 +9,12 @@ declare global {
   interface String {
     epur(): string;
   }
-  interface Object {
-    isCommand(): boolean;
-  }
-}
+};
 
 // Declare the `epur()` method on String
 String.prototype.epur = function () {
   return this?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
 };
-
-Object.prototype.isCommand = function () {
-  return false;
-};
-
-// FIXME: delete it
-// TODO: to replace by triche regexp
-// export const formatDate = (sentence: string[]): string =>
-//   ((sentence.map((elem: string) =>
-//     elem.split("-").map((item: string) =>
-//       `${item.length === 1 ? '0' : ''}${item}`
-//     )
-//   )).map((elem: string[]) =>
-//     (elem.map((tmp: string) =>
-//       tmp.split("/").map((item: string) =>
-//         `${item.length === 1 ? '0' : ''}${item}`
-//       ).join(" ")
-//     )).join(" ")
-//   )).map((elem: string) =>
-//     `${elem.length === 1 ? '0' : ''}${elem}`
-//   ).join(" ");
 
 const getAverageOfDay = (array: any[], date: string): number => {
   const days: any = array.filter((hour: any) => hour.date.includes(date));
