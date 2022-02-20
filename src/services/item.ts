@@ -3,6 +3,7 @@ import { getList        } from "../utils/utils";
 import { createEmbed    } from "../utils/embed";
 import { MessageOptions } from 'discord.js';
 
+// FIXME: create an `item` command to get data on a game's item
 // This command was moved to `almanax` command, you can now research almanax by it's offander's item
 // by requesting `${prefix}almanax <item>`. This command will search for an item'stats in encyclopedia
 export const item = async (line: string[], config: any): Promise<String | MessageOptions> => {

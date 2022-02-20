@@ -1,22 +1,18 @@
-import * as sentences from "../../resources/language.json";
-import Server         from "../models/server";
-import { Message    } from 'discord.js';
-import { format     } from 'format';
+import * as sentences         from "../../resources/language.json";
+import Server                 from "../models/server";
+import { CommandInteraction } from 'discord.js';
+import { format             } from 'format';
 
-// TODO to rename
-const tmp:  any = { "o": "Oshimo", "t": "Terra Cogita", "h": "Herdegrize" };
-const tmp2: any = { "Oshimo": 1, "Terra Cogita": 2, "Herdegrize": 3 };
+const servers: any = {
+  1: "Oshimo",    2: "Terra Cogita", 3: "Herdegrize",
+  4: "Grandapan", 5: "Dodge",        6: "Brutas"
+};
 
-// Allow you to change discord' server current Dofus-Touch' Server
-export const server = async (line: string[], config: any, message: Message): Promise<String> => {
-  if (line.length <= 1)
-    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}server ['Oshimo'|'Terra Cogita'|'Herdegrize']`);
-  if (!message.member.permissions.has(['ADMINISTRATOR', 'VIEW_AUDIT_LOG']))
+// Allow you to change current Dofus-Touch's Server on a Guild
+export const server = async (command: CommandInteraction, config: any): Promise<String> => {
+  if (!command.memberPermissions.has(['ADMINISTRATOR']))
     return sentences[config.lang].ERROR_INSUFFICIENT_PERMISSIONS;
-  const argument: string = line[1].epur();
-  const server: string = tmp[argument[0]];
-  if (!server)
-    return sentences[config.lang].ERROR_UNKNOWN_SERVER;
-  await Server.findOneAndUpdate({ identifier: config.identifier }, { server_id: tmp2[server] });
-  return format(sentences[config.lang].SUCCESS_SERVER_CHANGED, `${server}`);
+  const server_id: number = command.options.getInteger("nom");
+  await Server.findOneAndUpdate({ identifier: config.identifier }, { server_id });
+  return format(sentences[config.lang].SUCCESS_SERVER_CHANGED, `${servers[server_id]}`);
 }

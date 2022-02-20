@@ -1,31 +1,25 @@
-import * as sentences from "../../resources/language.json";
-import { type_message } from "../../resources/info";
-import * as settings from "../../resources/config.json";
-import { getAlmanax } from "../utils/utils";
-import { Message } from 'discord.js';
-import { format } from 'format';
+import * as sentences         from "../../resources/language.json";
+import * as settings          from "../../resources/config.json";
+import { type_message       } from "../utils/types";
+import { getAlmanax         } from "../utils/utils";
+import { CommandInteraction } from 'discord.js';
 
 // Send a succession of message containing all almanax's date with the required type
-export const type = (line: string[], config: any, message: Message): String => {
-  if (line.length < 2)
-    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}type [type]`);
-  const argument: string = line[1].epur();
-  const almanax_list: any = Object.keys(type_message).map(key => (
-    key.epur() === argument && getAlmanax(type_message[key])
-  )).filter(item => {
-    return item !== undefined;
-  })[0];
-  if (almanax_list) {
-    let result: string = "";
-    for (const element of almanax_list) {
-      if (result.length + element.length <= settings.discord.length_limit) {
-        result += element;
-      } else {
-        message.channel.send(result);
-        result = element;
-      }
+export const type = async (command: CommandInteraction, config: any): Promise<string> => {
+  // FIXME:: handle multi lang
+  const almanax_list: string[] = getAlmanax(type_message[command.options.getString("bonus")]);
+  //const toto = almanax_list.reduce((a, c) => `${a}${c}\n`, "")
+  //.match(new RegExp(`[\\s\\S]{1,${settings.discord.length_limit}}`, 'g'))
+  //.map((msg: string) => command.channel.send(msg));
+  let result: string = "";
+  for (const element of almanax_list) {
+    if (result.length + element.length <= settings.discord.length_limit)
+      result += element;
+    else {
+      await command.channel.send(result);
+      result = element;
     }
-    return result;
-  } else
-    return format(sentences[config.lang].ERROR_TYPE_WRONG_ARGUMENT, `${config.prefix}list`);
+  }
+  await command.channel.send(result);
+  return `Voici la liste de tout les almanax ou le bonus du jour sera de type \`${command.options.getString("bonus")}\``;
 }
