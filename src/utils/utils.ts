@@ -23,7 +23,8 @@ Object.prototype.isCommand = function () {
   return false;
 };
 
-// TODO to replace by triche regexp
+// FIXME: delete it
+// TODO: to replace by triche regexp
 export const formatDate = (sentence: string[]): string =>
   ((sentence.map((elem: string) =>
     elem.split("-").map((item: string) =>
@@ -73,12 +74,9 @@ export const getAlmanax = (bonus_types: string[]): string[] =>
 
 
 // Return all almanax's objects where `item_name` is the offander
-export const getList = (item_name: string): any[] => 
-  Object.keys(year).map((key: string) => {
-    const epured: string = year[key].OfferingName.epur();
-    return epured === item_name && year[key];
-  }).filter(_ => _);
-
+export const getList = (item_name: string): any[] => (
+  Object.keys(year).filter((key: string) => year[key].OfferingName.epur() === item_name).map((key: string) => year[key])
+);
 
 // Return all almanax of day from a string
 export const getDate = (requested_date: string): any[] => {

@@ -1,14 +1,28 @@
-import * as sentences from "../../resources/language.json";
-import User           from "../models/user";
-import { getList    } from "../utils/utils";
-import { Message    } from 'discord.js';
-import { format     } from 'format';
+import * as sentences         from "../../resources/language.json";
+import * as moment            from 'moment';
+import      User              from "../models/user";
+import { getList, getDate   } from "../utils/utils";
+import { CommandInteraction } from 'discord.js';
+import { format             } from 'format';
 
 // Allow you to subscribe to discord' notifications
-export const subscribe = async (line: string[], config: any, message: Message, forwarded: boolean = false): Promise<String> => {
-  if (line.length <= 1)
-    return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}subscribe [item]`);
-  line.shift();
+export const remind = async (command: CommandInteraction, config: any, forwarded: boolean = false): Promise<String> => {
+  const user: any = await User.findOne({ identifier: command.user.id });
+  await {
+    item: async (subCommand) => {
+      const items: any[] = getList(command.options.getString("item"))
+      const list:  any[] = items?.map((offering: any) => ({ date: offering.Date, name: offering.OfferingName }));
+      list ? await (async () => {
+        if (user.subscriptions.filter(elem => argument.epur() === elem.name?.epur()).length)
+          return format(sentences[config.lang].SUCCESS_NOTIFICATION_ALREADY_MADE, getList(command.options.getString("item")))
+        await User.updateOne({ identifier: command.user.id }, { subscriptions: [...user.subscriptions, ...list] });
+        return format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, getList(command.options.getString("item")))
+      })() : sentences[config.lang].ERROR_INCORRECT_ITEM
+    },
+    date: async (subCommand) => getDate(command.options.getString("date"))?.[0] ?? getDate(moment().format("DD/MM"))[0],
+    '':   async (subCommand) => format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `/remind ${subCommand} [item|date]`)
+  }[command.options.data?.[0]?.name ?? ''](command.options.getSubcommand())
+
   const argument: string = line.join(' ');
   const result:    any[] = getList(argument);
   if (!result.length)
@@ -16,7 +30,7 @@ export const subscribe = async (line: string[], config: any, message: Message, f
   const list:      any[] = result.map((offering: any) => ({
     date: offering.Date, name: offering.OfferingName
   }));
-  const user:        any = await User.findOne({ identifier: message.author.id });
+  const user:      any   = await User.findOne({ identifier: command.user.id });
   if (user) {
     if (user.subscriptions.filter(elem => argument.epur() === elem.name?.epur()).length) {
       line.unshift(config.prefix);
@@ -30,7 +44,7 @@ export const subscribe = async (line: string[], config: any, message: Message, f
       : format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, `${argument}`);
   }
   await User.create({
-    identifier:    message.author.id,
+    identifier:    command.user.id,
     server_id:     config.server,
     lang:          config.lang,
     subscriptions: list
@@ -38,7 +52,7 @@ export const subscribe = async (line: string[], config: any, message: Message, f
   return format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, `${argument}`);
 }
 
-export const unsubscribe = async (line: string[], config: any, message: Message, forwarded: boolean = false): Promise<String> => {
+export const unsubscribe = async (command: CommandInteraction, config: any, forwarded: boolean = false): Promise<String> => {
   if (line.length <= 1)
     return format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `${config.prefix}unsubscribe [item]`);
   line.shift();
