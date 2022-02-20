@@ -5,23 +5,35 @@ import { getList, getDate   } from "../utils/utils";
 import { CommandInteraction } from 'discord.js';
 import { format             } from 'format';
 
-// Allow you to subscribe to discord' notifications
+// Allow you to subscribe/unsubscribe to discord' notifications
 export const remind = async (command: CommandInteraction, config: any, forwarded: boolean = false): Promise<String> => {
-  const user: any = await User.findOne({ identifier: command.user.id });
-  await {
-    item: async (subCommand) => {
-      const items: any[] = getList(command.options.getString("item"))
-      const list:  any[] = items?.map((offering: any) => ({ date: offering.Date, name: offering.OfferingName }));
-      list ? await (async () => {
-        if (user.subscriptions.filter(elem => argument.epur() === elem.name?.epur()).length)
-          return format(sentences[config.lang].SUCCESS_NOTIFICATION_ALREADY_MADE, getList(command.options.getString("item")))
-        await User.updateOne({ identifier: command.user.id }, { subscriptions: [...user.subscriptions, ...list] });
-        return format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, getList(command.options.getString("item")))
-      })() : sentences[config.lang].ERROR_INCORRECT_ITEM
-    },
-    date: async (subCommand) => getDate(command.options.getString("date"))?.[0] ?? getDate(moment().format("DD/MM"))[0],
-    '':   async (subCommand) => format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `/remind ${subCommand} [item|date]`)
-  }[command.options.data?.[0]?.name ?? ''](command.options.getSubcommand())
+  const user: any   = await User.findOne({ identifier: command.user.id });
+  const arg: string = command.options.data?.[0]?.value;
+  const list: any[] = {
+    item: getList(arg), date: getDate(arg)
+  }[command.options.data?.[0]?.name]?.map((offering: any) => ({
+    date: offering.Date, name: offering.OfferingName
+  }));
+  if (list?.length)
+    return sentences[config.lang].ERROR_INCORRECT_DATE_OR_ITEM;
+  if (command.options.getSubcommand() === "start") {
+    if (user.subscriptions.filter((elem: any) => (
+      argument.epur() === elem.name?.epur()
+    )).length)
+      return format(sentences[config.lang].SUCCESS_NOTIFICATION_ALREADY_MADE);
+    await User.updateOne({ identifier: command.user.id }, { subscriptions: [ ...user.subscriptions, ...list ] });
+    return format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, getList(command.options.getString("item")))
+  } else if (command.options.getSubcommand() === "stop") {
+
+  }
+  return format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, );
+
+  if (user.subscriptions.filter(elem => argument.epur() === elem.name?.epur()).length)
+    return format(sentences[config.lang].SUCCESS_NOTIFICATION_ALREADY_MADE, getList(command.options.getString("item")))
+  await User.updateOne({ identifier: command.user.id }, { subscriptions: [...user.subscriptions, ...list] });
+  return format(sentences[config.lang].SUCCESS_NOTIFICATION_SET, getList(command.options.getString("item")))
+
+  format(sentences[config.lang].ERROR_INSUFFICIENT_ARGUMENT, `/remind ${subCommand} [item|date]`)
 
   const argument: string = line.join(' ');
   const result:    any[] = getList(argument);
