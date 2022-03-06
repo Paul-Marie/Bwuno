@@ -10,28 +10,20 @@ import { setTimeout as wait }  from 'node:timers/promises';
 export const button = async (interaction: ButtonInteraction, config: any): Promise<void> => {
   const [action, date]: string[] = interaction.customId?.split('@');
   await interaction.deferUpdate();
-  await wait(100);
+  await wait(1000);
+  //const newDate = ((action === "next" && moment(date, "YYYY-MM-DD").add(1, "day").format("YYYY-MM-DD")) ?? date) || moment(date, "YYYY-MM-DD").subtract(1, "day").format("YYYY-MM-DD")
+  const newDate: string = {
+    prev: moment(date, "YYYY-MM-DD").subtract(1, "day").format("YYYY-MM-DD"),
+    next: moment(date, "YYYY-MM-DD").add(     1, "day").format("YYYY-MM-DD"),
+    reload: date
+  }[action];
   await {
-    prev:   async () => {
-      const prev: string = moment(date, "YYYY-MM-DD").subtract(1, "day").format("YYYY-MM-DD");
-      await interaction.editReply({
-        embeds:     [await createEmbed(year[prev], config.server)],
-        components: [createNavigationButtons(prev)]
-      });
-    },
-    next:   async () => {
-      const next: string = moment(date, "YYYY-MM-DD").add(1, "day").format("YYYY-MM-DD");
-      await interaction.editReply({
-        embeds:     [await createEmbed(year[next], config.server)],
-        components: [createNavigationButtons(next)]
-      });
-    },
-    reload: async () => await interaction.editReply({
-      embeds:     [await createEmbed(year[date], config.server)],
-      components: [createNavigationButtons(date)]
-    }),
-    remind: async () => {
+    remind:     async () => {
       await interaction.reply(true ? "toto" : "tata");
-    }
-  }[action]();
+    },
+    navigation: async () => await interaction.editReply({
+      embeds:     [await createEmbed(year[newDate], config.server)],
+      components: [createNavigationButtons(newDate)]
+    })
+  }[action === "remind" ? "remind" : "navigation"]();
 }
