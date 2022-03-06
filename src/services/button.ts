@@ -10,12 +10,24 @@ import { setTimeout as wait }  from 'node:timers/promises';
 export const button = async (interaction: ButtonInteraction, config: any): Promise<void> => {
   const [action, date]: string[] = interaction.customId?.split('@');
   await interaction.deferUpdate();
-  await wait(4000);
+  await wait(100);
   await {
-    prev:   async () => "",
-    next:   async () => "",
+    prev:   async () => {
+      const prev: string = moment(date, "YYYY-MM-DD").subtract(1, "day").format("YYYY-MM-DD");
+      await interaction.editReply({
+        embeds:     [await createEmbed(year[prev], config.server)],
+        components: [createNavigationButtons(prev)]
+      });
+    },
+    next:   async () => {
+      const next: string = moment(date, "YYYY-MM-DD").add(1, "day").format("YYYY-MM-DD");
+      await interaction.editReply({
+        embeds:     [await createEmbed(year[next], config.server)],
+        components: [createNavigationButtons(next)]
+      });
+    },
     reload: async () => await interaction.editReply({
-      embeds: [await createEmbed(year[date], config.server)],
+      embeds:     [await createEmbed(year[date], config.server)],
       components: [createNavigationButtons(date)]
     }),
     remind: async () => {
