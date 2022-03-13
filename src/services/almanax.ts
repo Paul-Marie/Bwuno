@@ -1,8 +1,8 @@
 import * as sentences                         from "../../resources/language.json";
 import * as year                              from "../../resources/year.json";
 import { getDate, getList                   } from "../utils/utils";
+import { createButtons                      } from "../utils/buttons";
 import { createEmbed,  createFutureEmbed    } from "../utils/embed";
-import { createNavigationButtons            } from "../utils/buttons";
 import { MessageOptions, CommandInteraction } from 'discord.js';
 import * as moment                            from 'moment';
 
@@ -14,7 +14,7 @@ export const almanax = async (command: CommandInteraction, config: any): Promise
     plus: async () => ({ embeds: [createFutureEmbed(command.options.getInteger("plus"))] }),
     '':   async () => ({
       embeds:     [await createEmbed(year[moment().format("2022-MM-DD")], config.server)],
-      components: [createNavigationButtons(moment().format("2022-MM-DD"))]
+      ...createButtons(moment().format("2022-MM-DD"))
     })
   }[command.options.data?.[0]?.name ?? '']()
 );
