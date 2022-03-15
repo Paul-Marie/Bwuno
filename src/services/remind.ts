@@ -43,3 +43,29 @@ export const remind = async (command: CommandInteraction, config: any): Promise<
     return format(sentences[config.lang].SUCCESS_NOTIFICATION_UNSET, arg);
   }
 }
+
+export const remindButton = async (date: string, identifier: string, config: any): Promise<string> => {
+  const user: any = await User.findOne({ identifier });
+  const list: any[] = getDate(date)?.map((offering: any) => ({
+    date: offering.Date, name: offering.OfferingName
+  }));
+  const mode = user?.subscriptions?.filter(({ date }) => (
+    getDate(date)?.[0]?.Date === date
+  ))?.length;
+  if (mode) {
+    user
+      ? await User.updateOne({ identifier }, { subscriptions: [ ...user.subscriptions, ...list ] })
+      : await User.create({
+        identifier,
+        server_id:     config.server,
+        lang:          config.lang,
+        subscriptions: list
+      });
+  } else
+    await User.updateOne({ identifier }, {
+      subscriptions: user.subscriptions.filter(({ date }) => (
+        !list.map(({ date }) => date).includes(date)
+      ))
+    });
+  return format(sentences[config.lang][`SUCCESS_NOTIFICATION_${!mode ? "UN" : ''}SET`], date)
+}

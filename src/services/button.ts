@@ -1,7 +1,8 @@
 import { ButtonInteraction  } from 'discord.js';
+import { format             } from 'format';
+import { remindButton       } from './remind';
 import { createEmbed        } from "../utils/embed";
 import { createButtons      } from "../utils/buttons";
-import * as sentences         from "../../resources/language.json";
 import * as year              from "../../resources/year.json";
 import * as moment            from 'moment';
 
@@ -14,14 +15,18 @@ export const button = async (interaction: ButtonInteraction, config: any): Promi
     reload: date
   }[action];
   await [
-    async () => await interaction.reply(true ? "toto" : "tata"),
+    async () => (
+      await interaction.reply({
+        content: await remindButton(date, interaction.user.id, config), ephemeral: true
+      })
+    ),
     async () => {
-      origin && !interaction.deferred && setTimeout(async () => {
+      origin && !interaction.deferred && setTimeout(async () => (
         await interaction.editReply({
           embeds: [await createEmbed(year[origin], config.server)],
           ...createButtons(origin)
-        });
-      }, 120000);
+        })
+      ), 120000);
       !interaction.deferred && await interaction.deferUpdate();
       await interaction.editReply({
         embeds: [await createEmbed(year[newDate], config.server)],
