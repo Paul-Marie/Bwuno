@@ -85,16 +85,16 @@ bot.on("messageCreate", async (message: Message): Promise<void> => {
 
 // Called each time a message is posted on a guild where Bwuno belongs to
 bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
-  if (!interaction.isCommand())
-    return;
-  const { username, discriminator } = interaction.user;
-  const argument: string = interaction.options.data.length && `(${interaction.options?.data?.[0]?.name}):${interaction.options?.data?.[0]?.value}`;
-  console.log(`${username}#${discriminator}: /${interaction.commandName} ${argument || ''}`);
-  const config: any = await Server.findOne({ identifier: interaction.guild?.id }) ?? { lang: 0, server: 2 };
-  try {
+  if (interaction.isCommand()) {
+    const { username, discriminator } = interaction.user;
+    const argument: string = interaction.options.data.length && `(${interaction.options?.data?.[0]?.name}):${interaction.options?.data?.[0]?.value}`;
+    console.log(`${username}#${discriminator}: /${interaction.commandName} ${argument || ''}`);
+    const config: any = await Server.findOne({ identifier: interaction.guild?.id }) ?? { lang: 0, server: 2 };
     await interaction.reply(await services[interaction.commandName.epur()](interaction, config));
-  } catch (err) {
-    console.trace(err);
-    await interaction.reply(format(sentences[config.lang].ERROR_COMMAND_NOT_FOUND, interaction.commandName, `/help`));
+  } else if (interaction.isButton()) {
+    const { username, discriminator } = interaction.user;
+    console.log(`${username}#${discriminator}: ${interaction.customId}`);
+    const config: any = await Server.findOne({ identifier: interaction.guild?.id }) ?? { lang: 0, server: 2 };
+    await services.button(interaction, config);
   }
 });

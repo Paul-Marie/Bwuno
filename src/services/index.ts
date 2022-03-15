@@ -2,7 +2,8 @@
   File to re-export all comands/* module 
 */
 export { help    } from "./help";
-export { item    } from "./item";
+//export { item    } from "./item";
+export { button  } from "./button";
 export { almanax } from "./almanax";
 export { doziak  } from "./doziak";
 export { type    } from "./type";

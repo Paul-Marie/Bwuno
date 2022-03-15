@@ -1,6 +1,7 @@
 import * as sentences                         from "../../resources/language.json";
 import * as year                              from "../../resources/year.json";
 import { getDate, getList                   } from "../utils/utils";
+import { createButtons                      } from "../utils/buttons";
 import { createEmbed,  createFutureEmbed    } from "../utils/embed";
 import { MessageOptions, CommandInteraction } from 'discord.js';
 import * as moment                            from 'moment';
@@ -11,7 +12,10 @@ export const almanax = async (command: CommandInteraction, config: any): Promise
     item: async () =>             await item(command, config),
     date: async () => ({ embeds: [await createEmbed(getDate(command.options.getString("date"))?.[0] ?? getDate(moment().format("DD/MM"))[0], config.server)] }),
     plus: async () => ({ embeds: [createFutureEmbed(command.options.getInteger("plus"))] }),
-    '':   async () => ({ embeds: [await createEmbed(year[moment().format("2022-MM-DD")], config.server)] })
+    '':   async () => ({
+      embeds:     [await createEmbed(year[moment().format("2022-MM-DD")], config.server)],
+      ...createButtons(moment().format("2022-MM-DD"))
+    })
   }[command.options.data?.[0]?.name ?? '']()
 );
 
