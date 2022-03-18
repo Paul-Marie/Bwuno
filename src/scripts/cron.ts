@@ -1,29 +1,30 @@
 /*
   Cron file called each day at 00h00 to display almanax of day in each discord guild with auto mode enabled
 */
-import { Client, TextChannel, MessageEmbed } from 'discord.js';
-import { getDate } from "../utils/utils";
-import { createEmbed } from "../utils/embed";
-import * as settings from "../../resources/config.json";
-import * as moment from 'moment-timezone';
-import * as mongoose from 'mongoose';
-import Server from "../models/server";
+import { Client,
+  TextChannel, Intents } from 'discord.js';
+import { getDate       } from "../utils/utils";
+import { createEmbed   } from "../utils/embed";
+import { createButtons } from "../utils/buttons";
+import Server            from "../models/server";
+import * as settings     from "../../resources/config.json";
+import * as moment       from 'moment-timezone';
 
-const bot: Client = new Client();
+const bot: Client = new Client({ intents: [ Intents.FLAGS.GUILDS ] });
 
 export default async (): Promise<void> => {
-  bot.on('ready', async () => {
-		const date: moment.Moment = moment().tz("Europe/Paris");
-		const almanax: any = getDate(date.format("DD/MM"))[0];
-		return Server.find({}, async (err: any, servers: mongoose.Document) => {
-			for (const id in servers)
-				if (servers[id].auto_mode) {
-					const embed: MessageEmbed = await createEmbed(almanax, servers[id].server_id);
-					await (bot.channels.cache.get(servers[id].auto_channel) as TextChannel).send(embed);
-				}
-			bot.destroy();
-			process.exit(0);
-		});
+  bot.on("ready", async () => {
+		const date: string = moment().tz("Europe/Paris").format("DD/MM");
+		const almanax: any = getDate(date)?.[0];
+		const servers = await Server.find({ auto_mode: true });
+    await Promise.all(servers.map(async ({ auto_channel, server_id }) => (
+      await (bot.channels.cache.get(auto_channel) as TextChannel).send({
+        embeds: [await createEmbed(almanax, server_id)],
+        ...createButtons(almanax.Date)
+      })
+    )));
+    bot.destroy();
+    process.exit(0);
 	});
 	bot.login(settings.discord.token);
 };
