@@ -34,21 +34,21 @@ const getJSON = async (scope: string) => (
 
 // Parse the page's body and build an object of data for the given `date`
 const parseData = (date: string, items: any[], body: any) => {
-  const root: HTMLElement = parse(body);
-  const event: Node[] = root.querySelector('#almanax_event_image')?.childNodes;
-  const content: Node[] = root.querySelectorAll('.mid')[2].childNodes;
-  const meryde_image: Node[] = root.querySelector('#almanax_boss_image').childNodes;
-  const meryde_description: Node[] = root.querySelector('#almanax_boss_desc').childNodes;
-  const zodiac: Node[] = root.querySelector('.zodiac_more').childNodes;
-  const offering: Node[] = root.querySelectorAll('.more-infos-content')[1].childNodes;
-  const name: string = (offering.map(elem => elem.rawText).join(' ').replace(/\s+/g, ' ').trim().split(' ')).slice(2, -6).join(' ');
-  const quantity: number = parseInt(offering.map(elem => elem.rawText).join('').replace(/\s+/g, ' ').trim().split(' ')[1])
-  const item: any = items.find(item => item.name === name);
-  const category: number = item?.type || 9;
+  const root:   HTMLElement = parse(body);
+  const event:       Node[] = root.querySelector('#almanax_event_image')?.childNodes;
+  const content:     Node[] = root.querySelectorAll('.mid')[2].childNodes;
+  const image:       Node[] = root.querySelector('#almanax_boss_image').childNodes;
+  const description: Node[] = root.querySelector('#almanax_boss_desc').childNodes;
+  const zodiac:      Node[] = root.querySelector('.zodiac_more').childNodes;
+  const offering:    Node[] = root.querySelectorAll('.more-infos-content')[1].childNodes;
+  const name:        string = (offering.map(elem => elem.rawText).join(' ').replace(/\s+/g, ' ').trim().split(' ')).slice(2, -6).join(' ');
+  const quantity:    number = parseInt(offering.map(elem => elem.rawText).join('').replace(/\s+/g, ' ').trim().split(' ')[1])
+  const item:           any = items.find(item => item.name === name);
+  const category:    number = item?.type || 9;
   return {
-    MerydeName: meryde_description.filter(node => node.nodeType === 1)[0].childNodes[0].rawText.trim(),
-    MerydeDescription: (meryde_description.filter(node => node.nodeType === 3)[1] as any).rawText.replace(/\s+((?!é|à|\(|ç)\W)/g, "$1").trim(),
-    MerydeImage: (meryde_image.filter(node => node.nodeType === 1)[0] as any).rawAttrs.split('"')[1],
+    MerydeName: description.filter(node => node.nodeType === 1)[0].childNodes[0].rawText.trim(),
+    MerydeDescription: (description.filter(node => node.nodeType === 3)[1] as any).rawText.replace(/\s+((?!é|à|\(|ç)\W)/g, "$1").trim(),
+    MerydeImage: (image.filter(node => node.nodeType === 1)[0] as any).rawAttrs.split('"')[1],
     BonusDescription: content[3].childNodes.filter((elem: any) => elem.rawAttrs !== 'class="more-infos"').map((elem) => ` ${elem.rawText} `).join(' ').replace(/\s+((?!é|à|\()\W)/g, "$1").trim(),
     BonusType: content[2].rawText.split(':')[1].trim(),
     OfferingName: name,
@@ -85,8 +85,8 @@ const getAlmanaxs = async (items: any[]) => {
 
 // Download items and almanax list and make a static JSON of data
 export default async () => {
-  const data: any = await getJSON("Items");
-  const types: any = await getJSON("ItemTypes");
+  const data:  any   = await getJSON("Items");
+  const types: any   = await getJSON("ItemTypes");
   const items: any[] = Object.values(data).map((item: any) => ({
     id: item.id,
     name: item.nameId,
