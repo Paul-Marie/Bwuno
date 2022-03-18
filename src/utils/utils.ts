@@ -66,15 +66,13 @@ export const getDate = (requested_date: string): any[] => {
 
 // Return the number of day between today and the requested date
 export const getRemainingDay = (almanax_date: string): number => {
-  const date: moment.Moment = moment();
+  const date: moment.Moment = moment().startOf("day");
   const searched_date: moment.Moment = moment({
     y: parseInt(date.format("YYYY")),
     M: parseInt(almanax_date.split("-")[1]) - 1, 
     D: parseInt(almanax_date.split("-")[2])
   });
-  (date > searched_date) && searched_date.add(1, "year");
-  const diff: number = date.diff(searched_date, 'days');
-  return Math.abs(Math.trunc(diff));
+  return moment.duration(moment(searched_date, "YYYY-MM-DD").diff(date)).asDays();
 }
 
 // Return main element from target' statistics
