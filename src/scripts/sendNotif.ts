@@ -19,18 +19,17 @@ const bot: Client = new Client({
 export default async (): Promise<void> => {
   bot.on('ready', async () => {
     const current_date: moment.Moment = moment().tz("Europe/Paris").startOf("day");
-    await UserModel.find({}, async (err: any, users: mongoose.Document[]) => {
-      await Promise.all(users.map(async (user: any) => {
-        const discord_user: User = await bot.users.fetch(user.identifier);
-        return await Promise.all(user.subscriptions.map(async (offering) => {
-          const days: number = moment.duration(moment(offering.date, "YYYY-MM-DD").diff(current_date)).asDays();
-          if (days === 0 || days === 7 || days === 30 || days === 90)
-            return await discord_user.send(format(sentences[user.lang].SUCCESS_NOTIFICATION, offering.name, days));
-        }));
+    const users:                any[] = await UserModel.find({ subscriptions: { $exists: true, $ne: [] } });
+    await Promise.all(users.map(async ({ identifier, subscriptions, lang }) => {
+      const discord_user: User = await bot.users.fetch(identifier);
+      return await Promise.all(subscriptions.map(async (offering) => {
+        const days: number = moment.duration(moment(offering.date, "YYYY-MM-DD").diff(current_date)).asDays();
+        if ([0, 7, 30, 90].some(i => i === days))
+          return await discord_user.send(format(sentences[lang][`SUCCESS_NOTIFICATION${!days ? "_NOW" : ''}`], offering.name, days));
       }));
-      bot.destroy();
-      process.exit(0);
-    });
+    }));
+    bot.destroy();
+    process.exit(0);
   });
   await bot.login(settings.discord.token);
 };
