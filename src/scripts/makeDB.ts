@@ -9,7 +9,11 @@ export default async () => {
   await mongoose.connection.dropDatabase();
 
   console.log("Creating servers...");
-  const bot = new discord.Client();
+  const bot = new discord.Client({
+    intents: [
+      discord.Intents.FLAGS.GUILDS
+    ]
+  });
 
   bot.on('ready', async () => {
     try {
