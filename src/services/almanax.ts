@@ -10,8 +10,11 @@ import * as moment                            from 'moment';
 export const almanax = async (command: CommandInteraction, config: any): Promise<String | MessageOptions> => (
   await {
     item: async () =>             await item(command, config),
-    date: async () => ({ embeds: [await createEmbed(getDate(command.options.getString("date"))?.[0] ?? getDate(moment().format("DD/MM"))[0], config.server)] }),
     plus: async () => ({ embeds: [createFutureEmbed(command.options.getInteger("plus"))] }),
+    date: async () => ({
+      ...createButtons(getDate(command.options.getString("date") ?? moment().format("DD/MM"))?.[0]?.Date),
+      embeds: [await createEmbed(getDate(command.options.getString("date"))?.[0] ?? getDate(moment().format("DD/MM"))[0], config.server)]
+    }),
     '':   async () => ({
       embeds:     [await createEmbed(year[moment().format("2022-MM-DD")], config.server)],
       ...createButtons(moment().format("2022-MM-DD"))
@@ -26,4 +29,4 @@ export const item = async (command: CommandInteraction, config: any): Promise<St
   return !result.length
     ? sentences[config.lang].ERROR_INCORRECT_DATE_OR_ITEM
     : { embeds: await Promise.all(result.map(async (almanax: any) => await createEmbed(almanax, config.server_id))) };
-}
+};
