@@ -2,7 +2,7 @@
 
 # Bwuno
 
-[![](https://img.shields.io/badge/Ajouter-Bwuno-0199FE.svg?style=flat)](https://discord.com/oauth2/authorize?client_id=642935463048642570&scope=bot&permissions=469990567)
+[![](https://img.shields.io/badge/Ajouter-Bwuno-0199FE.svg?style=flat)](https://discord.com/api/oauth2/authorize?client_id=642935463048642570&permissions=347200&scope=applications.commands%20bot)
 [![](https://img.shields.io/discord/556152877488406528.svg?logo=discord&colorB=7289DA)](https://discord.com/invite/NvruPar)
 [![](https://discordbots.org/api/widget/status/642935463048642570.svg)](https://discordbots.org/bot/642935463048642570)
 [![](https://img.shields.io/badge/discord.js-v12.3.1--dev-blue.svg?logo=npm)](https://github.com/discordjs)
@@ -27,7 +27,7 @@ Bwuno proposes de nombreuses commandes, mais voici les plus importantes:
 
 *   🎯 **almanax**: Permet de recuperer les informations de l'almanax en fonction d'une date ou d'une offrande
 *   🔍 **whois**: Affiche les informations d'un joueur depuis le site officiel de dofus-touch
-*   💰 **prefix**: Change le prefix de Bwuno pour ne plus avoir à utilisez `!bruno <command> [argument]`
+*   💰 **prefix**: Change le prefix de Bwuno pour ne plus avoir à utilisez `!bwuno <command> [argument]`
 *   🤖 **auto**: active le mode automatique et poster les almanax du jour à minuit sur ce serveur
 *   💊 **type**: Liste toutes les dates d'almanax avec le bonus désiré (Economie d'ingrédient, bonus xp, etc...)
 
@@ -53,19 +53,19 @@ Les quelques rares commande que Bwuno et Kaelly-Touch ont en commun sont plus **
 ## Installation
 
 ⚠️ Cette partie est réserver aux développeur ou personnes souhaitant lancez Bwuno depuis leur machine,
-Si vous souhaitez simplement l'utiliser sur ton serveur discord sans avoir à gerer l'hebergement et tout, [clique ici](https://discord.com/oauth2/authorize?client_id=642935463048642570&scope=bot&permissions=469990567)
+Si vous souhaitez simplement l'utiliser sur ton serveur discord sans avoir à gerer l'hebergement et tout, [clique ici](https://discord.com/api/oauth2/authorize?client_id=642935463048642570&permissions=347200&scope=applications.commands%20bot)
 
 ```sh
 git clone https://github.com/Paul-Marie/Bwuno
 cd Bwuno/
 ```
-Maintenant ouvrez le fichier `./resources/config.json` et remplissez les champs vide, tels que la partie `discord.token` ou vous devez mettre votre token de bot discord, puis ajoutez les images associez à votre futur bot dans les champs vide du champs `bruno`.
+Maintenant ouvrez le fichier `./resources/config.json` et remplissez les champs vide, tels que la partie `discord.token` ou vous devez mettre votre token de bot discord, puis ajoutez les images associez à votre futur bot dans les champs vide du champs `bwuno`.
 
 Assurez vous de posseder une version de [Node.JS](https://nodejs.org/fr/download/) suppérieur à 10,
 Puis lancez votre bot avec [yarn](https://classic.yarnpkg.com/fr/docs/install/#debian-stable) ou [npm](https://nodejs.org/fr/download/) (au choix)
 ```sh
 yarn;				# Sert à installer les paquets nécéssaire
-yarn start ./utils/makeDB.ts;	# Creer la base de données en locale
+yarn start makeDB;	# Creer la base de données en locale
 yarn start;			# Lance le bot sur votre machine
 ```
 Je vous recommande personellement d'utiliser [PM2](https://pm2.keymetrics.io/docs/usage/quick-start/) ou [screen](https://www.gnu.org/software/screen/screen.html) pour garder votre bot actif tout le temps.

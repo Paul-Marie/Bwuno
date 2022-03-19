@@ -5,7 +5,7 @@
         "length_limit": 2000
     },
     "mongo": {
-        "url": "mongodb://localhost/bruno"
+        "url": "mongodb://localhost/bwuno"
     },
     "dt_price": {
         "invite_url": "https://discord.com/invite/NvruPar",
@@ -17,13 +17,13 @@
         "guild_url": [ "fr/mmorpg/communaute/annuaires/pages-guildes", "en/mmorpg/community/directories/guild-pages" ],
         "player_url": [ "fr/mmorpg/communaute/annuaires/pages-persos", "en/mmorpg/community/directories/character-pages" ]
     },
-    "bruno": {
+    "bwuno": {
         "name": "Bwuno",
         "default_prefix": "!bwuno ",
         "invite_link": "https://discordapp.com/oauth2/authorize?&client_id=642935463048642570&scope=bot&permissions=469990567",
-        "imageURL": "",
-        "thumbnail_help": "",
-        "thumbnail_author": "",
-        "not_found_url": ""
+        "imageURL": "https://i.imgur.com/VEvm3ch.png",
+        "thumbnail_help": "https://i.imgur.com/MeQdXK6.png",
+        "thumbnail_author": "https://i.imgur.com/jlfQOoY.png",
+        "not_found_url": "https://i.imgur.com/nDZnMwu.jpg"
     }
 }
