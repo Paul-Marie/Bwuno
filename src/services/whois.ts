@@ -15,7 +15,7 @@ export const whois = async (command: CommandInteraction, config: any): Promise<v
   const server:   string = command.options.getString("serveur") || config.server_id + 402;
   const base_url: string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.player_url[config.lang]}`;
   const query_string: string = `?text=${argument}&character_homeserv[]=${server}&character_level_min=1&character_level_max=200`;
-  await command.deferReply({ ephemeral: true });
+  await command.deferReply();
   const response: any = await request(`${base_url}${query_string}`);
   console.log(response?.statusCode);
   if (response.statusCode === 200) {
