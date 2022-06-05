@@ -20,6 +20,15 @@ export const     whois = {
     }, {
       name:      "Herdegrize",
       value:     405
+    }, {
+      name:      "Grandapan",
+      value:     401
+    }, {
+      name:      "Dodge",
+      value:     406
+    }, {
+      name:      "Brutas",
+      value:     407
     }]
   }]
 };

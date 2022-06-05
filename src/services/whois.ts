@@ -1,7 +1,5 @@
 import * as sentences from "../../resources/language.json";
 import * as settings  from "../../resources/config.json";
-//import fetch from 'node-fetch';
-import axios, { AxiosResponse                } from 'axios';
 import { createPlayerEmbed, createErrorEmbed } from "../utils/embed";
 import { CommandInteraction } from 'discord.js';
 import { format     } from 'format';
