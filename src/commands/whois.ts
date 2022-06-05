@@ -3,9 +3,16 @@ export const     whois = {
   description:   "Renvoi les informations IG d'un personnage",
   options: [{
     name:        "pseudo",
-    description: "Le pseudo ou bout de pseudo du joueur à rechercher",
+    description: "Le pseudo ou bout de pseudo du personnage à rechercher",
     type:        3,
     required:    true,
+  }, {
+    name:        "level",
+    description: "Le level précis du personnage à rechercher",
+    type:        4,
+    min_value:   1,
+    max_value:   200,
+    required:    false,
   }, {
     name:        "serveur",
     description: "Serveur de jeu Dofus-Touch ou éfféctuer la recherche",

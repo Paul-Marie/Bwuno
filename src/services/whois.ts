@@ -8,13 +8,15 @@ import JSSoup         from 'jssoup';
 // TODO To optimize / rework entirely
 // Display all player informations
 export const whois = async (command: CommandInteraction, config: any): Promise<void> => {
-  const argument: string = command.options.getString("pseudo")?.toLowerCase();
-  const server:   string = command.options.getString("serveur") || config.server_id + 402;
+  const pseudo:   string = command.options.getString("pseudo")?.toLowerCase();
+  // TODO: handle Grandapan's case (it's id is 401 and the crappy "+ 402" thing wont works)
+  const server:   number = command.options.getInteger("serveur") || config.server_id + 402;
+  const level:    number = command.options.getInteger("level");
   const base_url: string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.player_url[config.lang]}`;
-  const query_string: string = `?text=${argument}&character_homeserv[]=${server}&character_level_min=1&character_level_max=200`;
+  const query_string: string = `?text=${pseudo}&character_homeserv[]=${server}&character_level_min=${level ?? "1"}&character_level_max=${level ?? "200"}`;
   await command.deferReply();
   try {
-    const link = await getPlayerPage(`${base_url}${query_string}`, argument, 1);
+    const link = await getPlayerPage(`${base_url}${query_string}`, pseudo, 1);
     const answer: Response = await fetch(link);
     if (answer.status === 200) {
       const data = await formateData(await answer.text(), base_url, link, config.lang);
