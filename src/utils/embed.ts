@@ -125,7 +125,7 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
   embed
     .setImage(data.image.replace(/touch/g, ''))
     .setFooter({ text: !(data.alliance_name) ? "" :
-      format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name, data.alliance_members, data.alliance_guilds_number),
+      format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name, data.alliance_member, data.alliance_number),
       iconURL: data.alliance_emblem });
   if (data.jobs.length)
     embed.addField(format(sentences[lang].INFO_WHOIS_JOBS, jobs_icon.toString()), data.jobs.map((element: any) => (
