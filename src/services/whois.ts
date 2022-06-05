@@ -5,7 +5,6 @@ import { CommandInteraction } from 'discord.js';
 import { format     } from 'format';
 import JSSoup         from 'jssoup';
 
-// TODO To optimize / rework entirely
 // Display all player informations
 export const whois = async (command: CommandInteraction, config: any): Promise<void> => {
   const pseudo:   string = command.options.getString("pseudo")?.toLowerCase();
@@ -16,7 +15,7 @@ export const whois = async (command: CommandInteraction, config: any): Promise<v
   const query_string: string = `?text=${pseudo}&character_homeserv[]=${server}&character_level_min=${level ?? "1"}&character_level_max=${level ?? "200"}`;
   await command.deferReply();
   try {
-    const link = await getPlayerPage(`${base_url}${query_string}`, pseudo, 1);
+    const link = await getPlayerPage(`${base_url}${query_string}`, pseudo);
     const answer: Response = await fetch(link);
     if (answer.status === 200) {
       const data = await formateData(await answer.text(), base_url, link, config.lang);
@@ -133,8 +132,8 @@ const getGuildRole = async (link: string, name: string, lang: number, page: numb
 }
 
 // Parse each player's page until find the required player and return his page
-const getPlayerPage = async (link: string, name: string, page: number = 1): Promise<string> => {
-  const answer: Response = await fetch(`${link}?page=${page}`);
+const getPlayerPage = async (link: string, name: string, page: number = undefined): Promise<string> => {
+  const answer: Response = await fetch(`${link}${page ? `?page=${page}` : ''}`);
   if (answer.status !== 200)
     throw false;
   const list: JSSoup = new JSSoup(await answer.text());
@@ -145,6 +144,6 @@ const getPlayerPage = async (link: string, name: string, page: number = 1): Prom
       == name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
   ));
   return (!filtered_result.length && page < 10)
-    ? await getPlayerPage(link, name, page + 1)
+    ? await getPlayerPage(link, name, page ?? 1 + 1)
     : `${settings.encyclopedia.base_url}${filtered_result[0].contents[1].nextElement.attrs.href}`;
 }
