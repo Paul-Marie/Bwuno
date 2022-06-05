@@ -1,4 +1,4 @@
-import { MessageEmbed, GuildEmoji } from 'discord.js';
+import { MessageEmbed, GuildEmoji, EmbedFooterData } from 'discord.js';
 import { format } from 'format';
 import { getRemainingDay, getPrice, getDate, getElement } from "./utils";
 import { bot } from "../discord";
@@ -73,8 +73,8 @@ export const createGuildEmbed = async (guild_info: any, lang: number): Promise<M
       moment(guild_info.created_at, "DD/MM/YYYY").format("DD MMMM YYYY"), guild_info.server, guild_info.member_number))
     .addField(sentences[lang].INFO_GUILD_PILLARS, pillars, true)
     .addField(sentences[lang].INFO_GUILD_HISTORY, activities)
-    .setFooter(format(sentences[lang].INFO_GUILD_FOOTER, guild_info.alliance_name,
-      guild_info.alliance_members, guild_info.alliance_guilds_number), guild_info.alliance_emblem);
+    .setFooter({ text: format(sentences[lang].INFO_GUILD_FOOTER, guild_info.alliance_name,
+      guild_info.alliance_members, guild_info.alliance_guilds_number), iconURL: guild_info.alliance_emblem });
 }
 
 // TODO Uggly function returning an Embed all formated info on a player
@@ -88,10 +88,7 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
     "Dodge": "754738574548533379", "Grandapan": "754738579430965399"
   };
   const alignment_list: any = { "bonta": "754819105894170707", "brakmar": "754819103704875039" };
-  const get_success_icon: any = (success: string) => {
-    return Math.floor(Math.sqrt(Math.pow(
-      Number(success.replace(/ /g, '')) - 2000, 2)) / 2000)
-  };
+  const get_success_icon: any = (success: string) => Math.floor(Math.sqrt(Math.pow(Number(success.replace(/ /g, '')) - 2000, 2)) / 2000);
   const success_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === success_list[get_success_icon(data.success)]);
   const xp_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754770281230237786");
   const jobs_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754731377274126438");
@@ -107,7 +104,7 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
     bot.emojis.cache.find(emoji => emoji.id === alignment_list[data.alignment_name]).toString(), data.alignment_name, data.alignment_level) : '';
   const kolizeum: string = (data.koli) ? format(sentences[lang].INFO_WHOIS_KOLIZEUM,
     bot.emojis.cache.find(emoji => emoji.id === "754836911306309792").toString(), data.koli) : '';
-  const element: string = (data.characteristics_element.length) ? getElement(data.characteristics_element, data.level) : '';
+  const element: string = (data.characteristics_element?.length) ? getElement(data.characteristics_element, data.level) : '';
   const embed: MessageEmbed = new MessageEmbed()
     .setColor('#4E4EC8')
     .setTitle(data.name)
@@ -127,13 +124,13 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
   }
   embed
     .setImage(data.image.replace(/touch/g, ''))
-    .setFooter((data.alliance_name) ?
-      format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name,
-        data.alliance_members, data.alliance_guilds_number) : "", data.alliance_emblem);
+    .setFooter({ text: !(data.alliance_name) ? "" :
+      format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name, data.alliance_members, data.alliance_guilds_number),
+      iconURL: data.alliance_emblem });
   if (data.jobs.length)
-    embed.addField(format(sentences[lang].INFO_WHOIS_JOBS, jobs_icon.toString()), data.jobs.map((element: any) => {
-      return `🔸 \`${element.name}\` ${element.level.replace(/\D/g, "")}`;
-    }).join('\n'), true);
+    embed.addField(format(sentences[lang].INFO_WHOIS_JOBS, jobs_icon.toString()), data.jobs.map((element: any) => (
+      `🔸 \`${element.name}\` ${element.level.replace(/\D/g, "")}`
+    )).join('\n'), true);
   return embed;
 }
 
@@ -146,5 +143,5 @@ export const createErrorEmbed = async (lang: number, link: string, mode: number)
     .setDescription(format(sentences[lang].ERROR_CONTENT_NOT_FOUND, content[lang][mode], content[lang][mode], link))
     .setImage(settings.bwuno.not_found_url)
     .setTimestamp()
-    .setFooter(sentences[lang].ERROR_LOST, settings.bwuno.thumbnail_author);
+    .setFooter({ text: sentences[lang].ERROR_LOST, iconURL: settings.bwuno.thumbnail_author });
 }
