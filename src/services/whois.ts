@@ -6,7 +6,6 @@ import { createPlayerEmbed, createErrorEmbed } from "../utils/embed";
 import { CommandInteraction } from 'discord.js';
 import { format     } from 'format';
 import JSSoup         from 'jssoup';
-import * as request   from 'async-request';
 
 // TODO To optimize / rework entirely
 // Display all player informations
@@ -16,31 +15,25 @@ export const whois = async (command: CommandInteraction, config: any): Promise<v
   const base_url: string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.player_url[config.lang]}`;
   const query_string: string = `?text=${argument}&character_homeserv[]=${server}&character_level_min=1&character_level_max=200`;
   await command.deferReply();
-  const response: any = await request(`${base_url}${query_string}`);
-  console.log(response?.statusCode);
-  if (response.statusCode === 200) {
-    try {
-      const link = await getPlayerPage(`${base_url}${query_string}`, argument, 1);
-      const answer: any = await request(link);
-      if (answer.statusCode === 200) {
-        const data = await formateData(answer, base_url, link, config.lang);
-        await command.editReply({ embeds: [await createPlayerEmbed(data, config.lang)] });
-      } else
-        await command.editReply({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] });
-    } catch (err) {
-      console.log(err);
+  try {
+    const link = await getPlayerPage(`${base_url}${query_string}`, argument, 1);
+    const answer: Response = await fetch(link);
+    if (answer.status === 200) {
+      const data = await formateData(await answer.text(), base_url, link, config.lang);
+      await command.editReply({ embeds: [await createPlayerEmbed(data, config.lang)] });
+    } else
       await command.editReply({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] });
-    }
-  } else
-    await command.editReply(format(sentences[config.lang].ERROR_FORBIDEN));
+  } catch (err) {
+    await command.editReply(!err ? format(sentences[config.lang].ERROR_FORBIDEN) : { embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 2)] });
+  }
 }
 
 // Parse all page informations and return an epured object
-const formateData = async (answer: any, base_url: string, link: string, lang: number) => {
+const formateData = async (answer: string, base_url: string, link: string, lang: number) => {
   const data: any = {};
-  const soup: JSSoup = new JSSoup(answer.body);
+  const soup: JSSoup = new JSSoup(answer);
   const main_info: any = soup.find('div', 'ak-directories-main-infos');
-  // TODO may change image's orientation ?
+  // TODO: may change image's orientation ?
   data.image = `${soup.find('div', 'ak-entitylook').attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}200_350-0.png`;
   data.name = soup.find('h1', 'ak-return-link').contents[1]._text.trim();
   data.level = main_info.nextElement.nextElement.nextElement._text.trim().replace(/(.*)\s/g, '');
@@ -93,9 +86,9 @@ const formateData = async (answer: any, base_url: string, link: string, lang: nu
   } catch { };
   try {
     data.characteristics_link = `https://www.dofus-touch.com/fr/mmorpg/communaute/annuaires/pages-persos/${link.replace(/(.*\/)*/, '')}/caracteristiques`;
-    const ack: any = await request(data.characteristics_link);
-    if (ack.statusCode === 200) {
-      const search: JSSoup = new JSSoup(ack.body);
+    const ack: Response = await fetch(data.characteristics_link);
+    if (ack.status === 200) {
+      const search: JSSoup = new JSSoup(await ack.text());
       data.characteristics_element = search.findAll('tr', "ak-bg-odd").concat(search.findAll('tr', "ak-bg-even")).map((elem: any) => {
         if (elem.contents[3])
           return {
@@ -125,8 +118,8 @@ const formateData = async (answer: any, base_url: string, link: string, lang: nu
 
 // Parse each guild member's page until find the required player and return his role
 const getGuildRole = async (link: string, name: string, lang: number, page: number = 1) => {
-  const guild_answer: any = await request(`${link}/memb${["res", "ers"][lang]}?page=${page}`);
-  const guild_page: JSSoup = new JSSoup(guild_answer.body);
+  const guild_answer: Response = await fetch(`${link}/memb${["res", "ers"][lang]}?page=${page}`);
+  const guild_page: JSSoup = new JSSoup(await guild_answer.text());
   const guild_content = guild_page.findAll('tr', 'tr_class');
   const guild_role = guild_content.map((element: any) => {
     return {
@@ -141,8 +134,10 @@ const getGuildRole = async (link: string, name: string, lang: number, page: numb
 
 // Parse each player's page until find the required player and return his page
 const getPlayerPage = async (link: string, name: string, page: number = 1): Promise<string> => {
-  const answer: any = await request(`${link}?page=${page}`);
-  const list: JSSoup = new JSSoup(answer.body);
+  const answer: Response = await fetch(`${link}?page=${page}`);
+  if (answer.status !== 200)
+    throw false;
+  const list: JSSoup = new JSSoup(await answer.text());
   const content = list.findAll('tr');
   content.shift();
   const filtered_result = await content.filter((result: any) => (

@@ -4,7 +4,6 @@ import { createGuildEmbed, createErrorEmbed } from "../utils/embed";
 import { MessageOptions                     } from 'discord.js';
 import { format                             } from 'format';
 import JSSoup                                 from 'jssoup';
-import * as request                           from 'async-request';
 
 // Send an Embed containing all guild's information
 export const guild = async (line: string[], config: any): Promise<string | MessageOptions> => {
@@ -14,13 +13,14 @@ export const guild = async (line: string[], config: any): Promise<string | Messa
   const argument:     string = line.join('+').toLowerCase();
   const base_url:     string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.guild_url[config.lang]}`;
   const query_string: string = `?text=${argument}&guild_server_id%5B%5D=${config.server_id + 402}&guild_level_min=1&guild_level_max=200`
-  const response:        any = await request(`${base_url}${query_string}`);
-  if (response.statusCode === 200) {
+  const response:        any = await fetch(`${base_url}${query_string}`);
+  if (response.status === 200) {
     try {
       // TODO: get rid of the try/catch forest with ? operator
+      console.log(response)
       const search: JSSoup = new JSSoup(response.body);
       const link:   string = `${settings.encyclopedia.base_url}${search.find('td').nextElement.attrs.href}`;
-      const answer:    any = await request(link);
+      const answer:    any = await fetch(link);
       if (answer.statusCode === 200) {
         const soup:    JSSoup = new JSSoup(answer.body);
         const data:       any = { link };
