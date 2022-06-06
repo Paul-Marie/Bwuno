@@ -9,9 +9,8 @@ import JSSoup                                  from 'jssoup';
 export const whois = async (command: CommandInteraction, config: any): Promise<void> => {
   await command.deferReply();
   const pseudo:       string = command.options.getString("pseudo")?.toLowerCase();
-  // TODO: handle Grandapan's case (it's id is 401 and the crappy "+ 402" thing wont works)
-  const server:       number = command.options.getInteger("serveur") || config.server_id + 402;
   const level:        number = command.options.getInteger("level");
+  const server:       string = `${command.options.getInteger("serveur") || ''}`;
   const base_url:     string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.player_url[config.lang]}`;
   const query_string: string = `?text=${pseudo}&character_homeserv[]=${server}&character_level_min=${level ?? "1"}&character_level_max=${level ?? "200"}`;
   try {
@@ -21,20 +20,23 @@ export const whois = async (command: CommandInteraction, config: any): Promise<v
       const data = await formateData(await answer.text(), `${settings.encyclopedia.link_url}${link}`, config.lang);
       await command.editReply({ embeds: [await createPlayerEmbed(data, config.lang)] });
     } else
-      await command.editReply({ embeds: [await createErrorEmbed(config.lang, `${settings.encyclopedia.link_url}${query_string}`, 2)] });
+      await command.editReply({ embeds:
+        [ await createErrorEmbed(config.lang, `${settings.encyclopedia.link_url}/${settings.encyclopedia.player_url[config.lang]}${query_string}`, 2) ]
+      });
   } catch (err) {
+    console.trace(err);
     await command.editReply(!err ? format(sentences[config.lang].ERROR_FORBIDEN) : {
-      embeds: [await createErrorEmbed(config.lang, `${settings.encyclopedia.link_url}${query_string}`, 2)]
+      embeds: [await createErrorEmbed(config.lang, `${settings.encyclopedia.link_url}/${settings.encyclopedia.player_url[config.lang]}${query_string}`, 2)]
     });
   }
 }
 
 // Parse all page informations and return an epured object
 const formateData = async (answer: string, link: string, lang: number) => {
-  const data:      any  = {};
-  const soup:   JSSoup  = new JSSoup(answer);
-  const jobs:   JSSoup  = soup.findAll('div', 'ak-title')?.reverse()?.splice(1)?.reverse();
-  const main_info: any  = soup.find('div', 'ak-directories-main-infos');
+  const data:       any = {};
+  const soup:    JSSoup = new JSSoup(answer);
+  const jobs:    JSSoup = soup.findAll('div', 'ak-title')?.reverse()?.splice(1)?.reverse();
+  const main_info:  any = soup.find('div', 'ak-directories-main-infos');
   data.image            = `${soup.find('div', 'ak-entitylook').attrs.style.replace(/.*\(|\).*/g, '').replace(/[^/]*$/g, '')}200_350-0.png`;
   data.name             = soup.find('h1', 'ak-return-link').contents[1]._text.trim();
   data.level            = main_info.nextElement.nextElement.nextElement._text.trim().replace(/(.*)\s/g, '');
@@ -53,11 +55,11 @@ const formateData = async (answer: string, link: string, lang: number) => {
   data.alliance_link    = data.alliance_name && `${settings.encyclopedia.link_url}${soup.find('a', 'ak-infos-alliancename')?.attrs?.href}`;
   data.alliance_number  = data.alliance_name && soup.find('span', 'ak-infos-allianceguild')?.nextElement?._text?.trim()?.replace(/\s(.*)/g, '');
   data.alliance_member  = data.alliance_name && soup.find('span', 'ak-infos-allianceguild')?.nextElement?.nextElement?.nextElement?._text?.trim()?.replace(/\s(.*)/g, '');
+  data.marry_link       = data.marry_name    && `${settings.encyclopedia.link_url}/${soup.find('a', 'ak-infos-spousename')?.attrs?.href}`;
   data.success_percent  = soup.find('div', 'ak-progress-bar-text')?.nextElement?._text?.trim();
   data.success_lastName = soup.find('div', 'ak-last-achievement')?.contents?.[3]?._text?.trim();//.nextElement._text.trim();
   data.success_lastTime = soup.find('div', 'ak-last-achievement')?.contents?.[1]?.nextElement?._text?.trim()?.replace(/(.*)il y a/g, '')?.replace(/:/g, '')?.replace(/ago/g, '')?.trim();
   data.marry_name       = soup.find('a', 'ak-infos-spousename')?.nextElement?._text?.trim();
-  data.marry_link       = data.marry_name    && `${settings.encyclopedia.link_url}/${soup.find('a', 'ak-infos-spousename')?.attrs?.href}`;
   data.xp               = soup.find('div', 'ak-total-xp')?.contents?.[1]?.nextElement?._text?.trim() || '-';
   data.koli             = soup.find('div', 'ak-total-kolizeum')?.contents?.[1]?.nextElement?._text?.trim() || '-';
   data.alignment_name   = soup.find('span', 'ak-alignment-name')?.nextElement?._text?.trim();
@@ -65,16 +67,16 @@ const formateData = async (answer: string, link: string, lang: number) => {
   data.success          = soup.find('span', 'ak-score-text')?.contents?.[0]?._text?.trim();
   // TODO: handle eng & spain characteristics pages
   data.characteristics_link = `${settings.encyclopedia.link_url}/fr/mmorpg/communaute/annuaires/pages-persos/${link.replace(/(.*\/)*/, '')}/caracteristiques`;
-  const ack: Response = await fetch(data.characteristics_link);
+  const ack: Response   = await fetch(data.characteristics_link);
   if (ack.status === 200) {
     const search: JSSoup = new JSSoup(await ack.text());
-    data.characteristics_element = search.findAll('tr', "ak-bg-odd")?.concat(search.findAll('tr', "ak-bg-even"))?.filter(elem => elem?.contents?.[3])?.map((elem: any) => ({
-      name:  elem?.contents?.[1]?.nextElement?.contents?.[0]?._text,
-      base:  elem?.contents?.[3]?.contents?.[0]?._text,
-      total: elem?.contents?.[4]?.contents?.[0]?._text
+    data.characteristics_element = search.findAll('tr', "ak-bg-odd")?.concat(search.findAll('tr', "ak-bg-even"))?.filter(elem => elem.contents?.[3])?.map(({ contents }) => ({
+      name:  contents?.[1]?.nextElement?.contents?.[0]?._text,
+      base:  contents?.[3]?.contents?.[0]?._text,
+      total: contents?.[4]?.contents?.[0]?._text
     }));
   }
-  data.ladder = soup.find('tbody').contents.map(({ contents }) => ({
+  data.ladder = soup.find('tbody')?.contents?.map(({ contents }) => ({
     text:    contents?.[0]?.contents?.[0]?._text?.trim(),
     xp:      contents?.[1]?.contents?.[0]?._text,
     koli:    contents?.[2]?.contents?.[0]?._text,

@@ -91,7 +91,6 @@ bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
     console.log(`${username}#${discriminator}: /${interaction.commandName} ${argument || ''}`);
     const config: any = await Server.findOne({ identifier: interaction.guild?.id }) ?? { lang: 0, server: 2 };
     const reply: any = await services[interaction.commandName.epur()](interaction, config);
-    console.log(reply);
     reply && await interaction.reply(reply);
   } else if (interaction.isButton()) {
     const { username, discriminator } = interaction.user;
