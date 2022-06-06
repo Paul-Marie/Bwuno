@@ -1,10 +1,11 @@
-import { MessageEmbed, GuildEmoji, EmbedFooterData } from 'discord.js';
-import { format } from 'format';
-import { getRemainingDay, getPrice, getDate, getElement } from "./utils";
-import { bot } from "../discord";
-import * as sentences from "../../resources/language.json";
-import * as settings from "../../resources/config.json";
-import * as moment from 'moment';
+import { MessageEmbed         } from 'discord.js';
+import { format               } from 'format';
+import { bot                  } from "../discord";
+import { getDate, getElement,
+  getRemainingDay, getPrice   } from "./utils";
+import * as sentences           from "../../resources/language.json";
+import * as settings            from "../../resources/config.json";
+import * as moment              from 'moment';
 
 moment.locale('fr');
 
@@ -31,7 +32,7 @@ export const createEmbed = async (almanax: any, id: number): Promise<MessageEmbe
     embed.setImage(almanax.Event_Image)
   }
   return embed;
-}
+};
 
 // Return an embed where all field are almanax from tomorrow to the next 25 days
 export const createFutureEmbed = (required_almanax: number): MessageEmbed => {
@@ -49,7 +50,7 @@ export const createFutureEmbed = (required_almanax: number): MessageEmbed => {
     embed.addField(date.format("DD MMMM"), `🙏 **x${almanax.OfferingQuantity}** [**${almanax.OfferingName}**](${almanax.OfferingURL})\n📜 ${almanax.BonusDescription}\n`, true);
   }
   return embed;
-}
+};
 
 // Create and return an Embed containing all guild's informations
 export const createGuildEmbed = async (guild_info: any, lang: number): Promise<MessageEmbed> => {
@@ -75,64 +76,50 @@ export const createGuildEmbed = async (guild_info: any, lang: number): Promise<M
     .addField(sentences[lang].INFO_GUILD_HISTORY, activities)
     .setFooter({ text: format(sentences[lang].INFO_GUILD_FOOTER, guild_info.alliance_name,
       guild_info.alliance_members, guild_info.alliance_guilds_number), iconURL: guild_info.alliance_emblem });
-}
+};
 
 // TODO Uggly function returning an Embed all formated info on a player
 export const createPlayerEmbed = async (data: any, lang: number): Promise<MessageEmbed> => {
+  const { guild_name, guild_link, guild_level, guild_role, guild_members, guild_emblem,
+    marry_name, marry_link, alignment_name, alignment_level, koli, characteristics_element,
+    name, level, link, race, title, presentation, ladder, image, success, success_percent,
+    alliance_emblem, alliance_member, alliance_name, alliance_number, jobs, xp, server
+  } = data;
   const success_list: string[] = [
-    "754731377995415703", "754494973101211659", "754494998040543346",
-    "754494998342402070", "754495072648560723"];
+    "<:success:754731377995415703>", "<:4k:754494973101211659>", "<:6k:754494998040543346>",
+    "<:8k:754494998342402070>", "<:10k:754495072648560723>"];
   const server_list: any = {
-    "Oshimo": "754738578327601153", "Terra Cogita": "754738579778961458",
-    "Herdegrize": "754738579808321537", "Brutas": "754738573089177700",
-    "Dodge": "754738574548533379", "Grandapan": "754738579430965399"
+    "Oshimo":     "<:oshimo:754738578327601153>",     "Terra Cogita": "<:terra_cogita:754738579778961458>",
+    "Herdegrize": "<:herdegrize:754738579808321537>", "Brutas": "<:brutas:754738573089177700>",
+    "Dodge":      "<:dodge:754738574548533379>",      "Grandapan": "<:grandapan:754738579430965399>"
   };
-  const alignment_list: any = { "bonta": "754819105894170707", "brakmar": "754819103704875039" };
-  const get_success_icon: any = (success: string) => Math.floor(Math.sqrt(Math.pow(Number(success.replace(/ /g, '')) - 2000, 2)) / 2000);
-  const success_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === success_list[get_success_icon(data.success)]);
-  const xp_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754770281230237786");
-  const jobs_icon: GuildEmoji = bot.emojis.cache.find(emoji => emoji.id === "754731377274126438");
-  const informations: string = format(sentences[lang].INFO_WHOIS_SERVER,
-    bot.emojis.cache.find(emoji => emoji.id === server_list[data.server]).toString(), data.server);
-  const guild: string = (data.guild_name) ? format(sentences[lang].INFO_WHOIS_GUILD,
-    bot.emojis.cache.find(emoji => emoji.id === "754737710937145504").toString(), data.guild_name, data.guild_link, data.guild_level) : '';
-  const role: string = (data.guild_name) ? format(sentences[lang].INFO_WHOIS_ROLE,
-    bot.emojis.cache.find(emoji => emoji.id === "754737709532053679").toString(), data.guild_role, data.guild_members) : '';
-  const marry: string = (data.marry_name) ? format(sentences[lang].INFO_WHOIS_MARRY,
-    bot.emojis.cache.find(emoji => emoji.id === "754737711729999913").toString(), data.marry_name, data.marry_link) : '';
-  const alignment: string = (data.alignment_name) ? format(sentences[lang].INFO_WHOIS_ALIGNMENT,
-    bot.emojis.cache.find(emoji => emoji.id === alignment_list[data.alignment_name]).toString(), data.alignment_name, data.alignment_level) : '';
-  const kolizeum: string = (data.koli) ? format(sentences[lang].INFO_WHOIS_KOLIZEUM,
-    bot.emojis.cache.find(emoji => emoji.id === "754836911306309792").toString(), data.koli) : '';
-  const element: string = (data.characteristics_element?.length) ? getElement(data.characteristics_element, data.level) : '';
-  const embed: MessageEmbed = new MessageEmbed()
-    .setColor('#4E4EC8')
-    .setTitle(data.name)
-    .setURL(data.link)
-    .setThumbnail(data.guild_emblem.replace(/dofus/g, 'dofustouch'))
-    .setDescription(`${data.title ? ("`" + data.title + "`") : ""}\n${data.presentation || ""}`)
-    .addField(`${data.race} ${element} (lvl ${data.level}):`, `${informations}${guild}${role}${marry}${alignment}${kolizeum}`)
-  if (data.ladder) {
-    embed.addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_icon.toString(), data.success, data.success_percent), format(
-      sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].success, data.ladder[1].text,
-      data.ladder[1].success, data.ladder[2].text, data.ladder[2].success, data.ladder[3].text.replace(/ Cogita/g, ''), data.ladder[3].success,
-    ), true)
-      .addField(format(sentences[lang].INFO_WHOIS_EXPERIENCE, xp_icon.toString(), data.xp), format(
-        sentences[lang].INFO_WHOIS_LADDER_CONTENT, data.ladder[0].text, data.ladder[0].xp, data.ladder[1].text,
-        data.ladder[1].xp, data.ladder[2].text, data.ladder[2].xp, data.ladder[3].text.replace(/ Cogita/g, ''), data.ladder[3].xp,
-      ), true)
-  }
-  embed
-    .setImage(data.image.replace(/touch/g, ''))
-    .setFooter({ text: !(data.alliance_name) ? "" :
-      format(sentences[lang].INFO_GUILD_FOOTER, data.alliance_name, data.alliance_member, data.alliance_number),
-      iconURL: data.alliance_emblem });
-  if (data.jobs.length)
-    embed.addField(format(sentences[lang].INFO_WHOIS_JOBS, jobs_icon.toString()), data.jobs.map((element: any) => (
-      `🔸 \`${element.name}\` ${element.level.replace(/\D/g, "")}`
-    )).join('\n'), true);
+  const get_success_icon     = (success: string) => Math.floor(Math.sqrt(Math.pow(Number(success.replace(/ /g, '')) - 2000, 2)) / 2000);
+  const alignment_list:  any = { "bonta": "<:bonta:754819105894170707>", "brakmar": "<:brakmar:754819103704875039>" };
+  const informations: string = format(sentences[lang].INFO_WHOIS_SERVER, server_list[server], server);
+  const guild:        string = guild_name     ? format(sentences[lang].INFO_WHOIS_GUILD,    "<:guild:754737710937145504>",   guild_name, guild_link, guild_level) : '';
+  const role:         string = guild_name     ? format(sentences[lang].INFO_WHOIS_ROLE,     "<:role:754737709532053679>",    guild_role, guild_members)           : '';
+  const marry:        string = marry_name     ? format(sentences[lang].INFO_WHOIS_MARRY,    "<:spouse:754737711729999913>",  marry_name, marry_link)              : '';
+  const kolizeum:     string = koli           ? format(sentences[lang].INFO_WHOIS_KOLIZEUM, "<:kolosseum:754836911306309792>", koli)                              : '';
+  const alignment:    string = alignment_name ? format(sentences[lang].INFO_WHOIS_ALIGNMENT, alignment_list[alignment_name], alignment_name, alignment_level)     : '';
+  const element:      string = characteristics_element?.length ? getElement(characteristics_element, level) : '';
+  const embed:  MessageEmbed = new MessageEmbed().setColor('#4E4EC8').setTitle(name).setURL(link)
+    .setThumbnail(guild_emblem?.replace(/dofus/g, 'dofustouch'))
+    .setDescription(`${title ? `\`${title}\`` : ""}\n${presentation || ""}`)
+    .addField(`${race} ${element} (lvl ${level}):`, `${informations}${guild}${role}${marry}${alignment}${kolizeum}`)
+  if (ladder)
+    embed.addField(format(sentences[lang].INFO_WHOIS_SUCCESS, success_list[get_success_icon(success)], success, success_percent),
+      format(sentences[lang].INFO_WHOIS_LADDER_CONTENT, ladder[0].text, ladder[0].success, ladder[1].text,
+        ladder[1].success, ladder[2].text, ladder[2].success, ladder[3].text.replace(/ Cogita/g, ''), ladder[3].success), true)
+      .addField(format(sentences[lang].INFO_WHOIS_EXPERIENCE, "<:xp:754770281230237786>", xp), format(sentences[lang].INFO_WHOIS_LADDER_CONTENT, ladder[0].text,
+        ladder[0].xp, ladder[1].text, ladder[1].xp, ladder[2].text, ladder[2].xp, ladder[3].text.replace(/ Cogita/g, ''), ladder[3].xp), true)
+  embed.setImage(image.replace(/touch/g, ''))
+    .setFooter({ iconURL: alliance_emblem, text: !(alliance_name) ? "" :
+      format(sentences[lang].INFO_GUILD_FOOTER, alliance_name, alliance_member, alliance_number)
+    });
+  jobs.length && embed.addField(format(sentences[lang].INFO_WHOIS_JOBS, "<:job:754731377274126438>"), jobs.map(
+    ({ name, level }) => `🔸 \`${name}\` ${level.replace(/\D/g, "")}`).join('\n'), true);
   return embed;
-}
+};
 
 // Create an Embed sent in case of error(s)
 export const createErrorEmbed = async (lang: number, link: string, mode: number): Promise<MessageEmbed> => {
@@ -144,4 +131,4 @@ export const createErrorEmbed = async (lang: number, link: string, mode: number)
     .setImage(settings.bwuno.not_found_url)
     .setTimestamp()
     .setFooter({ text: sentences[lang].ERROR_LOST, iconURL: settings.bwuno.thumbnail_author });
-}
+};
