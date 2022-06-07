@@ -10,9 +10,9 @@ export const whois = async (command: CommandInteraction, config: any): Promise<v
   await command.deferReply();
   const pseudo:       string = command.options.getString("pseudo")?.toLowerCase();
   const level:        number = command.options.getInteger("level");
-  const server:       string = `${command.options.getInteger("serveur") || ''}`;
+  const server:       number = command.options.getInteger("serveur");
   const base_url:     string = `${settings.encyclopedia.base_url}/${settings.encyclopedia.player_url[config.lang]}`;
-  const query_string: string = `?text=${pseudo}&character_homeserv[]=${server}&character_level_min=${level ?? "1"}&character_level_max=${level ?? "200"}`;
+  const query_string: string = `?text=${pseudo}&character_homeserv[]=${server ?? ''}&character_level_min=${level ?? "1"}&character_level_max=${level ?? "200"}`;
   try {
     const link:       string = await getPlayerPage(`${base_url}${query_string}`, pseudo);
     const answer:   Response = await fetch(`${settings.encyclopedia.base_url}${link}`);
@@ -24,7 +24,6 @@ export const whois = async (command: CommandInteraction, config: any): Promise<v
         [ await createErrorEmbed(config.lang, `${settings.encyclopedia.link_url}/${settings.encyclopedia.player_url[config.lang]}${query_string}`, 2) ]
       });
   } catch (err) {
-    console.trace(err);
     await command.editReply(!err ? format(sentences[config.lang].ERROR_FORBIDEN) : {
       embeds: [await createErrorEmbed(config.lang, `${settings.encyclopedia.link_url}/${settings.encyclopedia.player_url[config.lang]}${query_string}`, 2)]
     });

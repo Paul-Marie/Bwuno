@@ -55,17 +55,18 @@ export const createFutureEmbed = (required_almanax: number): MessageEmbed => {
 // Create and return an Embed containing all guild's informations
 export const createGuildEmbed = async (guild_info: any, lang: number): Promise<MessageEmbed> => {
   const icon: any = { "Meneur": '🔺', "Leader": '🔺', "Bras Droit": '▫', "Second in Command": '▫' };
-  const pillars: string = guild_info.pillars.map((element: any) => {
-    const symbol: string = icon[element.role] || '▪';
-    return `${symbol} [${element.name}](https://google.com) (lvl ${element.lvl}) **${element.role}**`;
+  // TODO: use `link` when Discord API'll accept content greater than 1024
+  const pillars: string = guild_info.pillars.map(({ name, role, lvl, link }) => (
+    `${icon[role] || '▪'} [${name}](${"https://google.com" || link}) (lvl ${lvl}) **${role}**`
+  )).join('\n');
+  const activities: string = guild_info.activities?.[0]?.action !== "undefined."
+    && guild_info.activities?.map(({ action, time, name }) => {
+    const symbol: string = action.includes("rejoin") ? '🔹' :
+      (["maison", "home"].some(elem => action.includes(elem))) ? '▫' : '🔸';
+    const adjective: string = (name && !lang) ? 'a' : ' ';
+    return `${symbol} [${time}] **${name || ' '}** ${adjective} ${action}`;
   }).join('\n');
-  const activities: string = guild_info.activities.map((element: any) => {
-    const symbol: string = (element.action.includes("rejoin")) ? '🔹' :
-      (["maison", "home"].some(elem => element.action.includes(elem))) ? '▫' : '🔸';
-    const adjective: string = (element.name && !lang) ? 'a' : ' ';
-    return `${symbol} [${element.time}] **${element.name || ' '}** ${adjective} ${element.action}`;
-  }).join('\n');
-  return new MessageEmbed()
+  const embed: MessageEmbed = new MessageEmbed()
     .setColor('#4E4EC8')
     .setTitle(guild_info.guild_name)
     .setURL(guild_info.link)
@@ -73,9 +74,10 @@ export const createGuildEmbed = async (guild_info: any, lang: number): Promise<M
     .setDescription(format(sentences[lang].INFO_GUILD_DESCRIPTION, guild_info.level,
       moment(guild_info.created_at, "DD/MM/YYYY").format("DD MMMM YYYY"), guild_info.server, guild_info.member_number))
     .addField(sentences[lang].INFO_GUILD_PILLARS, pillars, true)
-    .addField(sentences[lang].INFO_GUILD_HISTORY, activities)
     .setFooter({ text: format(sentences[lang].INFO_GUILD_FOOTER, guild_info.alliance_name,
-      guild_info.alliance_members, guild_info.alliance_guilds_number), iconURL: guild_info.alliance_emblem });
+      guild_info.alliance_members, guild_info.alliance_number), iconURL: guild_info.alliance_emblem });
+  activities && embed.addField(sentences[lang].INFO_GUILD_HISTORY, activities)
+  return embed;
 };
 
 // TODO Uggly function returning an Embed all formated info on a player
