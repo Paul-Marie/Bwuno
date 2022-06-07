@@ -59,7 +59,7 @@ const formateData = async (answer: string, link: string, lang: number) => {
   data.success_percent  = soup.find('div', 'ak-progress-bar-text')?.nextElement?._text?.trim();
   data.success_lastName = soup.find('div', 'ak-last-achievement')?.contents?.[3]?._text?.trim();//.nextElement._text.trim();
   data.success_lastTime = soup.find('div', 'ak-last-achievement')?.contents?.[1]?.nextElement?._text?.trim()?.replace(/(.*)il y a/g, '')?.replace(/:/g, '')?.replace(/ago/g, '')?.trim();
-  data.marry_name       = soup.find('a', 'ak-infos-spousename')?.nextElement?._text?.trim();
+  data.marry_name       = soup.find('a',   'ak-infos-spousename')?.nextElement?._text?.trim();
   data.xp               = soup.find('div', 'ak-total-xp')?.contents?.[1]?.nextElement?._text?.trim() || '-';
   data.koli             = soup.find('div', 'ak-total-kolizeum')?.contents?.[1]?.nextElement?._text?.trim() || '-';
   data.alignment_name   = soup.find('span', 'ak-alignment-name')?.nextElement?._text?.trim();

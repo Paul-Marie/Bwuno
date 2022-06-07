@@ -13,6 +13,7 @@
     },
     "encyclopedia": {
         "base_url": "https://www.dofus-touch.com",
+        "link_url": "https://www.dofus-touch.com",
         "alliance_url": [ "fr/mmorpg/communaute/annuaires/pages-alliances", "en/mmorpg/community/directories/alliance-pages" ],
         "guild_url": [ "fr/mmorpg/communaute/annuaires/pages-guildes", "en/mmorpg/community/directories/guild-pages" ],
         "player_url": [ "fr/mmorpg/communaute/annuaires/pages-persos", "en/mmorpg/community/directories/character-pages" ]
