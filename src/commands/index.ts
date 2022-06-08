@@ -7,6 +7,7 @@ export { almanax  } from "./almanax";
 export { doziak   } from "./doziak";
 export { type     } from "./type";
 export { auto     } from "./auto";
+export { follow   } from "./follow";
 export { server   } from "./server";
 // export { lang  } from "./lang";
 export { guild    } from "./guild";

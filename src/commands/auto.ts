@@ -9,7 +9,7 @@ export const         auto = {
       name:          "channel",
       description:   "Le salon dans lequels sera posté les almanax à minuit",
       type:          7,
-      channel_types: 0,
+      channel_types: [0],
       required:      true
     }]
   }, {
