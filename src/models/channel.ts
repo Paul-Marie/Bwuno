@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 const channelSchema = new mongoose.Schema({
   guild:   { type: String, required: true },
   channel: { type: String, required: true },
-  type:    { type: String, required: true }
+  author:  { type: String, required: true }
 });
 
 export default mongoose.model("Channel", channelSchema);

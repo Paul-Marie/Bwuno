@@ -18,13 +18,13 @@ export const         follow = {
       required:      true,
       choices:       [{
         name:        "@DofusTouch (Twitter)",
-        value:       "offi_fr"
+        value:       "DofusTouch"
       }, {
         name:        "@DofusTouch_EN (Twitter)",
-        value:       "offi_en"
+        value:       "DOFUSTouch_EN"
       }, {
         name:        "AnkaTracker (Forum)",
-        value:       "tracker_fr"
+        value:       "DofusTracker_DT"
       }]
     }]
   }, {
@@ -44,13 +44,13 @@ export const         follow = {
       required:      true,
       choices:       [{
         name:        "@DofusTouch (Twitter)",
-        value:       "offi_fr"
+        value:       "DofusTouch"
       }, {
         name:        "@DofusTouch_EN (Twitter)",
-        value:       "offi_en"
+        value:       "DOFUSTouch_EN"
       }, {
         name:        "AnkaTracker (Forum)",
-        value:       "tracker_fr"
+        value:       "DofusTracker_DT"
       }]
     }]
   }]
