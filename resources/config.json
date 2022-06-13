@@ -18,6 +18,9 @@
         "guild_url": [ "fr/mmorpg/communaute/annuaires/pages-guildes", "en/mmorpg/community/directories/guild-pages" ],
         "player_url": [ "fr/mmorpg/communaute/annuaires/pages-persos", "en/mmorpg/community/directories/character-pages" ]
     },
+    "server": {
+        "port": 6161
+    },
     "bwuno": {
         "name": "Bwuno",
         "default_prefix": "!bwuno ",

@@ -123,6 +123,26 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
   return embed;
 };
 
+// Create an embed with a Twitter post's data
+export const createTwitterEmbed = (user: string, text: string, link: string, image: any): MessageEmbed => ({
+  color: user === "DofusTracker_DT" ? 0x97A800 : 0x1DA1F2,
+  title: user === "DofusTracker_DT" ? "Nouvelle intervention du Staff !" : "Nouveau Tweet !",
+  url: link,
+  description: text,
+  ...image,
+  thumbnail: {
+    url: user === "DofusTracker_DT" 
+      ? "https://i.imgur.com/N6YTjZd.png"
+      : "https://i.imgur.com/hfBJR3S.png"
+  },
+  footer: {
+    text: user === "DofusTracker_DT" ? text.split('\n')?.[0]?.match(/\[.*?\]/g)?.join(' > ') : `@${user}`,
+    iconURL: user === "DofusTracker_DT" 
+      ? "https://i.imgur.com/RNhPqaP.png"
+      : "https://pbs.twimg.com/profile_images/1506538172884430853/NL9YuBYw_400x400.png"
+  }
+});
+
 // Create an Embed sent in case of error(s)
 export const createErrorEmbed = async (lang: number, link: string, mode: number): Promise<MessageEmbed> => {
   const content: any = [["guilde", "alliance", "personne"], ["guild", "alliance", "player"]];
