@@ -15,6 +15,7 @@ const superTypes: any = {
   10: "equipements", 11: "equipements", 12: "familiers",
 };
 
+// TODO: get rid of axios and use fetch
 // Retrieve informations from DT's API for the given `scope`
 const getJSON = async (scope: string) => (
   (await axios.post(`https://proxyconnection.touch.dofus.com/data/map?lang=fr&v=${version}`, {

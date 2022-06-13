@@ -15,8 +15,10 @@ import { bot } from "./discord";
     if (process.argv.length !== 2) {
       const script: any = await import(`./scripts/${process.argv[2]}`);
       script.default();
-    } else
+    } else {
       await bot.login(config.discord.token);
+      await import("./server");
+    }
   } catch (err) {
     console.error(err)
     process.exit(1);

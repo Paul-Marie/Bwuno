@@ -9,6 +9,7 @@ export { doziak  } from "./doziak";
 export { type    } from "./type";
 export { auto    } from "./auto";
 export { server  } from "./server";
+export { follow  } from "./follow";
 export { lang    } from "./lang";
 export { guild   } from "./guild";
 export { whois   } from "./whois";

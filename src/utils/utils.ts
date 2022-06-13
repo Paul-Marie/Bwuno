@@ -1,7 +1,6 @@
 import * as year     from "../../resources/year.json";
 import * as settings from "../../resources/config.json";
 import * as moment   from 'moment';
-import      request  from 'async-request';
 
 moment.locale('fr');
 
@@ -26,9 +25,9 @@ const getAverageOfDay = (array: any[], date: string): number => {
 export const getPrice = async (item_id: number, server_id: number = 2): Promise<string> => {
   try {
     const url: string = settings.dt_price.api_url;
-    const response: any = await request(`${url}/${server_id}/${item_id}`);
-    if (response.statusCode === 200) {
-      const data: any = JSON.parse(response.body);
+    const response: any = await fetch(`${url}/${server_id}/${item_id}`);
+    if (response.status === 200) {
+      const data: any = response.json();
       const current_date: moment.Moment = moment();
       const date: string = moment().subtract(7, 'd').format("YYYY-MM-DD");
       const tmp: number = getAverageOfDay(data, current_date.format("YYYY-MM-DD"));

@@ -90,7 +90,8 @@ bot.on("interactionCreate", async (interaction: Interaction): Promise<void> => {
     const argument: string = interaction.options.data.length && `(${interaction.options?.data?.[0]?.name}):${interaction.options?.data?.[0]?.value}`;
     console.log(`${username}#${discriminator}: /${interaction.commandName} ${argument || ''}`);
     const config: any = await Server.findOne({ identifier: interaction.guild?.id }) ?? { lang: 0, server: 2 };
-    await interaction.reply(await services[interaction.commandName.epur()](interaction, config));
+    const reply: any = await services[interaction.commandName.epur()](interaction, config);
+    reply && await interaction.reply(reply);
   } else if (interaction.isButton()) {
     const { username, discriminator } = interaction.user;
     console.log(`${username}#${discriminator}: ${interaction.customId}`);
