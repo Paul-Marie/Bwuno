@@ -7,28 +7,29 @@ import { TextChannel        } from 'discord.js';
 import { bot                } from "./discord";
 import { createTwitterEmbed } from "./utils/embed";
 import Channel                from "./models/channel";
-import * as bodyParser from "body-parser";
+import * as bodyParser        from "body-parser";
+import * as fi                from "feat-image";
 
 const app: any = express();
 
-app.use(bodyParser.json());
-//app.use(express.urlencoded({ extended: true }))
+app.use(bodyParser.json({type: ['application/json', 'application/*+json']}));
+//app.use(bodyParser.json());
 
 app.use('*', async (req: express.Request, res: express.Response) => {
   console.log(req.body);
   const { user, text, link } = req?.body;
   const body: string         = text?.replace(/[\W]*\S+[\W]*$/, '')?.trim();
-  console.log(text?.split(' ')?.slice(-1)?.[0]);
-  const image: any           = (() => {
+  const image: any           = (async () => {
     try {
       new URL(text?.split(' ')?.slice(-1)?.[0]);
-      return { image: { url: text?.split(' ')?.slice(-1)?.[0] }};
+      return { image: { url: (await fi(text?.split(' ')?.slice(-1)?.[0]))?.[0] }};
     } catch {};
   })();
+  console.log(await image);
   const channels: any[] = await Channel.find({ author: user });
   await Promise.all(channels.map(async ({ channel }) => (
     await (bot.channels.cache.get(channel) as TextChannel).send({
-      embeds: [createTwitterEmbed(user, body, link, image)]
+      embeds: [createTwitterEmbed(user, body, link, await image)]
     })
   )));
   res.status(200).send();

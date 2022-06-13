@@ -126,15 +126,20 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
 // Create an embed with a Twitter post's data
 export const createTwitterEmbed = (user: string, text: string, link: string, image: any): MessageEmbed => ({
   color: user === "DofusTracker_DT" ? 0x97A800 : 0x1DA1F2,
-  //title: name,
+  title: user === "DofusTracker_DT" ? "Nouvelle intervention du Staff !" : "Nouveau Tweet !",
   url: link,
   description: text,
   ...image,
+  thumbnail: {
+    url: user === "DofusTracker_DT" 
+      ? "https://i.imgur.com/N6YTjZd.png"
+      : "https://i.imgur.com/hfBJR3S.png"
+  },
   footer: {
-    text: user,
+    text: user === "DofusTracker_DT" ? text.split('\n')?.[0]?.match(/\[.*?\]/g)?.join(' > ') : `@${user}`,
     iconURL: user === "DofusTracker_DT" 
       ? "https://i.imgur.com/RNhPqaP.png"
-      : "https://i.imgur.com/oUFa21Z.png"
+      : "https://pbs.twimg.com/profile_images/1506538172884430853/NL9YuBYw_400x400.png"
   }
 });
 
