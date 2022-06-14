@@ -127,7 +127,17 @@ export const createTwitterEmbed = (user: string, text: string, link: string, ima
   color: user === "DofusTracker_DT" ? 0x97A800 : 0x1DA1F2,
   title: user === "DofusTracker_DT" ? "Nouvelle intervention du Staff !" : "Nouveau Tweet !",
   url: link,
-  description: user === "DofusTracker_DT" ? text?.replace(/\[[^\}]*\]\s/g, '') : text,
+  description: user === "DofusTracker_DT" ? (
+    text.indexOf('↪️') > 0
+      ? text?.replace(/\[[^\}]*\]\s/g, '')?.split('\n')?.[0]
+      : text?.replace(/\[[^\}]*\]\s/g, '')
+  ) : text,
+  ...((user === "DofusTracker_DT" && text.indexOf('↪️') > 0) && {
+    fields: [{
+      name:  text?.split('\n')?.[1]?.match(/"([^+]+)"/)?.[1],
+      value: text?.split('\n')?.[2]?.match(/"([^+]+)"/)?.[1]
+    }]
+  }),
   ...image,
   thumbnail: {
     url: user === "DofusTracker_DT" 
