@@ -1,6 +1,5 @@
 import { MessageEmbed         } from 'discord.js';
 import { format               } from 'format';
-import { bot                  } from "../discord";
 import { getDate, getElement,
   getRemainingDay, getPrice   } from "./utils";
 import * as sentences           from "../../resources/language.json";
@@ -128,7 +127,7 @@ export const createTwitterEmbed = (user: string, text: string, link: string, ima
   color: user === "DofusTracker_DT" ? 0x97A800 : 0x1DA1F2,
   title: user === "DofusTracker_DT" ? "Nouvelle intervention du Staff !" : "Nouveau Tweet !",
   url: link,
-  description: text,
+  description: user === "DofusTracker_DT" ? text?.replace(/\[[^\}]*\]\s/g, '') : text,
   ...image,
   thumbnail: {
     url: user === "DofusTracker_DT" 

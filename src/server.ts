@@ -7,34 +7,34 @@ import { TextChannel        } from 'discord.js';
 import { bot                } from "./discord";
 import { createTwitterEmbed } from "./utils/embed";
 import Channel                from "./models/channel";
-import * as bodyParser        from "body-parser";
 import * as fi                from "feat-image";
 
 const app: any = express();
 
-app.use(bodyParser.json({type: ['application/json', 'application/*+json']}));
-//app.use(bodyParser.json());
-
-app.use('*', async (req: express.Request, res: express.Response) => {
-  console.log(req.body);
+app.use('*', (req: express.Request, res: express.Response, next: any) => {
+  let data = "";
+  req.on("data", chunk => data += chunk);
+  req.on("end", () => {
+    req.body = JSON.parse(data?.replace(/\n/g, "\\n").replace(/ {2,}/g, ' '));
+    next();
+  });
+}, async (req: express.Request, res: express.Response) => {
   const { user, text, link } = req?.body;
-  const body: string         = text?.replace(/[\W]*\S+[\W]*$/, '')?.trim();
-  const image: any           = (async () => {
+  let   body:  string        = text;
+  const imageOBJ: any        = (async () => {
     try {
       new URL(text?.split(' ')?.slice(-1)?.[0]);
+      body = text?.replace(/[\W]*\S+[\W]*$/, '')?.trim();
       return { image: { url: (await fi(text?.split(' ')?.slice(-1)?.[0]))?.[0] }};
     } catch {};
   })();
-  console.log(await image);
   const channels: any[] = await Channel.find({ author: user });
   await Promise.all(channels.map(async ({ channel }) => (
     await (bot.channels.cache.get(channel) as TextChannel).send({
-      embeds: [createTwitterEmbed(user, body, link, await image)]
+      embeds: [createTwitterEmbed(user, body, link, await imageOBJ)]
     })
   )));
   res.status(200).send();
 });
-
-// user=toto_lasticot42&text=%F0%9F%93%96+Un+nouveau+Devblog+est+disponible+!+D%C3%A9couvrez+en+d%C3%A9tail+le+fonctionnement+des+armes+l%C3%A9gendaires+%E2%9A%94%EF%B8%8F+%0A%E2%9E%A1%EF%B8%8F+https%3A%2F%2Ft.co%2FYqhN5wxE0c+https%3A%2F%2Ft.co%2FZdkMvFl7Yd&link=https://twitter.com/toto_lasticot42/status/1534970809558650900
 
 app.listen(settings.server.port);
