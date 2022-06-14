@@ -24,17 +24,18 @@ const getAverageOfDay = (array: any[], date: string): number => {
 // Return the mean price of last 7 days of an item
 export const getPrice = async (item_id: number, server_id: number = 2): Promise<string> => {
   try {
-    const url: string = settings.dt_price.api_url;
-    const response: any = await fetch(`${url}/${server_id}/${item_id}`);
-    if (response.status === 200) {
-      const data: any = response.json();
-      const current_date: moment.Moment = moment();
-      const date: string = moment().subtract(7, 'd').format("YYYY-MM-DD");
-      const tmp: number = getAverageOfDay(data, current_date.format("YYYY-MM-DD"));
-      const current_price: number = tmp || getAverageOfDay(data, current_date.subtract(1, 'd').format("YYYY-MM-DD"));
-      const week_price: number = getAverageOfDay(data, date);
-      return ((current_price - week_price) / week_price * 100).toFixed(2);
-    }
+    // const url: string = settings.dt_price.api_url;
+    // const response: any = await fetch(`${url}/${server_id}/${item_id}`);
+    // if (response.status === 200) {
+    //   const data: any = response.json();
+    //   const current_date: moment.Moment = moment();
+    //   const date: string = moment().subtract(7, 'd').format("YYYY-MM-DD");
+    //   const tmp: number = getAverageOfDay(data, current_date.format("YYYY-MM-DD"));
+    //   const current_price: number = tmp || getAverageOfDay(data, current_date.subtract(1, 'd').format("YYYY-MM-DD"));
+    //   const week_price: number = getAverageOfDay(data, date);
+    //   return ((current_price - week_price) / week_price * 100).toFixed(2);
+    // }
+    throw "Closed";
   } catch (err) {
     return '0';
   }
