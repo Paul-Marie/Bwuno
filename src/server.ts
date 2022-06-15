@@ -28,9 +28,6 @@ app.use('*', (req: express.Request, _, next: any) => {
       return { image: { url: (await fi(text?.split(' ')?.slice(-1)?.[0]))?.[0] }};
     } catch {};
   })();
-  console.log(body.split('\n'));
-  console.log("==============")
-  console.log(body.split('\n')?.[1]?.match(/\".*?\"/g));
   const channels: any[] = await Channel.find({ author: user });
   await Promise.all(channels.map(async ({ channel }) => (
     await (bot.channels.cache.get(channel) as TextChannel).send({

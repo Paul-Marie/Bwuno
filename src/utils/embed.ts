@@ -125,17 +125,17 @@ export const createPlayerEmbed = async (data: any, lang: number): Promise<Messag
 // Create an embed with a Twitter post's data
 export const createTwitterEmbed = (user: string, text: string, link: string, image: any): MessageEmbed => ({
   color: user === "DofusTracker_DT" ? 0x97A800 : 0x1DA1F2,
-  title: user === "DofusTracker_DT" ? "Nouvelle intervention du Staff !" : "Nouveau Tweet !",
-  url: link,
+  title: user === "DofusTracker_DT" ? "Nouvelle intervention Forum !" : "Nouveau Tweet !",
+  ...(user === "DofusTracker_DT" ? {} : { url: link }),
   description: user === "DofusTracker_DT" ? (
     text.indexOf('↪️') > 0
-      ? text?.replace(/\[[^\}]*\]\s/g, '')?.split('\n')?.[0]
-      : text?.replace(/\[[^\}]*\]\s/g, '')
+      ? `\`${text?.replace(/\[[^\}]*\]\s/g, '')?.split('\n')?.[0]}\``
+      : `\`${text?.replace(/\[[^\}]*\]\s/g, '')}\``
   ) : text,
   ...((user === "DofusTracker_DT" && text.indexOf('↪️') > 0) && {
     fields: [{
-      name:  text?.split('\n')?.[1]?.match(/"([^+]+)"/)?.[1],
-      value: text?.split('\n')?.[2]?.match(/"([^+]+)"/)?.[1]
+      name:  `Question: ${text?.split('\n')?.[1]?.match(/"([^+]+)"/)?.[1]}`,
+      value: `**[__Ankama__]: ${text?.split('\n')?.[2]?.match(/"([^+]+)"/)?.[1]}**`
     }]
   }),
   ...image,

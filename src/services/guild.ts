@@ -52,8 +52,7 @@ export const guild = async (command: CommandInteraction, config: any): Promise<v
         await command.editReply({ embeds: [await createGuildEmbed(data, config.lang)] });
       } else
       await command.editReply({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0)] });
-    } catch (err) {
-      console.log(err);
+    } catch {
       await command.editReply({ embeds: [await createErrorEmbed(config.lang, `${base_url}${query_string}`, 0)] });
     }
   } else

@@ -19,7 +19,6 @@ export const follow = async (command: CommandInteraction, config: any): Promise<
       author:  command.options.getString("type"),
       guild:   command.guild.id
     });
-    console.log(`result: ${result}`);
     return result
       ? sentences[config.lang].SUCCESS_AUTO_DESACTIVATED
       : sentences[config.lang].ERROR_AUTO_NOT_ACTIVATED;
